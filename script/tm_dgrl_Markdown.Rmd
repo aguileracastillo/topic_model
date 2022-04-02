@@ -1,0 +1,47 @@
+---
+title: "A Topic Model of the Digital Government Reference Library (DGRL) v. 17.5"
+author: "Andres Aguilera Castillo"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_document
+---
+
+```{r data, include = FALSE}
+library(readr)
+library(dplyr)
+# Import DGRL version 17.5 (2021/12/15) 16531 References
+# https://faculty.washington.edu/jscholl/dgrl/index.php 
+# RIS file format converted to CSV using Zotero Reference Manager // Live link or Git better?
+DGRLv17_5_zotero <- read_csv(here("data", "DGRLv17.5_zotero.csv"))
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+Digital Government is a growing and evolving field of research, as with other scientific fields, the fast increase in research output have challenged researchers to explore and use novel computational ways and methods to perform evidence synthesis on the extant literature and be able to map a scientific discipline and even aim to find the proverbial "needle in the haystack" by means of text mining. This chapter aims to explore the abstracts of conference papers and journal articles available in the Digital Government Reference Library version 17.5, a curated repository of publications contributing to the field of Digital Government Research (DGR) by using a text as data approach and a topic modeling technique known as Latent Dirichlet Allocation (LDA). To our best knowledge, this is the first attempt to use unsupervised machine learning techniques to this data set. 
+
+# Introduction
+
+Trends in global scientific output demonstrate a rapid and sustained increase in the production of peer reviewed journal articles in most domains of knowledge. This continuous growth in research output is challenging scholars into exploring and pursuing novel methodological approaches and techniques to examine the massive amounts of scientific publications in circulation and the ever-growing data sets being created due to the digitalization of multiple aspects in modern-day life. Digitalization as a multifaceted process is also redefining how research is designed and conducted. Digital government scholarship is an emerging multidisciplinary field that follows this pattern as well.
+
+Scholars exploring labor-saving technologies have applied similar techniques expanding the methodological repertoire available and inspiring a similar pursuit for the exploration of the impact of technological change in a public sector context.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+\`\`\`
