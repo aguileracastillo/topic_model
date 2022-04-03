@@ -34,7 +34,7 @@ Scholars exploring labor-saving technologies have applied similar techniques exp
 summary(DGRLv17_5_zotero)
 ```
 
-## Including Plots
+# Data
 
 You can also embed plots, for example:
 
