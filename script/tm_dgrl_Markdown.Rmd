@@ -29,7 +29,7 @@ Trends in global scientific output demonstrate a rapid and sustained increase in
 
 Scholars exploring labor-saving technologies have applied similar techniques expanding the methodological repertoire available and inspiring a similar pursuit for the exploration of the impact of technological change in a public sector context.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this: git@github.com:aguileracastillo/topic_model.git 
 
 ```{r cars}
 summary(cars)
