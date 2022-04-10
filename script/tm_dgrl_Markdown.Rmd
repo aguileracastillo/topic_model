@@ -14,7 +14,7 @@ library(dplyr)
 library(here)
 # Import DGRL version 17.5 (2021/12/15) 16531 References
 # https://faculty.washington.edu/jscholl/dgrl/index.php 
-# RIS file format converted to CSV using Zotero Reference Manager // Live link or Git better?
+# RIS file format converted to CSV using Zotero Reference Manager
 DGRLv17_5_zotero <- read_csv(here("data", "DGRLv17.5_zotero.csv"))
 ```
 
