@@ -42,12 +42,23 @@ names(DGRLv17_5_zotero)
 ## View missing information
 vis_miss(DGRLv17_5_zotero, warn_large_data = FALSE)
 ## 80.7% missing information... 
-## Keep variables of interest ("Key", "Item Type", "Publication Year", "Author", "Title", "Publication Title", "Abstract Note", "Language", "Manual Tags", "Conference Name")
+## Keep variables of interest ("Key", "Item Type", "Publication Year", "Author", "Title", "Publication Title", "Abstract Note")
 
 ## Select variables of interest
-DGRLv17_5_zotero_redux <- DGRLv17_5_zotero %>% select(1:9, 11, 29, 40, 72)
+DGRLv17_5_zotero_redux <- DGRLv17_5_zotero %>% select(1:6, 9, 11)
 View(DGRLv17_5_zotero_redux)
 vis_miss(DGRLv17_5_zotero_redux)
+DGRLv17_5_zotero_redux <- DGRLv17_5_zotero_redux %>% rename(type = `Item Type`, year = `Publication Year`, abstract = `Abstract Note`)
+
+## Exploring missing values
+miss_doi <- DGRLv17_5_zotero_redux %>% drop_na(DOI)
+vis_miss(miss_doi)
+
+miss_doi %>%
+  group_by(type) %>%
+  miss_var_summary() %>%
+  filter(variable == "year") %>%
+  arrange(pct_miss)
 
 DGRLv17_5_zotero_redux %>%
   group_by(type) %>%
