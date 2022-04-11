@@ -40,7 +40,7 @@ Process
 summary(DGRLv17_5_zotero)
 ```
 
-# Literature Review
+# Literature Review // Conceptual framework
 
 You can also embed plots, for example:
 
@@ -52,6 +52,10 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 
 ## Methods and Data
 
+## Results
 
+## Discussion
+
+## Conclusions
 
 ## References

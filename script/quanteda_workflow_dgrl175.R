@@ -29,11 +29,13 @@ library(readr)
 library(revtools)
 library(caret)
 library(stringr)
+library(here)
 
-setwd("C:/Users/eagle/Dropbox/URBINO/DISSERTATION/03_STRUCTURE/01_Topic_Model/Digital Government Reference Library/EvSynth")
+## Set project path to GitHub 
+here()
 
 #### QUANTEDA WORKFLOW DATA IMPORT ####
-DGRLv17_5_zotero <- read_csv("C:/Users/eagle/Dropbox/URBINO/DISSERTATION/03_STRUCTURE/01_Topic_Model/Digital Government Reference Library/DGRLv17.5/DGRLv17.5_zotero.csv")
+DGRLv17_5_zotero <- read_csv(here("data", "DGRLv17.5_zotero.csv"))
 View(DGRLv17_5_zotero)
 ## Get names of variables in dataset
 names(DGRLv17_5_zotero)
