@@ -1,5 +1,5 @@
 ---
-title: "Digitalization and the Organization of Work in the Digital Government Research Library v17.5: A Topic Model"
+title: "Digitalization and the Organization of Work in the Digital Government Research Library v17.5: A Structural Topic Model"
 author: "Andres Aguilera Castillo"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
@@ -12,6 +12,7 @@ bibliography: references.bib
 library(readr)
 library(dplyr)
 library(here)
+library(naniar)
 # Import DGRL version 17.5 (2021/12/15) 16531 References
 # https://faculty.washington.edu/jscholl/dgrl/index.php 
 # RIS file format converted to CSV using Zotero Reference Manager
@@ -38,8 +39,6 @@ Research synthesis is part of the literature review process in which the extant 
 
 ```{r number and type of references in DGRLv17.5, include = FALSE}
 rows_DGRLv17_5 <- nrow(DGRLv17_5_zotero)
-by_type <- DGRLv17_5_zotero %>% count(`Item Type`)
-by_type
 ```
 
 This chapter explores the contents of The Digital Government Research Library in its version 17.5 (Scholl, 2021a), using a text as data approach and an unsupervised machine learning technique known as Latent Dirichlet Allocation (LDA). In its raw form, version 17.5 of the dataset contains `r rows_DGRLv17_5` references related to the Digital Government Research (DGR) domain, the most prevalent categories of references are conference papers (33%) and journal articles (50%). Previous explorations of this reference library using bibliometric and scientometric approaches have revealed the thematic evolution (Alcaide--Muñoz et al., 2017), and identified the most influential journals, conferences and leading scholars in the field (Scholl, 2021b). To our best knowledge this is the first attempt to run a topic model for a corpus in the field of Digital Government Research.
@@ -58,15 +57,25 @@ summary(DGRLv17_5_zotero)
 
 You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
 ## Methods and Data
 
-The DGRL v 17.5 is a curated repository of publications contributing to the field of Digital Government Research (DGR), in its raw form this library has
+The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), in its raw form this version of the library has `r rows_DGRLv17_5` references, the lion's share being journal articles n=8278 and conference papers n=5493. 
+
+```{r types of documents}
+by_type <- DGRLv17_5_zotero %>% count(`Item Type`) %>% arrange(desc(n))
+by_type
+```
+
+```{r missing}
+vis_miss(DGRLv17_5_zotero, warn_large_data = FALSE)
+miss_all_db <- pct_miss(DGRLv17_5_zotero)
+```
+
+The data set has a large proportion of missing values `r miss_all_db` but not all columns are relevant to this exploration. 
+
+By visually exploring a reduced version of the dataset, it is evident that a large amount of relevant information is missing. 
+
+The workflow for reproducibility includes text pre-processing meaning data cleaning and data transformation. Some variables of interest are missing and there must be some data preparation before running creating a corpus.
 
 ## Results
 
