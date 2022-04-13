@@ -41,8 +41,17 @@ View(DGRLv17_5_zotero)
 names(DGRLv17_5_zotero)
 ## View missing information
 vis_miss(DGRLv17_5_zotero, warn_large_data = FALSE)
+pct_miss(DGRLv17_5_zotero)
 ## 80.7% missing information... 
 ## Keep variables of interest ("Key", "Item Type", "Publication Year", "Author", "Title", "Publication Title", "Abstract Note")
+
+
+
+by_type <- DGRLv17_5_zotero %>% count(`Item Type`) %>% arrange(desc(n))
+by_type
+
+by_type$n[1]
+by_type$n[2]
 
 ## Select variables of interest
 DGRLv17_5_zotero_redux <- DGRLv17_5_zotero %>% select(1:6, 9, 11)
@@ -51,14 +60,21 @@ vis_miss(DGRLv17_5_zotero_redux)
 DGRLv17_5_zotero_redux <- DGRLv17_5_zotero_redux %>% rename(type = `Item Type`, year = `Publication Year`, abstract = `Abstract Note`)
 
 ## Exploring missing values
-miss_doi <- DGRLv17_5_zotero_redux %>% drop_na(DOI)
-vis_miss(miss_doi)
+with_doi <- DGRLv17_5_zotero_redux %>% drop_na(DOI)
+vis_miss(with_doi)
 
-miss_doi %>%
+with_year <- DGRLv17_5_zotero_redux %>% drop_na(year)
+vis_miss(with_year)
+
+with_doi %>%
   group_by(type) %>%
   miss_var_summary() %>%
   filter(variable == "year") %>%
-  arrange(pct_miss)
+  arrange(desc(pct_miss))
+
+## Publication
+pub_title <- with_doi %>% count(`pub_title`) %>% arrange(desc(n))
+pub_title
 
 DGRLv17_5_zotero_redux %>%
   group_by(type) %>%
@@ -80,18 +96,23 @@ DGRLv17_5_zotero_redux %>%
   
 
 ##YEAR MISS --> Journal Article 49.8% // Conference paper 0.3%
+docs_interest <- DGRLv17_5_zotero_redux %>% select()
+docs_interest
 
 DGRLv17_5_zotero_redux %>%
   group_by(type) %>%
   miss_var_summary() %>%
-  filter(variable == "DOI") %>%
+  filter(variable == "year") %>%
   arrange(pct_miss)
 
 ## ONLY JOURNAL ARTICLES (49% missing publication year!!!)
-journals <- DGRLv17_5_zotero_redux %>% group_by(`Item Type`)%>%
-  filter(`Item Type` == "journalArticle")
-View(journals)
+articles <- DGRLv17_5_zotero_redux %>% group_by(`type`)%>%
+  filter(`type` == "journalArticle")
 vis_miss(journals)
+
+papers <- DGRLv17_5_zotero_redux %>% group_by(`type`) %>%
+  filter(`type` == "conferencePaper")
+vis_miss(papers)
 
 ## Treat redux for NAs
 ## TITLE & ABSTRACTS 

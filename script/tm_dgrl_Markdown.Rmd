@@ -18,15 +18,17 @@ library(knitr)
 # https://faculty.washington.edu/jscholl/dgrl/index.php 
 # RIS file format converted to CSV using Zotero Reference Manager
 DGRLv17_5_zotero <- read_csv(here("data", "DGRLv17.5_zotero.csv"))
+## Rename Variables of Interest
+DGRLv17_5_zotero <- DGRLv17_5_zotero %>% rename(id = `Key`, type = `Item Type`, year = `Publication Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication Title`, abstract = `Abstract Note`)
+
 ```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r redux db and rename var, include=FALSE}
+```{r select var of interest, include=FALSE}
 DGRLv17_5_zotero_redux <- DGRLv17_5_zotero %>% select(1:6, 9, 11)
-DGRLv17_5_zotero_redux <- DGRLv17_5_zotero_redux %>% rename(id = `Key`, type = `Item Type`, year = `Publication Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication Title`, abstract = `Abstract Note`)
 ```
 
 ## Abstract
@@ -43,11 +45,12 @@ The advent of computerization and digitalization has had broad impacts in most a
 
 Research synthesis is part of the literature review process in which the extant scientific knowledge in each academic field is examined to help scholars understand the conceptual structure, themes, and debates to identify trends in the literature and potential areas for further research. This crucial task is labor-intensive, time-consuming, and restricted to a limited number of documents if conducted by traditional "manual" methods [@antons2020a; @asmussen2019]. Still, computer-assisted text analysis does not substitute human intervention, instead it "augments our reading ability" [@grimmer2022], human judgement is deemed necessary for the evaluation and validation of the outcome of these models [@barberá2021].
 
-```{r all docs in DGRLv17.5, include = FALSE}
+```{r all docs and fields in DGRLv17.5, include = FALSE}
 rows_DGRLv17_5 <- nrow(DGRLv17_5_zotero)
+cols_DGRLv17_5 <- ncol(DGRLv17_5_zotero)
 ```
 
-This chapter explores the contents of The Digital Government Research Library in its version 17.5 (Scholl, 2021a), using a text as data approach and an unsupervised machine learning technique known as Latent Dirichlet Allocation (LDA). In its raw form, version 17.5 of the dataset contains `r rows_DGRLv17_5` references related to the Digital Government Research (DGR) domain, the most prevalent categories of references are conference papers (33%) and journal articles (50%). Previous explorations of this reference library using bibliometric and scientometric approaches have revealed the thematic evolution (Alcaide--Muñoz et al., 2017), and identified the most influential journals, conferences and leading scholars in the field (Scholl, 2021b). To our best knowledge this is the first attempt to run a topic model for a corpus in the field of Digital Government Research.
+This chapter explores the contents of The Digital Government Research Library in its version 17.5 (Scholl, 2021a), using a text as data approach and an unsupervised machine learning technique known as Latent Dirichlet Allocation (LDA). In its raw form, version 17.5 of the dataset contains `r rows_DGRLv17_5` references related to the Digital Government Research (DGR) domain, the most prevalent types of documents are conference papers (33%) and journal articles (50%). Previous explorations of this reference library using bibliometric and scientometric approaches have revealed the thematic evolution (Alcaide--Muñoz et al., 2017), and identified the most influential journals, conferences and leading scholars in the field (Scholl, 2021b). To our best knowledge this is the first attempt to run a topic model for a corpus in the field of Digital Government Research.
 
 Scholars exploring labor-saving technologies have applied similar techniques expanding the methodological repertoire available and inspiring a similar pursuit for the exploration of the impact of technological change in a public sector context [@arduini2014; @montobbio2022].
 
@@ -65,10 +68,10 @@ You can also embed plots, for example:
 
 ## Methods and Data
 
-The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), in its raw form this version of the library has `r rows_DGRLv17_5` references, the lion's share being journal articles n=8278 and conference papers n=5493.
+The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), in its raw form this version of the library has `r rows_DGRLv17_5` references and `r cols_DGRLv17_5` fields of related metadata, the lion's share being journal articles n=8278 and conference papers n=5493. The unit of analysis for this analysis is the abstract of these two types of documents: conference papers and journal articles.
 
 ```{r types of documents, echo=FALSE}
-by_type <- DGRLv17_5_zotero %>% count(`Item Type`) %>% arrange(desc(n))
+by_type <- DGRLv17_5_zotero %>% count(`type`) %>% arrange(desc(n))
 kable(by_type, col.names = c("Document Type", "Number of Documents"), align = "cc", caption = "Table 1. Contents of DGRL v17.5 without pre-processing")
 ```
 
@@ -76,14 +79,29 @@ kable(by_type, col.names = c("Document Type", "Number of Documents"), align = "c
 miss_all_db <- pct_miss(DGRLv17_5_zotero) %>% round(digits = 2)
 ```
 
-In its raw and unprocessed form, the data set has a large proportion of missing values `r miss_all_db`% but not all columns are relevant to this exploration. Just 8 columns will be retained as the contents are considered relevant covariates for the analysis proposed in this exercise.
+In its raw and unprocessed form, the data set has a large proportion of missing values `r miss_all_db`%, mostly clustered in metadata not considered relevant for the analysis. Out of the 87 columns just 8 are deemed pertinent and may render some insights. The following visualizations explore the missing values in a subset of the DGRL containing journal articles and conference papers. 
 
-```{r visualization redux 8 var, echo=FALSE, include=TRUE}
+```{r visualization redux 8 var, echo=FALSE, include=TRUE, warning=FALSE}
 vis_miss(DGRLv17_5_zotero_redux)
 
 ```
 
-By visually exploring the contents of the data set, it is evident that a large amount of relevant information is missing. Important covariates for the analysis have a substantial proportion of missing information like year, publication title and abstract, our main unit of analysis for the topic model.
+By visually exploring the contents of the data set, it is evident that a large amount of relevant information is missing. Important covariates for the analysis have a substantial proportion of missing information like year, publication title, also 16.16% of abstracts (our main unit of analysis) is missing. However, the amount of missing data is very different from conference papers and journal articles as seen in the following visualizations.
+
+```{r visualization of journal articles, echo=FALSE, include=TRUE}
+articles <- DGRLv17_5_zotero_redux %>% group_by(`type`)%>%
+  filter(`type` == "journalArticle")
+vis_miss(articles)
+```
+
+Almost 50% of the metadata related to the year of publication, a key covariate for this analysis, is missing for the journal articles' subsample. In addition, there is missing a third of the Digital Object Identifier (DOI) information. To solve this problem and not to lose this information deemed relevant, we will describe the use a Zotero add-on [DOI Manager](https://github.com/bwiernik/zotero-shortdoi) to search for the missing information by using the available DOI numbers.
+
+```{r visualization of conference papers, echo=FALSE, include=TRUE}
+papers <- DGRLv17_5_zotero_redux %>% group_by(`type`) %>%
+  filter(`type` == "conferencePaper")
+vis_miss(papers)
+```
+The conference paper subsample visualization tells a different story, most of the missing information is for the publication title column 73%, followed by the proportion of missing DOI information 64% and 21% of missing information for abstracts.
 
 
 
