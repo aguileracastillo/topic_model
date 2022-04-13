@@ -45,23 +45,22 @@ pct_miss(DGRLv17_5_zotero)
 ## 80.7% missing information... 
 ## Keep variables of interest ("Key", "Item Type", "Publication Year", "Author", "Title", "Publication Title", "Abstract Note")
 
+## Rename Var of Interest
+DGRLv17_5_zotero <- DGRLv17_5_zotero %>% rename(id = `Key`, type = `Item Type`, year = `Publication Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication Title`, abstract = `Abstract Note`)
 
 
-by_type <- DGRLv17_5_zotero %>% count(`Item Type`) %>% arrange(desc(n))
+by_type <- DGRLv17_5_zotero %>% count(`type`) %>% arrange(desc(n))
 by_type
-
-by_type$n[1]
-by_type$n[2]
 
 ## Select variables of interest
 DGRLv17_5_zotero_redux <- DGRLv17_5_zotero %>% select(1:6, 9, 11)
 View(DGRLv17_5_zotero_redux)
 vis_miss(DGRLv17_5_zotero_redux)
-DGRLv17_5_zotero_redux <- DGRLv17_5_zotero_redux %>% rename(type = `Item Type`, year = `Publication Year`, abstract = `Abstract Note`)
 
 ## Exploring missing values
 with_doi <- DGRLv17_5_zotero_redux %>% drop_na(DOI)
 vis_miss(with_doi)
+write.csv(with_doi, "~/GitHub/topic_model/data\\with_doi.csv", row.names = TRUE)
 
 with_year <- DGRLv17_5_zotero_redux %>% drop_na(year)
 vis_miss(with_year)
@@ -72,9 +71,32 @@ with_doi %>%
   filter(variable == "year") %>%
   arrange(desc(pct_miss))
 
-## Publication
-pub_title <- with_doi %>% count(`pub_title`) %>% arrange(desc(n))
-pub_title
+with_doi %>%
+  group_by(type) %>%
+  miss_var_summary() %>%
+  filter(variable == "pub_title") %>%
+  arrange(desc(pct_miss)) 
+
+## Subset of Journal Articles
+articles <- DGRLv17_5_zotero_redux %>% group_by(`type`)%>%
+  filter(`type` == "journalArticle")
+vis_miss(articles)
+
+## Top Journals
+top_articles <- articles %>% count(`pub_title`) %>% arrange(desc(n))
+top_articles
+
+## Subset of Conference Papers
+papers <- DGRLv17_5_zotero_redux %>% group_by(`type`) %>%
+  filter(`type` == "conferencePaper")
+vis_miss(papers)
+
+# Top Conferences
+top_papers <- papers %>% count(`pub_title`) %>% arrange(desc(n))
+top_papers
+
+## Search Zotero DOI Manager
+
 
 DGRLv17_5_zotero_redux %>%
   group_by(type) %>%
@@ -105,11 +127,12 @@ DGRLv17_5_zotero_redux %>%
   filter(variable == "year") %>%
   arrange(pct_miss)
 
-## ONLY JOURNAL ARTICLES (49% missing publication year!!!)
+## Missing information (49% missing publication year!!!)
 articles <- DGRLv17_5_zotero_redux %>% group_by(`type`)%>%
   filter(`type` == "journalArticle")
-vis_miss(journals)
+vis_miss(articles)
 
+## Missing information (21% of abstracts)
 papers <- DGRLv17_5_zotero_redux %>% group_by(`type`) %>%
   filter(`type` == "conferencePaper")
 vis_miss(papers)
