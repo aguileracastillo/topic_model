@@ -26,6 +26,7 @@ library(tm)
 library(revtools)
 library(caret)
 library(here)
+library(bib2df)
 
 ## Set project path to GitHub 
 here()
@@ -41,6 +42,7 @@ pct_miss(DGRLv17_5_RIS)
 ## 80.7% missing information... 
 
 ## BIB FILE ##
+test_bib <- bib2df(here("data", DGRLv17.5.bib, separate_names = FALSE))
 DGRLv17_5_BIB <- read.csv(here("data", "DGRLv17.5_BIB.csv"))
 DGRLv17_5_BIB <- as_tibble(DGRLv17_5_BIB)
 View(DGRLv17_5_BIB)
@@ -59,10 +61,12 @@ names(DGRLv17_5_RIS)
 names(DGRLv17_5_BIB)
 
 DGRLv17_5_RIS_redux <- DGRLv17_5_RIS %>% select(1:6, 9, 11)
+print(DGRLv17_5_RIS_redux)
 View(DGRLv17_5_RIS_redux)
 vis_miss(DGRLv17_5_RIS_redux)
 
 DGRLv17_5_BIB_redux <- DGRLv17_5_BIB %>% select(1:6, 9, 11)
+print(DGRLv17_5_BIB_redux)
 View(DGRLv17_5_BIB_redux)
 vis_miss(DGRLv17_5_BIB_redux)
 

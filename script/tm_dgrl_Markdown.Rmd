@@ -81,7 +81,7 @@ miss_all_db <- pct_miss(DGRLv17_5_RIS) %>% round(digits = 2)
 
 In its raw and unprocessed form, the data set has a large proportion of missing values `r miss_all_db`%, mostly clustered in metadata not considered relevant for the analysis. Out of the 87 columns just 8 are deemed pertinent and may render some insights. The following visualizations explore the missing values in a subset of the DGRL containing journal articles and conference papers. 
 
-```{r visualization redux 8 var, echo=FALSE, include=TRUE, warning=FALSE, fig.cap= "Percentage of missing values in the variables of interest"}
+```{r visualization redux 8 var, echo=FALSE, include=TRUE, warning=FALSE, out.width= "80%", fig.cap= "Percentage of missing values in the variables of interest"}
 vis_miss(DGRLv17_5_RIS_redux)
 
 ```
@@ -105,9 +105,16 @@ The conference paper subsample visualization tells a different story, most of th
 
 Zotero Search for Metadata and Retract Watch
 
+The workflow for topic modeling includes text pre-processing meaning data cleaning and data transformation. Some variables of interest are missing and there must be some data preparation before running creating a corpus. In particular, we would like to explore if the covariate year, missing in journal articles could be imputed in a reproducible way by publishing the code used to process the data.
+
+Our main unit of analysis is the abstract of the documents that have the covariates deemed of interest for our exploration. Text is a type of unstructured data, these type of data can be structured for processing using the bag of words approach or the splitting of documents, abstracts in our case, into separate word units or terms and every occurrence of a term is defined as a token. The creation of a bag of words is known as tokenizing. The bag of words approach deliberately ignores the syntax or structure of the text, additional treatment of text include the elimination of punctuation, transform each word to lowercase and in some cases stemming which is a way to reduce a word to its stem or root.
+
+Stemming algorithms: Porter / Snowball / Lancaster
+
+Stop words
 
 
-The workflow for reproducibility includes text pre-processing meaning data cleaning and data transformation. Some variables of interest are missing and there must be some data preparation before running creating a corpus.
+
 
 ## Results
 
