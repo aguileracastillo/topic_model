@@ -2,6 +2,7 @@
 library(rmarkdown)
 library(knitr)
 library(tidyverse)
+library(tidytext)
 library(quanteda)
 library(quanteda.textmodels)
 library(quanteda.textplots)
@@ -17,52 +18,67 @@ library(quanteda.corpora)
 library(spacyr)
 library(newsmap)
 library(seededlda)
-library(readr)
 library(naniar)
 library(visdat)
-library(dplyr)
-library(ggplot2)
 library(lubridate)
 library(seededlda)
 library(tm)
-library(readr)
 library(revtools)
 library(caret)
-library(stringr)
 library(here)
 
 ## Set project path to GitHub 
 here()
 
 #### QUANTEDA WORKFLOW DATA IMPORT ####
-DGRLv17_5_zotero <- read_csv(here("data", "DGRLv17.5_zotero.csv"))
-View(DGRLv17_5_zotero)
-## Get names of variables in dataset
-names(DGRLv17_5_zotero)
+## RIS FILE ##
+DGRLv17_5_RIS <- read_csv(here("data", "DGRLv17.5_RIS.csv"))
+View(DGRLv17_5_RIS)
+
 ## View missing information
-vis_miss(DGRLv17_5_zotero, warn_large_data = FALSE)
-pct_miss(DGRLv17_5_zotero)
+vis_miss(DGRLv17_5_RIS, warn_large_data = FALSE)
+pct_miss(DGRLv17_5_RIS)
 ## 80.7% missing information... 
+
+## BIB FILE ##
+DGRLv17_5_BIB <- read.csv(here("data", "DGRLv17.5_BIB.csv"))
+DGRLv17_5_BIB <- as_tibble(DGRLv17_5_BIB)
+View(DGRLv17_5_BIB)
+vis_miss(DGRLv17_5_BIB, warn_large_data = FALSE)
+pct_miss(DGRLv17_5_BIB)
+## 70.5% missing information...
+
 ## Keep variables of interest ("Key", "Item Type", "Publication Year", "Author", "Title", "Publication Title", "Abstract Note")
 
-## Rename Var of Interest
-DGRLv17_5_zotero <- DGRLv17_5_zotero %>% rename(id = `Key`, type = `Item Type`, year = `Publication Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication Title`, abstract = `Abstract Note`)
+## Rename Variables of Interest
+DGRLv17_5_RIS <- DGRLv17_5_RIS %>% rename(id = `Key`, type = `Item Type`, year = `Publication Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication Title`, abstract = `Abstract Note`)
+DGRLv17_5_BIB <- DGRLv17_5_BIB %>% rename(id = `ï..Key`, type = `Item.Type`, year = `Publication.Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication.Title`, abstract = `Abstract.Note`)
+
+## Dimensionality reduction of RIS and BIB
+names(DGRLv17_5_RIS)
+names(DGRLv17_5_BIB)
+
+DGRLv17_5_RIS_redux <- DGRLv17_5_RIS %>% select(1:6, 9, 11)
+View(DGRLv17_5_RIS_redux)
+vis_miss(DGRLv17_5_RIS_redux)
+
+DGRLv17_5_BIB_redux <- DGRLv17_5_BIB %>% select(1:6, 9, 11)
+View(DGRLv17_5_BIB_redux)
+vis_miss(DGRLv17_5_BIB_redux)
 
 
-by_type <- DGRLv17_5_zotero %>% count(`type`) %>% arrange(desc(n))
+by_type <- DGRLv17_5_RIS %>% count(`type`) %>% arrange(desc(n))
 by_type
 
 ## Select variables of interest
-DGRLv17_5_zotero_redux <- DGRLv17_5_zotero %>% select(1:6, 9, 11)
-View(DGRLv17_5_zotero_redux)
-vis_miss(DGRLv17_5_zotero_redux)
+
 
 ## Exploring missing values
-with_doi <- DGRLv17_5_zotero_redux %>% drop_na(DOI)
+with_doi <- DGRLv17_5_RIS_redux %>% drop_na(DOI)
 vis_miss(with_doi)
 write.csv(with_doi, "~/GitHub/topic_model/data\\with_doi.csv", row.names = TRUE)
 
-with_year <- DGRLv17_5_zotero_redux %>% drop_na(year)
+with_year <- DGRLv17_5_RIS_redux %>% drop_na(year)
 vis_miss(with_year)
 
 with_doi %>%
@@ -78,16 +94,20 @@ with_doi %>%
   arrange(desc(pct_miss)) 
 
 ## Subset of Journal Articles
-articles <- DGRLv17_5_zotero_redux %>% group_by(`type`)%>%
+articles_RIS <- DGRLv17_5_RIS_redux %>% group_by(`type`)%>%
   filter(`type` == "journalArticle")
-vis_miss(articles)
+vis_miss(articles_RIS)
+
+articles_BIB <- DGRLv17_5_BIB_redux %>% group_by(`type`)%>%
+  filter(`type` == "journalArticle")
+vis_miss(articles_BIB)
 
 ## Top Journals
 top_articles <- articles %>% count(`pub_title`) %>% arrange(desc(n))
 top_articles
 
 ## Subset of Conference Papers
-papers <- DGRLv17_5_zotero_redux %>% group_by(`type`) %>%
+papers <- DGRLv17_5_RIS_redux %>% group_by(`type`) %>%
   filter(`type` == "conferencePaper")
 vis_miss(papers)
 
@@ -98,19 +118,19 @@ top_papers
 ## Search Zotero DOI Manager
 
 
-DGRLv17_5_zotero_redux %>%
+DGRLv17_5_RIS_redux %>%
   group_by(type) %>%
   miss_var_summary() %>%
   filter(variable == "abstract") %>%
   arrange(pct_miss)
 
-DGRLv17_5_zotero_redux %>%
+DGRLv17_5_RIS_redux %>%
   group_by(type) %>%
   miss_var_summary() %>%
   filter(variable == "DOI") %>%
   arrange(pct_miss)
 
-DGRLv17_5_zotero_redux %>%
+DGRLv17_5_RIS_redux %>%
   group_by(type) %>%
   miss_var_summary() %>%
   filter(variable == "year") %>%
@@ -118,28 +138,28 @@ DGRLv17_5_zotero_redux %>%
   
 
 ##YEAR MISS --> Journal Article 49.8% // Conference paper 0.3%
-docs_interest <- DGRLv17_5_zotero_redux %>% select()
+docs_interest <- DGRLv17_5_RIS_redux %>% select()
 docs_interest
 
-DGRLv17_5_zotero_redux %>%
+DGRLv17_5_RIS_redux %>%
   group_by(type) %>%
   miss_var_summary() %>%
   filter(variable == "year") %>%
   arrange(pct_miss)
 
 ## Missing information (49% missing publication year!!!)
-articles <- DGRLv17_5_zotero_redux %>% group_by(`type`)%>%
+articles <- DGRLv17_5_RIS_redux %>% group_by(`type`)%>%
   filter(`type` == "journalArticle")
 vis_miss(articles)
 
 ## Missing information (21% of abstracts)
-papers <- DGRLv17_5_zotero_redux %>% group_by(`type`) %>%
+papers <- DGRLv17_5_RIS_redux %>% group_by(`type`) %>%
   filter(`type` == "conferencePaper")
 vis_miss(papers)
 
 ## Treat redux for NAs
 ## TITLE & ABSTRACTS 
-abs_title_redux <- DGRLv17_5_zotero_redux %>% select (1, 2, 5, 7)
+abs_title_redux <- DGRLv17_5_RIS_redux %>% select (1, 2, 5, 7)
 View(abs_title_redux)
 vis_miss(abs_title_redux)
 
@@ -160,9 +180,9 @@ vis_miss(doi_miss)
 vis_miss(year_miss)
 
 ## Search for YEAR NAs using Zotero 
-DGRLv17_5_zotero <- DGRLv17_5_zotero %>% rename(type = "Item Type", year= "Publication Year", abstract = "Abstract Note")
-DGRLv17_5_zotero[, c(2,3)] <- lapply(DGRLv17_5_zotero[, c(2,3)], as.factor)
-levels(DGRLv17_5_zotero$year)
+DGRLv17_5_RIS <- DGRLv17_5_RIS %>% rename(type = "Item Type", year= "Publication Year", abstract = "Abstract Note")
+DGRLv17_5_RIS[, c(2,3)] <- lapply(DGRLv17_5_RIS[, c(2,3)], as.factor)
+levels(DGRLv17_5_RIS$year)
 
 year_miss <- doi_miss %>% drop_na(year)
 vis_miss(year_miss)
@@ -176,7 +196,7 @@ zotero_update_with_years <- zotero_update_with_years %>% drop_na(year)
 
 ################ BOOK SECTION TREATMENT DO NOT USE ############
 ## Book section cleaning // Do not use ISBN is for whole book
-book_section_search <- DGRLv17_5_zotero %>% filter(type == "bookSection")
+book_section_search <- DGRLv17_5_RIS %>% filter(type == "bookSection")
 book_section_search <- book_section_search %>% drop_na(ISBN)
 View(book_section_search)
 vis_miss(book_section_search)
