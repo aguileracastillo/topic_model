@@ -3,6 +3,7 @@ library(rmarkdown)
 library(knitr)
 library(tidyverse)
 library(tidytext)
+library(reclin)
 library(quanteda)
 library(quanteda.textmodels)
 library(quanteda.textplots)
@@ -42,7 +43,6 @@ pct_miss(DGRLv17_5_RIS)
 ## 80.7% missing information... 
 
 ## BIB FILE ##
-test_bib <- bib2df(here("data", DGRLv17.5.bib, separate_names = FALSE))
 DGRLv17_5_BIB <- read.csv(here("data", "DGRLv17.5_BIB.csv"))
 DGRLv17_5_BIB <- as_tibble(DGRLv17_5_BIB)
 View(DGRLv17_5_BIB)
@@ -65,10 +65,24 @@ print(DGRLv17_5_RIS_redux)
 View(DGRLv17_5_RIS_redux)
 vis_miss(DGRLv17_5_RIS_redux)
 
+## In BIB data set "" not recognized as NA
 DGRLv17_5_BIB_redux <- DGRLv17_5_BIB %>% select(1:6, 9, 11)
 print(DGRLv17_5_BIB_redux)
 View(DGRLv17_5_BIB_redux)
 vis_miss(DGRLv17_5_BIB_redux)
+
+## Treat BIB file convert columns to match RIS
+DGRLv17_5_BIB_redux <-  DGRLv17_5_BIB_redux %>%
+  mutate(year = as.double(year),
+         abstract = as.character(abstract))
+
+## Replace "" as NA
+DGRLv17_5_BIB_redux <- DGRLv17_5_BIB_redux %>%
+  replace_with_na_all(condition = ~.x %in% common_na_strings)
+
+## Record Linkage RIS & BIB by DOI
+
+
 
 
 by_type <- DGRLv17_5_RIS %>% count(`type`) %>% arrange(desc(n))
