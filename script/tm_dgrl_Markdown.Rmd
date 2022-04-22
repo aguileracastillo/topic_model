@@ -68,7 +68,9 @@ You can also embed plots, for example:
 
 ## Methods and Data
 
-The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), in its raw form this version of the library has `r rows_DGRLv17_5` references and `r cols_DGRLv17_5` fields of related metadata, the lion's share being journal articles n=8278 and conference papers n=5493. The unit of analysis for this analysis is the abstract of these two types of documents: conference papers and journal articles.
+The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), its raw version has `r rows_DGRLv17_5` references. The Library can be downloaded from the website [DGRL](https://faculty.washington.edu/jscholl/dgrl/index.php). The download contains three types of files RIS, BIB, enl.
+For this analysis, an initial exploration of the files indicated important differences in the 
+was downloaded and fields of related metadata, the lion's share being journal articles n=8278 and conference papers n=5493. The unit of analysis for this analysis is the abstract of these two types of documents: conference papers and journal articles.
 
 ```{r types of documents, echo=FALSE}
 by_type <- DGRLv17_5_RIS %>% count(`type`) %>% arrange(desc(n))
