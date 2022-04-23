@@ -32,8 +32,97 @@ library(bib2df)
 ## Set project path to GitHub 
 here()
 
-#### QUANTEDA WORKFLOW DATA IMPORT ####
-## MASTER FILE
+#### DATA IMPORT ####
+## MASTER FILES FROM ENDNOTE
+mf_ris <- read.csv(here("data", "DGRL_Lit_Master_v17_ris.csv"))
+mf_ris <- as_tibble(mf_ris)
+mf_ris <- mf_ris %>%
+  replace_with_na_all(condition = ~.x %in% common_na_strings)
+print(mf_ris)
+vis_miss(mf_ris, warn_large_data = FALSE)
+
+mf_bib <- read.csv(here("data", "DGRL_Lit_Master_v17_bib.csv"))
+mf_bib <- as_tibble(mf_bib)
+mf_bib <- mf_bib %>%
+  replace_with_na_all(condition = ~.x %in% common_na_strings)
+View(mf_bib)
+print(mf_bib)
+vis_miss(mf_bib, warn_large_data = FALSE)
+
+
+## Rename variables
+mf_bib <- mf_bib %>% rename(type = `Item.Type`, year = `Publication.Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication.Title`, abstract = `Abstract.Note`)
+mf_ris <- mf_ris %>% rename(type = `Item.Type`, year = `Publication.Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication.Title`, abstract = `Abstract.Note`)
+
+## Keep variables of interest (Item Type", "Publication Year", "Author", "Title", "Publication Title", "Abstract Note")
+mf_bib_redux <- mf_bib %>% select(2:6, 9, 11)
+mf_ris_redux <- mf_ris %>% select(2:6, 9, 11)
+
+## DOI as search key in both tables -> drop_na(DOI)
+mf_bib_redux_doi <- mf_bib_redux %>% drop_na(DOI)
+vis_miss(mf_bib_redux_doi)
+
+mf_ris_redux_doi <- mf_ris_redux %>% drop_na(DOI)
+vis_miss(mf_ris_redux_doi)
+
+## Missing variable (year) by type bib 74% for conferencePaper  
+mf_bib_redux_doi %>%
+  group_by(type) %>%
+  miss_var_summary() %>%
+  filter(variable == "year") %>%
+  arrange(desc(pct_miss))
+
+mf_bib_redux_doi %>%
+  group_by(type) %>%
+  miss_var_summary() %>%
+  filter(variable == "abstract") %>%
+  arrange(desc(pct_miss))
+
+## Missing variable (year) in ris is a number -> to NA 42% missing
+mf_ris_redux_doi <- mf_ris_redux_doi %>%
+  replace_with_na(replace = list(year = c(1:12)))
+
+print(mf_ris_redux_doi)
+vis_miss(mf_ris_redux_doi)
+
+## 55% missing journalArticle
+mf_ris_redux_doi %>%
+  group_by(type) %>%
+  miss_var_summary() %>%
+  filter(variable == "year") %>%
+  arrange(desc(pct_miss))
+
+mf_ris_redux_doi %>%
+  group_by(type) %>%
+  miss_var_summary() %>%
+  filter(variable == "abstract") %>%
+  arrange(desc(pct_miss))
+
+
+## KEEP NAs in RIS_REDUX_DOI TO SEARCH FOR DOI MATCH
+year_na_ris <- mf_ris_redux_doi[is.na(mf_ris_redux_doi$year),]
+print(year_na_ris)
+
+## full_join
+search_ris <- full_join(mf_bib_redux_doi, year_na_ris, by = "DOI") %>%
+  select(type.x, year.x, author.x, doc_title.x, pub_title.x, DOI, abstract.x) %>%
+  drop_na(year.x)
+print(search_ris)
+vis_miss(search_ris)
+
+## Replicate for BIB_REDUX_DOI TO SEARCH FOR DOI MATCH
+year_na_bib <- mf_bib_redux_doi[is.na(mf_bib_redux_doi$year),]
+print(year_na_bib)
+
+## full_join
+search_bib <- full_join(mf_ris_redux_doi, year_na_bib, by = "DOI") %>%
+  select(type.x, year.x, author.x, doc_title.x, pub_title.x, DOI, abstract.x) %>%
+  drop_na(year.x)
+print(search_bib)
+vis_miss(search_bib)
+
+## BIND AND DEDUPLICATE BY DOI
+
 
 
 ## RIS FILE ##
@@ -53,7 +142,6 @@ vis_miss(DGRLv17_5_BIB, warn_large_data = FALSE)
 pct_miss(DGRLv17_5_BIB)
 ## 70.5% missing information...
 
-## Keep variables of interest ("Key", "Item Type", "Publication Year", "Author", "Title", "Publication Title", "Abstract Note")
 
 ## Rename Variables of Interest
 DGRLv17_5_RIS <- DGRLv17_5_RIS %>% rename(id = `Key`, type = `Item Type`, year = `Publication Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication Title`, abstract = `Abstract Note`)
