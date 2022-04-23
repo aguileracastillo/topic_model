@@ -78,6 +78,12 @@ mf_bib_redux_doi %>%
   filter(variable == "abstract") %>%
   arrange(desc(pct_miss))
 
+mf_bib_redux_doi %>%
+  group_by(type) %>%
+  miss_var_summary() %>%
+  filter(variable == "pub_title") %>%
+  arrange(desc(pct_miss))
+
 ## Missing variable (year) in ris is a number -> to NA 42% missing
 mf_ris_redux_doi <- mf_ris_redux_doi %>%
   replace_with_na(replace = list(year = c(1:12)))
@@ -85,7 +91,7 @@ mf_ris_redux_doi <- mf_ris_redux_doi %>%
 print(mf_ris_redux_doi)
 vis_miss(mf_ris_redux_doi)
 
-## 55% missing journalArticle
+## 55% missing year in journalArticle
 mf_ris_redux_doi %>%
   group_by(type) %>%
   miss_var_summary() %>%
@@ -98,6 +104,30 @@ mf_ris_redux_doi %>%
   filter(variable == "abstract") %>%
   arrange(desc(pct_miss))
 
+## 49% missing pub_title in conferencePaper
+mf_ris_redux_doi %>%
+  group_by(type) %>%
+  miss_var_summary() %>%
+  filter(variable == "pub_title") %>%
+  arrange(desc(pct_miss))
+
+## FULL JOIN (CROSS JOIN) OF RIS AND BIS WITH DOI
+fj1 <- full_join(mf_bib_redux_doi, mf_ris_redux_doi, by = "DOI") %>% 
+  select(type.x, year.x, author.x, doc_title.x, pub_title.x, DOI, abstract.x) %>%
+  drop_na(year.x)
+fj2 <- full_join(mf_ris_redux_doi, mf_bib_redux_doi, by = "DOI") %>% 
+  select(type.x, year.x, author.x, doc_title.x, pub_title.x, DOI, abstract.x) %>%
+  drop_na(year.x)
+
+bound_bib_ris <- bind_rows(fj1, fj2)
+bound_bib_ris <- bound_bib_ris %>% distinct(DOI, .keep_all = TRUE)
+bound_bib_ris %>% count(`type.x`) %>% arrange(desc(n))
+
+bound_bib_ris %>%
+  group_by(type.x) %>%
+  miss_var_summary() %>%
+  filter(variable == "pub_title.x") %>%
+  arrange(desc(pct_miss)) 
 
 ## KEEP NAs in RIS_REDUX_DOI TO SEARCH FOR DOI MATCH
 year_na_ris <- mf_ris_redux_doi[is.na(mf_ris_redux_doi$year),]
@@ -113,6 +143,7 @@ vis_miss(search_ris)
 ## Replicate for BIB_REDUX_DOI TO SEARCH FOR DOI MATCH
 year_na_bib <- mf_bib_redux_doi[is.na(mf_bib_redux_doi$year),]
 print(year_na_bib)
+vis_miss(year_na_bib)
 
 ## full_join
 search_bib <- full_join(mf_ris_redux_doi, year_na_bib, by = "DOI") %>%
@@ -121,8 +152,11 @@ search_bib <- full_join(mf_ris_redux_doi, year_na_bib, by = "DOI") %>%
 print(search_bib)
 vis_miss(search_bib)
 
-## BIND AND DEDUPLICATE BY DOI
-
+## MERGE BY DOI
+joint <- bind_rows(search_bib, search_ris)
+joint <- joint %>% distinct(DOI, .keep_all = TRUE)
+print(joint)
+vis_miss(joint)
 
 
 ## RIS FILE ##
