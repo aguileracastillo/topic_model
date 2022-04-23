@@ -33,6 +33,9 @@ library(bib2df)
 here()
 
 #### QUANTEDA WORKFLOW DATA IMPORT ####
+## MASTER FILE
+
+
 ## RIS FILE ##
 DGRLv17_5_RIS <- read_csv(here("data", "DGRLv17.5_RIS.csv"))
 View(DGRLv17_5_RIS)
