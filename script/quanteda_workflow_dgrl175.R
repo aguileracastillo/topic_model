@@ -80,26 +80,36 @@ DGRLv17_5_BIB_redux <-  DGRLv17_5_BIB_redux %>%
 DGRLv17_5_BIB_redux <- DGRLv17_5_BIB_redux %>%
   replace_with_na_all(condition = ~.x %in% common_na_strings)
 
-## Record Linkage RIS & BIB by DOI
 
 
+by_type_RIS <- DGRLv17_5_RIS %>% count(`type`) %>% arrange(desc(n))
+by_type_RIS
 
-
-by_type <- DGRLv17_5_RIS %>% count(`type`) %>% arrange(desc(n))
-by_type
-
-## Select variables of interest
+by_type_BIB <- DGRLv17_5_BIB %>% count(`type`) %>% arrange(desc(n))
+by_type_BIB
 
 
 ## Exploring missing values
-with_doi <- DGRLv17_5_RIS_redux %>% drop_na(DOI)
-vis_miss(with_doi)
-write.csv(with_doi, "~/GitHub/topic_model/data\\with_doi.csv", row.names = TRUE)
+with_doi_RIS <- DGRLv17_5_RIS_redux %>% drop_na(DOI)
+vis_miss(with_doi_RIS)
+write.csv(with_doi_RIS, "~/GitHub/topic_model/data\\with_doi_RIS.csv", row.names = TRUE)
+
+## BIB 18.6% missing year
+with_doi_BIB <- DGRLv17_5_BIB_redux %>% drop_na(DOI)
+vis_miss(with_doi_BIB)
 
 with_year <- DGRLv17_5_RIS_redux %>% drop_na(year)
 vis_miss(with_year)
 
-with_doi %>%
+## Missing years in BIB
+with_doi_BIB %>%
+  group_by(type) %>%
+  miss_var_summary() %>%
+  filter(variable == "year") %>%
+  arrange(desc(pct_miss))
+
+## Missing years in RIS
+with_doi_RIS %>%
   group_by(type) %>%
   miss_var_summary() %>%
   filter(variable == "year") %>%
@@ -156,8 +166,7 @@ DGRLv17_5_RIS_redux %>%
   
 
 ##YEAR MISS --> Journal Article 49.8% // Conference paper 0.3%
-docs_interest <- DGRLv17_5_RIS_redux %>% select()
-docs_interest
+
 
 DGRLv17_5_RIS_redux %>%
   group_by(type) %>%

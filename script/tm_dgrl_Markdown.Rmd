@@ -68,7 +68,9 @@ You can also embed plots, for example:
 
 ## Methods and Data
 
-The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), its raw version has `r rows_DGRLv17_5` references. The Library can be downloaded from the website [DGRL](https://faculty.washington.edu/jscholl/dgrl/index.php). The download contains three types of files RIS, BIB, enl.
+The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), it contains `r rows_DGRLv17_5` references among its records. The Library can be downloaded from the website [DGRL](https://faculty.washington.edu/jscholl/dgrl/index.php). The download package contains three types of bibliographic files BibTeX, RIS, and ENL that can be explored with diverse reference management software and or imported to R Studio for data exploration and data cleaning. By exploring both the BiBTeX file and the RIS file, it can be observed that there are a large quantity of missing data in both file formats. Abstracts, our main unit of analysis are present in some of the references in the RIS file, year of publication, a key covariate for the structural topic model 
+
+The file formats exploratioThe BIB file
 For this analysis, an initial exploration of the files indicated important differences in the 
 was downloaded and fields of related metadata, the lion's share being journal articles n=8278 and conference papers n=5493. The unit of analysis for this analysis is the abstract of these two types of documents: conference papers and journal articles.
 
