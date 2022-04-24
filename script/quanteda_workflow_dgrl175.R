@@ -104,12 +104,23 @@ mf_ris_redux_doi %>%
   filter(variable == "abstract") %>%
   arrange(desc(pct_miss))
 
-## 49% missing pub_title in conferencePaper
+## 49% missing pub_title in conferencePaper -> treat with Zotero
 mf_ris_redux_doi %>%
   group_by(type) %>%
   miss_var_summary() %>%
   filter(variable == "pub_title") %>%
   arrange(desc(pct_miss))
+
+## Extract DOI of NA for pub_title then search in Zotero
+pub_title_ris <- mf_ris_redux_doi[is.na(mf_ris_redux_doi$pub_title),]
+write.csv(pub_title_ris, "~/GitHub/topic_model/data\\pub_title_ris.csv", row.names = TRUE)
+
+pub_title_ris_zotero <- read.csv(here("data", "pub_title_ris_zotero.csv"))
+View(pub_title_ris_zotero)
+
+pub_title_ris_zotero <- pub_title_ris_zotero %>%
+  replace_with_na_all(condition = ~.x %in% common_na_strings)
+vis_miss(pub_title_ris_zotero)
 
 ## FULL JOIN (CROSS JOIN) OF RIS AND BIS WITH DOI
 fj1 <- full_join(mf_bib_redux_doi, mf_ris_redux_doi, by = "DOI") %>% 
