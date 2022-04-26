@@ -16,20 +16,20 @@ library(naniar)
 library(knitr)
 # Import DGRL version 17.5 (2021/12/15) 16531 References
 # https://faculty.washington.edu/jscholl/dgrl/index.php 
-# RIS file format converted to CSV using Zotero Reference Manager
-DGRLv17_5_RIS <- read_csv(here("data", "DGRLv17.5_RIS.csv"))
-## Rename Variables of Interest
-DGRLv17_5_RIS <- DGRLv17_5_RIS %>% rename(id = `Key`, type = `Item Type`, year = `Publication Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication Title`, abstract = `Abstract Note`)
+# Master RIS file 
+mf_ris <- read.csv(here("data", "DGRL_Lit_Master_v17_ris.csv"))
+mf_ris <- as_tibble(mf_ris)
+mf_ris <- mf_ris %>%
+  replace_with_na_all(condition = ~.x %in% common_na_strings)
 
+## Rename Variables of Interest
+mf_ris <- mf_ris %>% rename(type = `Item.Type`, year = `Publication.Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication.Title`, abstract = `Abstract.Note`)
 ```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r select var of interest, include=FALSE}
-DGRLv17_5_RIS_redux <- DGRLv17_5_RIS %>% select(1:6, 9, 11)
-```
 
 ## Abstract
 
@@ -45,12 +45,14 @@ The advent of computerization and digitalization has had broad impacts in most a
 
 Research synthesis is part of the literature review process in which the extant scientific knowledge in each academic field is examined to help scholars understand the conceptual structure, themes, and debates to identify trends in the literature and potential areas for further research. This crucial task is labor-intensive, time-consuming, and restricted to a limited number of documents if conducted by traditional "manual" methods [@antons2020a; @asmussen2019]. Still, computer-assisted text analysis does not substitute human intervention, instead it "augments our reading ability" [@grimmer2022], human judgement is deemed necessary for the evaluation and validation of the outcome of these models [@barberá2021].
 
-```{r all docs and fields in DGRLv17.5, include = FALSE}
-rows_DGRLv17_5 <- nrow(DGRLv17_5_RIS)
-cols_DGRLv17_5 <- ncol(DGRLv17_5_RIS)
+This chapter explores the contents of The Digital Government Research Library in its version 17.5 (Scholl, 2021a), using a text as data approach and an unsupervised machine learning technique known as Latent Dirichlet Allocation (LDA). According to the DGRL website, version 17.5 of the data set contains 16531 references related to the Digital Government Research (DGR) domain, the most prevalent types of documents are conference papers (33.2%) and journal articles (50%). 
+
+```{r types of documents, echo=FALSE}
+by_type <- mf_ris %>% count(`type`) %>% arrange(desc(n))
+kable(by_type, col.names = c("Document Type", "Number of Documents"), align = "cc", caption = "Table 1. Contents of DGRL v17.5 without pre-processing")
 ```
 
-This chapter explores the contents of The Digital Government Research Library in its version 17.5 (Scholl, 2021a), using a text as data approach and an unsupervised machine learning technique known as Latent Dirichlet Allocation (LDA). In its raw form, version 17.5 of the data set contains `r rows_DGRLv17_5` references related to the Digital Government Research (DGR) domain, the most prevalent types of documents are conference papers (33%) and journal articles (50%). Previous explorations of this reference library using bibliometric and scientometric approaches have revealed the thematic evolution (Alcaide--Muñoz et al., 2017), and identified the most influential journals, conferences and leading scholars in the field (Scholl, 2021b). To our best knowledge this is the first attempt to run a topic model for a corpus in the field of Digital Government Research.
+Previous explorations of this reference library using bibliometric and scientometric approaches have revealed the thematic evolution (Alcaide--Muñoz et al., 2017), and identified the most influential journals, conferences and leading scholars in the field (Scholl, 2021b). To our best knowledge this is the first attempt to run a topic model for a corpus in the field of Digital Government Research.
 
 Scholars exploring labor-saving technologies have applied similar techniques expanding the methodological repertoire available and inspiring a similar pursuit for the exploration of the impact of technological change in a public sector context [@arduini2014; @montobbio2022].
 
@@ -58,8 +60,8 @@ RQ
 
 Process
 
-```{r dgrl_v175, include = FALSE}
-summary(DGRLv17_5_RIS)
+```{r mf_ris, include = FALSE}
+summary(mf_ris)
 ```
 
 # Literature Review // Conceptual framework
@@ -68,16 +70,17 @@ You can also embed plots, for example:
 
 ## Methods and Data
 
-The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), it contains `r rows_DGRLv17_5` references among its records. The Library can be downloaded from the website [DGRL](https://faculty.washington.edu/jscholl/dgrl/index.php). The download package contains three types of bibliographic files BibTeX, RIS, and ENL that can be explored with diverse reference management software and or imported to R Studio for data exploration and data cleaning. By exploring both the BiBTeX file and the RIS file, it can be observed that there are a large quantity of missing data in both file formats. Abstracts, our main unit of analysis are present in some of the references in the RIS file, year of publication, a key covariate for the structural topic model 
+The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), it contains more than 16500 references among its records. The Library can be downloaded from the website [DGRL](https://faculty.washington.edu/jscholl/dgrl/index.php). The download package contains three types of bibliographic files BibTeX, RIS, and ENL (EndNote). By exploring the BiBTeX, RIS and ENL files, we noticed that the data sets had a large amount of missing data and that some information was available in a file type but not other. For this exercise, the following variables have been deemed of interest for the analysis: type of reference (conference paper or journal article), year of publication, author, document title, publication title and the presence of abstract. Text is a type of unstructured data that requires processing before using it. For replicability purposes, the script for data wrangling, cleaning and processing before running the structural topic model is available in the scripts section of the GitHub repository for this project.
+
+From the initial data wrangling and data cleaning The first criterion for keeping the reference for further analysis was the presence of the Digital Object Identifier (DOI) number, a unique number that was used as the value used to join the data sets and to avoid duplicates.
+
+Abstracts, our main unit of analysis are present in some of the references in the RIS file, year of publication, a key covariate for the structural topic model 
 
 The file formats exploratioThe BIB file
 For this analysis, an initial exploration of the files indicated important differences in the 
 was downloaded and fields of related metadata, the lion's share being journal articles n=8278 and conference papers n=5493. The unit of analysis for this analysis is the abstract of these two types of documents: conference papers and journal articles.
 
-```{r types of documents, echo=FALSE}
-by_type <- DGRLv17_5_RIS %>% count(`type`) %>% arrange(desc(n))
-kable(by_type, col.names = c("Document Type", "Number of Documents"), align = "cc", caption = "Table 1. Contents of DGRL v17.5 without pre-processing")
-```
+
 
 ```{r missing all db, include =FALSE}
 miss_all_db <- pct_miss(DGRLv17_5_RIS) %>% round(digits = 2)

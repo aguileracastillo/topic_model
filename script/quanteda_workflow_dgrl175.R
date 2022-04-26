@@ -33,7 +33,7 @@ library(bib2df)
 here()
 
 #### DATA IMPORT ####
-## MASTER FILES FROM ENDNOTE
+## IMPORT MASTER FILES FROM ENDNOTE LIBRARY
 mf_ris <- read.csv(here("data", "DGRL_Lit_Master_v17_ris.csv"))
 mf_ris <- as_tibble(mf_ris)
 mf_ris <- mf_ris %>%
@@ -50,61 +50,68 @@ print(mf_bib)
 vis_miss(mf_bib, warn_large_data = FALSE)
 
 
-## Rename variables
+## RENAME VARIABLES OF INTEREST
 mf_bib <- mf_bib %>% rename(type = `Item.Type`, year = `Publication.Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication.Title`, abstract = `Abstract.Note`)
 mf_ris <- mf_ris %>% rename(type = `Item.Type`, year = `Publication.Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication.Title`, abstract = `Abstract.Note`)
 
-## Keep variables of interest (Item Type", "Publication Year", "Author", "Title", "Publication Title", "Abstract Note")
+## KEEP VARIABLES OF INTEREST (Item Type", "Publication Year", "Author", "Title", "Publication Title", "Abstract Note")
 mf_bib_redux <- mf_bib %>% select(2:6, 9, 11)
 mf_ris_redux <- mf_ris %>% select(2:6, 9, 11)
 
-## DOI as search key in both tables -> drop_na(DOI)
+## KEEP DOI IN BOTH RIS AND BIB IMPORTS -> drop_na(DOI)
+
+## 19.5 % missing year
 mf_bib_redux_doi <- mf_bib_redux %>% drop_na(DOI)
 vis_miss(mf_bib_redux_doi)
 
+## 11.7% missing publication title
 mf_ris_redux_doi <- mf_ris_redux %>% drop_na(DOI)
 vis_miss(mf_ris_redux_doi)
 
-## Missing variable (year) by type bib 74% for conferencePaper  
+### A deeper examination of both data sets showed different missing variables
+
+## BIB data set: Missing variable (year) 74% for conferencePaper  
 mf_bib_redux_doi %>%
   group_by(type) %>%
   miss_var_summary() %>%
   filter(variable == "year") %>%
   arrange(desc(pct_miss))
 
+## Abstracts were missing for 3.17 of conference papers and 1.16% of journal articles
 mf_bib_redux_doi %>%
   group_by(type) %>%
   miss_var_summary() %>%
   filter(variable == "abstract") %>%
   arrange(desc(pct_miss))
 
+## Negligible missing values of publication title
 mf_bib_redux_doi %>%
   group_by(type) %>%
   miss_var_summary() %>%
   filter(variable == "pub_title") %>%
   arrange(desc(pct_miss))
 
-## Missing variable (year) in ris is a number -> to NA 42% missing
+## RIS data set: Missing variable (year) 42% missing
 mf_ris_redux_doi <- mf_ris_redux_doi %>%
   replace_with_na(replace = list(year = c(1:12)))
-
 print(mf_ris_redux_doi)
 vis_miss(mf_ris_redux_doi)
 
-## 55% missing year in journalArticle
+## 55.2% missing year in journalArticle
 mf_ris_redux_doi %>%
   group_by(type) %>%
   miss_var_summary() %>%
   filter(variable == "year") %>%
   arrange(desc(pct_miss))
 
+## Around 5% missing abstracts for journalArticles and 3.5% for conferencePapers
 mf_ris_redux_doi %>%
   group_by(type) %>%
   miss_var_summary() %>%
   filter(variable == "abstract") %>%
   arrange(desc(pct_miss))
 
-## 49% missing pub_title in conferencePaper -> treat with Zotero
+## 49.5% missing pub_title in conferencePaper -> treat with Zotero
 mf_ris_redux_doi %>%
   group_by(type) %>%
   miss_var_summary() %>%
@@ -121,6 +128,13 @@ View(pub_title_ris_zotero)
 pub_title_ris_zotero <- pub_title_ris_zotero %>%
   replace_with_na_all(condition = ~.x %in% common_na_strings)
 vis_miss(pub_title_ris_zotero)
+
+## Select variables of interest after Zotero search
+pub_title_ris_zotero_to_merge <- pub_title_ris_zotero %>% select(2:6, 9, 11)
+pub_title_ris_zotero_to_merge <- rename(type = `Item.Type`, year = `Publication.Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication.Title`, abstract = `Abstract.Note`)
+
+## Join with mf_ris_redux_doi
+
 
 ## FULL JOIN (CROSS JOIN) OF RIS AND BIS WITH DOI
 fj1 <- full_join(mf_bib_redux_doi, mf_ris_redux_doi, by = "DOI") %>% 
