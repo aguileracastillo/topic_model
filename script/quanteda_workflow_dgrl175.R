@@ -32,7 +32,7 @@ library(bib2df)
 ## Set project path to GitHub 
 here()
 
-#### DATA IMPORT ####
+#### DATA IMPORT AND INITIAL CLEANING ####
 ## IMPORT MASTER FILES FROM ENDNOTE LIBRARY
 mf_ris <- read.csv(here("data", "DGRL_Lit_Master_v17_ris.csv"))
 mf_ris <- as_tibble(mf_ris)
@@ -111,14 +111,15 @@ mf_ris_redux_doi %>%
   filter(variable == "abstract") %>%
   arrange(desc(pct_miss))
 
-## 49.5% missing pub_title in conferencePaper -> treat with Zotero
+## 49.5% or 1087 missing pub_title in conferencePaper
 mf_ris_redux_doi %>%
   group_by(type) %>%
   miss_var_summary() %>%
   filter(variable == "pub_title") %>%
   arrange(desc(pct_miss))
 
-## Extract DOI of NA for pub_title then search in Zotero
+#### DO NOT USE ####
+## From RIS data set extract DOI of NA for pub_title then search in Zotero
 pub_title_ris <- mf_ris_redux_doi[is.na(mf_ris_redux_doi$pub_title),]
 write.csv(pub_title_ris, "~/GitHub/topic_model/data\\pub_title_ris.csv", row.names = TRUE)
 
@@ -130,11 +131,14 @@ pub_title_ris_zotero <- pub_title_ris_zotero %>%
 vis_miss(pub_title_ris_zotero)
 
 ## Select variables of interest after Zotero search
-pub_title_ris_zotero_to_merge <- pub_title_ris_zotero %>% select(2:6, 9, 11)
-pub_title_ris_zotero_to_merge <- rename(type = `Item.Type`, year = `Publication.Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication.Title`, abstract = `Abstract.Note`)
+ris_zotero_to_merge <- pub_title_ris_zotero %>% select(2:6, 9, 11)
+vis_miss(ris_zotero_to_merge)
 
 ## Join with mf_ris_redux_doi
-
+cp_join <- full_join(mf_ris_redux_doi, ris_zotero_to_merge, by = "DOI") %>%
+  select(type, year, author, doc_title, Publication.Title, DOI, abstract)
+vis_miss(cp_join)
+### END OF DO NOT USE ###
 
 ## FULL JOIN (CROSS JOIN) OF RIS AND BIS WITH DOI
 fj1 <- full_join(mf_bib_redux_doi, mf_ris_redux_doi, by = "DOI") %>% 
@@ -151,37 +155,11 @@ bound_bib_ris %>% count(`type.x`) %>% arrange(desc(n))
 bound_bib_ris %>%
   group_by(type.x) %>%
   miss_var_summary() %>%
-  filter(variable == "pub_title.x") %>%
-  arrange(desc(pct_miss)) 
+  filter(variable == "year.x") %>%
+  arrange(desc(pct_miss))
 
-## KEEP NAs in RIS_REDUX_DOI TO SEARCH FOR DOI MATCH
-year_na_ris <- mf_ris_redux_doi[is.na(mf_ris_redux_doi$year),]
-print(year_na_ris)
+vis_miss(bound_bib_ris)
 
-## full_join
-search_ris <- full_join(mf_bib_redux_doi, year_na_ris, by = "DOI") %>%
-  select(type.x, year.x, author.x, doc_title.x, pub_title.x, DOI, abstract.x) %>%
-  drop_na(year.x)
-print(search_ris)
-vis_miss(search_ris)
-
-## Replicate for BIB_REDUX_DOI TO SEARCH FOR DOI MATCH
-year_na_bib <- mf_bib_redux_doi[is.na(mf_bib_redux_doi$year),]
-print(year_na_bib)
-vis_miss(year_na_bib)
-
-## full_join
-search_bib <- full_join(mf_ris_redux_doi, year_na_bib, by = "DOI") %>%
-  select(type.x, year.x, author.x, doc_title.x, pub_title.x, DOI, abstract.x) %>%
-  drop_na(year.x)
-print(search_bib)
-vis_miss(search_bib)
-
-## MERGE BY DOI
-joint <- bind_rows(search_bib, search_ris)
-joint <- joint %>% distinct(DOI, .keep_all = TRUE)
-print(joint)
-vis_miss(joint)
 
 
 ## RIS FILE ##
