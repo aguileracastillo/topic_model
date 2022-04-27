@@ -14,6 +14,8 @@ library(dplyr)
 library(here)
 library(naniar)
 library(knitr)
+library(magrittr)
+library(ggplot2)
 # Import DGRL version 17.5 (2021/12/15) 16531 References
 # https://faculty.washington.edu/jscholl/dgrl/index.php 
 # Master RIS file 
@@ -70,51 +72,21 @@ You can also embed plots, for example:
 
 ## Methods and Data
 
-The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), it contains more than 16500 references among its records. The Library can be downloaded from the website [DGRL](https://faculty.washington.edu/jscholl/dgrl/index.php). The download package contains three types of bibliographic files BibTeX, RIS, and ENL (EndNote). By exploring the BiBTeX, RIS and ENL files, we noticed that the data sets had a large amount of missing data and that some information was available in a file type but not other. For this exercise, the following variables have been deemed of interest for the analysis: type of reference (conference paper or journal article), year of publication, author, document title, publication title and the presence of abstract. Text is a type of unstructured data that requires processing before using it. For replicability purposes, the script for data wrangling, cleaning and processing before running the structural topic model is available in the scripts section of the GitHub repository for this project.
+The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), it contains more than 16500 references among its records. The Library can be downloaded from the website [DGRL](https://faculty.washington.edu/jscholl/dgrl/index.php). The download package contains three types of bibliographic files BibTeX, RIS, and ENL (EndNote). In its raw and unprocessed form, the data has a large proportion of missing values, mostly clustered in metadata not considered relevant for the analysis.
+By exploring the BiBTeX, RIS and ENL files, we noticed that the data sets had a large amount of missing data and that some information was available in a file type but not other. For this exercise, the following variables have been deemed of interest for the analysis: type of reference (conference paper or journal article), year of publication, author, document title, publication title and the presence of an abstract. Text is a type of unstructured data that requires processing before using it. For replicability purposes, the script for data wrangling, cleaning and processing before running the structural topic model is available in the scripts section of the GitHub repository for this project.
 
-The first criterion for keeping the reference for further analysis was the presence of the Digital Object Identifier (DOI) number, a unique number that was used as the value used to join the data sets and to avoid duplicates.
+After the initial data wrangling, the relevant data for 6682 journal articles or approximately 80.7% of the total number of articles in the DGRL v17.5 is further processed to create a corpus, the initial step towards a topic model. A visualization in the publication trend demonstrate an incipient increase in number of journal articles after year 2000 and a steep increase in the beginning of the 2010 decade to present.
 
-Abstracts, our main unit of analysis are present in some of the references in the RIS file, year of publication, a key covariate for the structural topic model 
-
-The file formats exploratioThe BIB file
-For this analysis, an initial exploration of the files indicated important differences in the 
-was downloaded and fields of related metadata, the lion's share being journal articles n=8278 and conference papers n=5493. The unit of analysis for this analysis is the abstract of these two types of documents: conference papers and journal articles.
-
-
-
-```{r missing all db, include =FALSE}
-miss_all_db <- pct_miss(DGRLv17_5_RIS) %>% round(digits = 2)
+```{r articles by year, echo = FALSE, include = TRUE}
+dgrl_tm %>% group_by(year.x) %>% count(sort = TRUE) %>%
+  ggplot(aes(year.x, n)) +
+  geom_line()+
+  xlab ("Year") +
+  ylab ("Number of Documents")
 ```
 
-In its raw and unprocessed form, the data set has a large proportion of missing values `r miss_all_db`%, mostly clustered in metadata not considered relevant for the analysis. Out of the 87 columns just 8 are deemed pertinent and may render some insights. The following visualizations explore the missing values in a subset of the DGRL containing journal articles and conference papers. 
-
-```{r visualization redux 8 var, echo=FALSE, include=TRUE, warning=FALSE, out.width= "80%", fig.cap= "Percentage of missing values in the variables of interest"}
-vis_miss(DGRLv17_5_RIS_redux)
-
-```
-
-By visually exploring the contents of the data set, it is evident that a large amount of relevant information is missing. Important covariates for the analysis have a substantial proportion of missing information like year, publication title, also 16.16% of abstracts (our main unit of analysis) is missing. However, the amount of missing data is very different from conference papers and journal articles as seen in the following visualizations.
-
-```{r visualization of journal articles, echo=FALSE, include=TRUE}
-articles <- DGRLv17_5_RIS_redux %>% group_by(`type`)%>%
-  filter(`type` == "journalArticle")
-vis_miss(articles)
-```
-
-Almost 50% of the metadata related to the year of publication, a key covariate for this analysis, is missing for the journal articles' subsample. In addition, there is missing a third of the Digital Object Identifier (DOI) information. To solve this problem and not to lose this information deemed relevant, we will describe the use a Zotero add-on [DOI Manager](https://github.com/bwiernik/zotero-shortdoi) to search for the missing information by using the available DOI numbers.
-
-```{r visualization of conference papers, echo=FALSE, include=TRUE}
-papers <- DGRLv17_5_RIS_redux %>% group_by(`type`) %>%
-  filter(`type` == "conferencePaper")
-vis_miss(papers)
-```
-The conference paper subsample visualization tells a different story, most of the missing information is for the publication title column 73%, followed by the proportion of missing DOI information 64% and 21% of missing information for abstracts.
-
-Zotero Search for Metadata and Retract Watch
-
-The workflow for topic modeling includes text pre-processing meaning data cleaning and data transformation. Some variables of interest are missing and there must be some data preparation before running creating a corpus. In particular, we would like to explore if the covariate year, missing in journal articles could be imputed in a reproducible way by publishing the code used to process the data.
-
-Our main unit of analysis is the abstract of the documents that have the covariates deemed of interest for our exploration. Text is a type of unstructured data, these type of data can be structured for processing using the bag of words approach or the splitting of documents, abstracts in our case, into separate word units or terms and every occurrence of a term is defined as a token. The creation of a bag of words is known as tokenizing. The bag of words approach deliberately ignores the syntax or structure of the text, additional treatment of text include the elimination of punctuation, transform each word to lowercase and in some cases stemming which is a way to reduce a word to its stem or root.
+The workflow for topic modeling includes text pre-processing, meaning further data cleaning and data transformation. This means that before creating a corpus object with the available information from the DGRL v17.5, the text should be prepared before running the initial explorations. 
+Our main unit of analysis is the abstract of the journal articles contained in the processed data set of the DGRL v17.5. Text as a type of unstructured data, can be structured for processing using the bag of words approach or the splitting of documents, abstracts in our case, into separate word units or terms and every occurrence of a term is defined as a token. The creation of a bag of words is known as tokenizing. The bag of words approach deliberately ignores the syntax or structure of the text, additional treatment of text include the elimination of punctuation, transform each word to lowercase and in some cases stemming which is a way to reduce a word to its stem or root.
 
 Stemming algorithms: Porter / Snowball / Lancaster
 

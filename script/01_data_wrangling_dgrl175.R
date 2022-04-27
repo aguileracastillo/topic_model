@@ -104,3 +104,5 @@ to_corpus <- bound_bib_ris %>% drop_na()
 to_corpus %>% count(type.x)
 vis_miss(to_corpus)
 
+## RESULT: to_corpus data set contains 6682 journal articles and 1079 conference papers 
+## containing relevant variables to run the structural topic model.
