@@ -32,7 +32,6 @@ mf_ris <- mf_ris %>% rename(type = `Item.Type`, year = `Publication.Year`, autho
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 ## Abstract
 
 Digital Government is a growing and vibrant multidisciplinary field of research, the fast increase in research output has challenged researchers to explore and use novel computational ways and methods to perform evidence synthesis on the extant literature and be able to map a scientific discipline, explore the thematic evolution over time and identify potential avenues for further research. The exploration of the linkages between digitalization and the organization of work remains relatively unexplored in a public sector context. Topic modeling has emerged as a powerful computational technique that contributes to the examination of large amounts of text data. This chapter aims to perform a 'smart literature review' on a subset of the Digital Government Reference Library (DGRL) version 17.5, by using text as data approach and a topic modeling technique known as Latent Dirichlet Allocation (LDA). To our best knowledge, this is the first attempt to use unsupervised machine learning techniques with this data set. This effort may contribute to creating a map of the field, identify the evolving themes in the literature and help to identify promising areas of research.
@@ -47,7 +46,7 @@ The advent of computerization and digitalization has had broad impacts in most a
 
 Research synthesis is part of the literature review process in which the extant scientific knowledge in each academic field is examined to help scholars understand the conceptual structure, themes, and debates to identify trends in the literature and potential areas for further research. This crucial task is labor-intensive, time-consuming, and restricted to a limited number of documents if conducted by traditional "manual" methods [@antons2020a; @asmussen2019]. Still, computer-assisted text analysis does not substitute human intervention, instead it "augments our reading ability" [@grimmer2022], human judgement is deemed necessary for the evaluation and validation of the outcome of these models [@barberá2021].
 
-This chapter explores the contents of The Digital Government Research Library in its version 17.5 (Scholl, 2021a), using a text as data approach and an unsupervised machine learning technique known as Latent Dirichlet Allocation (LDA). According to the DGRL website, version 17.5 of the data set contains 16531 references related to the Digital Government Research (DGR) domain, the most prevalent types of documents are conference papers (33.2%) and journal articles (50%). 
+This chapter explores the contents of The Digital Government Research Library in its version 17.5 (Scholl, 2021a), using a text as data approach and an unsupervised machine learning technique known as Latent Dirichlet Allocation (LDA). According to the DGRL website, version 17.5 of the data set contains 16531 references related to the Digital Government Research (DGR) domain, the most prevalent types of documents are conference papers (33.2%) and journal articles (50%).
 
 ```{r types of documents, echo=FALSE}
 by_type <- mf_ris %>% count(`type`) %>% arrange(desc(n))
@@ -56,7 +55,7 @@ kable(by_type, col.names = c("Document Type", "Number of Documents"), align = "c
 
 Previous explorations of this reference library using bibliometric and scientometric approaches have revealed the thematic evolution (Alcaide--Muñoz et al., 2017), and identified the most influential journals, conferences and leading scholars in the field (Scholl, 2021b). To our best knowledge this is the first attempt to run a topic model for a corpus in the field of Digital Government Research.
 
-Scholars exploring labor-saving technologies have applied similar techniques expanding the methodological repertoire available and inspiring a similar pursuit for the exploration of the impact of technological change in a public sector context [@arduini2014; @montobbio2022].
+Scholars exploring labor-saving technologies have applied similar techniques expanding the methodological repertoire available and inspiring a similar pursuit for the exploration of the impact of technological change in a public sector context [@montobbio2022].
 
 RQ
 
@@ -66,34 +65,29 @@ Process
 summary(mf_ris)
 ```
 
-# Literature Review // Conceptual framework
+## Literature Review // Conceptual framework
 
-You can also embed plots, for example:
+Quantitative research synthesis techniques like bibliometrics and computer-assisted text mining allow the analysis of a larger quantity of documents and may contribute to advancing the "research fronts" in interdisciplinary fields such as Digital Government [@tanskanen2017]. Computational tools and techniques developed originally in the computer science field have been repurposed in diverse disciplines but also have enabled social scientists to exploit Natural Language Processing (NLP) applications for classification tasks of large scientific corpora. Topic modeling techniques, a subset of machine learning and NLP allow for the automatic classification of vast amounts of text and have been used for the analysis of bibliographic content in diverse fields of research and academic disciplines including statistics [@debattisti2015], economics [@ambrosino2018], cliometrics [@wehrheim2019], innovation research [@antons2020b; @antons2017], and management [@hannigan2019].
+
+On occasions the scope of analysis can be very large, [@ambrosino2018] studied the evolution in the thematic structure of the economics discipline by applying LDA to the full texts of articles published in 188 journals in the JSTOR database from 1845 to 2013 (n= 250846). Other implementations of these techniques [@antons2016], have explored the full text corpus of a single top ranking journal in innovation research over a three decade span (n=1008), alternative approaches have considered the titles of dissertations in economics and chemistry in East and West Germany before and after the German reunification [@rehs2020].
+
+The approach of this chapter is not as ambitious as Ambrosino et al, nor focalized on a single journal publication as Antons et al, instead the aim is to analyze the abstracts of the Digital Government Research Library that in its version 17.5 contains more than 8200 journal articles listed of which after some data wrangling and data cleaning we achieved to retain up to 80%, (n=6682).
 
 ## Methods and Data
 
-The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), it contains more than 16500 references among its records. The Library can be downloaded from the website [DGRL](https://faculty.washington.edu/jscholl/dgrl/index.php). The download package contains three types of bibliographic files BibTeX, RIS, and ENL (EndNote). In its raw and unprocessed form, the data has a large proportion of missing values, mostly clustered in metadata not considered relevant for the analysis.
-By exploring the BiBTeX, RIS and ENL files, we noticed that the data sets had a large amount of missing data and that some information was available in a file type but not other. For this exercise, the following variables have been deemed of interest for the analysis: type of reference (conference paper or journal article), year of publication, author, document title, publication title and the presence of an abstract. Text is a type of unstructured data that requires processing before using it. For replicability purposes, the script for data wrangling, cleaning and processing before running the structural topic model is available in the scripts section of the GitHub repository for this project.
+The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), it contains more than 16500 references among its records. The Library can be downloaded from the website [DGRL](https://faculty.washington.edu/jscholl/dgrl/index.php). The download package contains three types of bibliographic files BibTeX, RIS, and ENL (EndNote). In its raw and unprocessed form, the data has a large proportion of missing values, mostly clustered in metadata not considered relevant for the analysis. By exploring the BiBTeX, RIS and ENL files, we noticed that the data sets had a large amount of missing data and that some information was available in a file type but not other. For this exercise, the following variables have been deemed of interest for the analysis: type of reference (conference paper or journal article), year of publication, author, document title, publication title and the presence of an abstract. Text is a type of unstructured data that requires processing before using it. For replicability purposes, the script for data wrangling, cleaning and processing before running the structural topic model is available in the scripts section of the GitHub repository for this project.
 
 After the initial data wrangling, the relevant data for 6682 journal articles or approximately 80.7% of the total number of articles in the DGRL v17.5 is further processed to create a corpus, the initial step towards a topic model. A visualization in the publication trend demonstrate an incipient increase in number of journal articles after year 2000 and a steep increase in the beginning of the 2010 decade to present.
 
 ```{r articles by year, echo = FALSE, include = TRUE}
-dgrl_tm %>% group_by(year.x) %>% count(sort = TRUE) %>%
-  ggplot(aes(year.x, n)) +
-  geom_line()+
-  xlab ("Year") +
-  ylab ("Number of Documents")
+## Insert from code
 ```
 
-The workflow for topic modeling includes text pre-processing, meaning further data cleaning and data transformation. This means that before creating a corpus object with the available information from the DGRL v17.5, the text should be prepared before running the initial explorations. 
-Our main unit of analysis is the abstract of the journal articles contained in the processed data set of the DGRL v17.5. Text as a type of unstructured data, can be structured for processing using the bag of words approach or the splitting of documents, abstracts in our case, into separate word units or terms and every occurrence of a term is defined as a token. The creation of a bag of words is known as tokenizing. The bag of words approach deliberately ignores the syntax or structure of the text, additional treatment of text include the elimination of punctuation, transform each word to lowercase and in some cases stemming which is a way to reduce a word to its stem or root.
+The workflow for topic modeling includes text pre-processing, meaning further data cleaning and data transformation. This means that before creating a corpus object with the available information from the DGRL v17.5, the text should be prepared before running the initial explorations. Our main unit of analysis is the abstract of the journal articles contained in the processed data set of the DGRL v17.5. Text as a type of unstructured data can be structured for processing using the bag of words approach or the splitting of abstracts into separate word units or terms and every occurrence of a term is defined as a token. The creation of a bag of words is known as tokenizing. The bag of words approach deliberately ignores the syntax or structure of the text, additional treatment of text include the elimination of punctuation, transform each word to lowercase and in some cases stemming which is a way to reduce a word to its stem or root.
 
 Stemming algorithms: Porter / Snowball / Lancaster
 
 Stop words
-
-
-
 
 ## Results
 
