@@ -1,4 +1,9 @@
 #### DGRLv17.5 DATA IMPORT AND INITIAL CLEANING ####
+## RUN PACKAGES
+library(tidyverse)
+library(magrittr)
+library(naniar)
+
 ## IMPORT MASTER FILES FROM ENDNOTE LIBRARY
 mf_ris <- read.csv(here("data", "DGRL_Lit_Master_v17_ris.csv"))
 mf_ris <- as_tibble(mf_ris)
@@ -24,7 +29,6 @@ mf_bib_redux <- mf_bib %>% select(2:6, 9, 11)
 mf_ris_redux <- mf_ris %>% select(2:6, 9, 11)
 
 ## KEEP DOI IN BOTH RIS AND BIB IMPORTS -> drop_na(DOI)
-
 ## 19.5 % missing year
 mf_bib_redux_doi <- mf_bib_redux %>% drop_na(DOI)
 vis_miss(mf_bib_redux_doi)
@@ -34,7 +38,6 @@ mf_ris_redux_doi <- mf_ris_redux %>% drop_na(DOI)
 vis_miss(mf_ris_redux_doi)
 
 ### A deeper examination of both data sets showed different missing variables
-
 ## BIB data set: Missing variable (year) 74% for conferencePaper  
 mf_bib_redux_doi %>%
   group_by(type) %>%
@@ -94,24 +97,10 @@ fj2 <- full_join(mf_ris_redux_doi, mf_bib_redux_doi, by = "DOI") %>%
 bound_bib_ris <- bind_rows(fj1, fj2)
 bound_bib_ris <- bound_bib_ris %>% distinct(DOI, .keep_all = TRUE)
 bound_bib_ris %>% count(`type.x`) %>% arrange(desc(n))
-
-bound_bib_ris %>%
-  group_by(type.x) %>%
-  miss_var_summary() %>%
-  filter(variable == "year.x") %>%
-  arrange(desc(pct_miss))
-
 vis_miss(bound_bib_ris)
 
-#### Record Linkage trial
-
-linked_data_set <- pair_blocking(mf_bib_redux_doi, mf_ris_redux_doi, "DOI") %>%
-  compare_pairs(by = c("type", "author", "doc_title", "abstract"),
-                default_comparator = jaro_winkler(0.9)) %>%
-  score_problink(var = "weight") %>%
-  select_n_to_m("weight", var = "ntom", threshold = 0) %>%
-  link()
-
-print(linked_data_set)
-vis_miss(linked_data_set)
+## DATA TO BE USED IN TOPIC MODEL
+to_corpus <- bound_bib_ris %>% drop_na()
+to_corpus %>% count(type.x)
+vis_miss(to_corpus)
 
