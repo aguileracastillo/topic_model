@@ -2,6 +2,7 @@
 #### Topic Model for DGRL v 17.5 ==> 6682 JOURNAL ARTICLES
 #############################
 ## RUN PACKAGES
+library(ggplot2)
 library(quanteda)
 library(quanteda.textmodels)
 library(quanteda.textplots)

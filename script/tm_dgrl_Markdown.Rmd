@@ -71,7 +71,17 @@ Quantitative research synthesis techniques like bibliometrics and computer-assis
 
 On occasions the scope of analysis can be very large, [@ambrosino2018] studied the evolution in the thematic structure of the economics discipline by applying LDA to the full texts of articles published in 188 journals in the JSTOR database from 1845 to 2013 (n= 250846). Other implementations of these techniques [@antons2016], have explored the full text corpus of a single top ranking journal in innovation research over a three decade span (n=1008), alternative approaches have considered the titles of dissertations in economics and chemistry in East and West Germany before and after the German reunification [@rehs2020].
 
-The approach of this chapter is not as ambitious as Ambrosino et al, nor focalized on a single journal publication as Antons et al, instead the aim is to analyze the abstracts of the Digital Government Research Library that in its version 17.5 contains more than 8200 journal articles listed of which after some data wrangling and data cleaning we achieved to retain up to 80%, (n=6682).
+As advised by [@barberá2021], there are "consequential decisions" in the methodological choices of automated text classification and the fact that human validation is a key component of text as data methods. The selection of a corpus in itself is deemed a crucial decision that can be prone to four types of bias: resource bias, incentive bias, medium bias and retrieval bias, these selection biases are well acknowledged in the text as data literature [@grimmer2022]. The inclusion criteria of the DGRL are: to have passed academic peer review, to be published in an academic journal, to be published in English language [@scholl2021]. The criteria described above may help to mitigate the potential selection biases, the DGRL v17.5 may probably ignore or leave out important research out of its scope, however, echoing Barberà et al, all decisions concerning text as data methodologies are "consequential" and our aim is to make our workflow reproducible by documenting the choices in the scripts associated with this document.
+
+The corpus used for this analysis is a subset of the journal articles in the version 17.5 of the Digital Government Reference Library. As argued by @grimmer2022a, texts are "expensive to produce, gather and collate", the contents of previous versions of this data set have been used as primary or secondary source of data exploring the Digital Government field. The approach of this chapter is not as ambitious as Ambrosino *et. al.*, nor focalized on a single journal publication as Antons *et. al.*, instead the aim is to analyze the abstracts of 6682 journal articles in the version 17.5 of the DGRL via the application of a structural topic model.
+
+STM
+
+reproducibility
+
+human interpretable
+
+Insert list of top journals.
 
 ## Methods and Data
 
