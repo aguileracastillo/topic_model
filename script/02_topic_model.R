@@ -10,6 +10,7 @@ library(quanteda.textstats)
 library(stm)
 library(stminsights)
 library(wordcloud)
+library(magrittr)
 
 ## Topic Model of Journal Articles
 dgrl_tm <- to_corpus %>% filter(type.x == "journalArticle")
@@ -20,6 +21,10 @@ dgrl_tm %>% group_by(year.x) %>% count(sort = TRUE) %>%
   geom_line()+
   xlab ("Year") +
   ylab ("Number of Documents")
+
+## Publications by year
+dgrl_tm %>% count(year.x) %>% arrange(desc(year.x)) %>% print(n =40)
+
 
 ## Most frequent publication titles
 dgrl_tm %>% count(pub_title.x) %>% arrange(desc(n))
