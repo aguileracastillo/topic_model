@@ -115,6 +115,8 @@ print(dfm_dgrl175)
 ndoc(dfm_dgrl175)
 nfeat(dfm_dgrl175)
 
+## 6682 documents and 28749 features (99.72% sparse)
+
 ### TOP FEATURES IN DFM_DGRL -- Best practice remove very rare and very common
 topfeatures(dfm_dgrl175, 250)
 ## Wordclouds
@@ -122,5 +124,15 @@ set.seed(123)
 textplot_wordcloud(dfm_dgrl175, max_words = 100)
 
 ### TFIDF Term Frequency-Inverse Document Frequency
-dfm_dgrl_tfidf <- dfm_tfidf(dfm_dgrl)
+dfm_dgrl_tfidf <- dfm_tfidf(dfm_dgrl175)
 print(dfm_dgrl_tfidf)
+
+#### DIMENSIONALITY REDUCTION ####
+## TRIM VERY RARE FEATURES Sparse matrix > 95.77% sparsity at 100 freq
+dfm_dgrl175_trim <- dfm_trim(dfm_dgrl175, min_termfreq = 100)
+print(dfm_dgrl175_trim)
+
+## TRIM VERY COMMON FEATURES IF OCCURRENCE >10% OF DOCUMENTS => REMOVE
+dfm_dgrl175_trim_docfreq <- dfm_trim(dfm_dgrl175_trim, max_docfreq = 0.1, docfreq_type = "prop")
+print(dfm_dgrl175_trim_docfreq)
+topfeatures(dfm_dgrl175_trim_docfreq, 250)
