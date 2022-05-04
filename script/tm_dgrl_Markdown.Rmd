@@ -100,7 +100,13 @@ Stemming algorithms: Porter / Snowball / Lancaster
 
 Stop words
 
-## Results
+Dictionary based Quantitative Text Analysis Based on the work of Montobbio et al. 2022
+
+Truncated words
+
+Theory based Watanabe.
+
+Results
 
 ## Discussion
 
