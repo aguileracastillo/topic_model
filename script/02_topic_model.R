@@ -56,7 +56,7 @@ print(dgrl175_tokens)
 ## No stemming to provide a more human readable descriptor (De Battisti et al 2015)
 
 ### How to view a document in a corpus
-dgrl175_corpus[[849]]
+dgrl175_corpus[[902]]
 
 #### KEYWORDS-IN-CONTEXT (theories sample test)
 # NPM 28 MATCHES
@@ -136,3 +136,9 @@ print(dfm_dgrl175_trim)
 dfm_dgrl175_trim_docfreq <- dfm_trim(dfm_dgrl175_trim, max_docfreq = 0.1, docfreq_type = "prop")
 print(dfm_dgrl175_trim_docfreq)
 topfeatures(dfm_dgrl175_trim_docfreq, 250)
+
+#### FCM Feature Co-occurrence Matrix ####
+fcm_dfm_dgrl175_trim_docfreq <- fcm(dfm_dgrl175_trim_docfreq)
+dim(fcm_dfm_dgrl175_trim_docfreq)
+topfeatures(fcm_dfm_dgrl175_trim_docfreq, 50)
+
