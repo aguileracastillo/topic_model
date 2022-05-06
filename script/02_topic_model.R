@@ -28,6 +28,9 @@ dgrl175_tm %>% count(year.x) %>% arrange(desc(year.x)) %>% print(n =40)
 ## Most frequent publication titles
 dgrl175_tm %>% count(pub_title.x) %>% arrange(desc(n)) %>% print(n = 100)
 
+## After detecting uninformative but pervasive string => Remove
+dgrl175_tm$abstract.x <- gsub("â€*?", " ", dgrl175_tm$abstract.x)
+
 #### BUILD A CORPUS 
 ## QUANTEDA Best practice: Corpus should remain unchanged during subsequent analysis and processing
 ## Construct a corpus from "abstract.x" column in dgrl175_tm
@@ -56,7 +59,7 @@ print(dgrl175_tokens)
 ## No stemming to provide a more human readable descriptor (De Battisti et al 2015)
 
 ### How to view a document in a corpus
-dgrl175_corpus[[902]]
+dgrl175_corpus[[3]]
 
 #### KEYWORDS-IN-CONTEXT (theories sample test)
 # NPM 28 MATCHES
