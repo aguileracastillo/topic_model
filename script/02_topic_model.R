@@ -56,6 +56,9 @@ dgrl175_tokens <- tokens_select(dgrl175_tokens, pattern = stopwords("en"), selec
 dgrl175_tokens <- tokens_tolower(dgrl175_tokens)
 print(dgrl175_tokens)
 
+## APPLY STEMMING ALGORITHM
+dgrl175_tokens <- tokens_wordstem(dgrl175_tokens, language = "english")
+
 ## No stemming to provide a more human readable descriptor (De Battisti et al 2015)
 
 ### How to view a document in a corpus
@@ -74,29 +77,9 @@ View(kw_utaut)
 kw_theor <- kwic(dgrl175_tokens, pattern = "theor*")
 head(kw_theor)
 View(kw_theor)
-# QUALITAT* 448 MATCHES
-kw_ql <- kwic(dgrl175_tokens, pattern = "qualitat*")
-View(kw_ql)
-# QUANTITAT* 292 MATCHES
-kw_qt <- kwic(dgrl175_tokens, pattern = "quantitat*")
-head(kw_qt)
-View(kw_qt)
-# EMPIRIC* 984 MATCHES
-kw_emp <- kwic(dgrl175_tokens, pattern = "empiric*")
-head(kw_emp)
-View(kw_emp)
 # BIBLIO* 48 MATCHES
 kw_biblio <- kwic(dgrl175_tokens, pattern = "biblio*")
 View(kw_biblio)
-
-## KWIC PHRASES
-# PUBLIC VALUE* 289 MATCHES
-kw_pv <- kwic(dgrl175_tokens, pattern = phrase("public value*"))
-head(kw_pv)
-View(kw_pv)
-# NEW PUBLIC MANAGEMENT 40 MATCHES 
-kw_new_pub_mgmt <- kwic(dgrl175_tokens, pattern = phrase("new public management"))
-head(kw_new_pub_mgmt)
 
 #################
 ## Create a dictionary of words of interest
@@ -121,7 +104,7 @@ print(dfm_dgrl175)
 ndoc(dfm_dgrl175)
 nfeat(dfm_dgrl175)
 
-## 6682 documents and 28749 features (99.72% sparse)
+## 6682 documents and 18825 features (99.60% sparse)
 
 ### TOP FEATURES IN DFM_DGRL -- Best practice remove very rare and very common
 topfeatures(dfm_dgrl175, 250)
@@ -134,12 +117,12 @@ dfm_dgrl_tfidf <- dfm_tfidf(dfm_dgrl175)
 print(dfm_dgrl_tfidf)
 
 #### DIMENSIONALITY REDUCTION ####
-## TRIM VERY RARE FEATURES Sparse matrix > 95.77% sparsity at 100 freq
+## TRIM VERY RARE FEATURES Sparse matrix > 1096 features 94.43% sparsity
 dfm_dgrl175_trim <- dfm_trim(dfm_dgrl175, min_termfreq = 100)
 print(dfm_dgrl175_trim)
 
 ## TRIM VERY COMMON FEATURES IF OCCURRENCE >10% OF DOCUMENTS => REMOVE
-## 6682 documents and 1226 features 96.9% sparse
+## 6682 documents and 929 features 96.65% sparse
 dfm_dgrl175_trim_docfreq <- dfm_trim(dfm_dgrl175_trim, max_docfreq = 0.1, docfreq_type = "prop")
 print(dfm_dgrl175_trim_docfreq)
 topfeatures(dfm_dgrl175_trim_docfreq, 250)
@@ -155,10 +138,27 @@ topfeatures(fcm_dfm_dgrl175_trim_docfreq, 50)
 ###############################
 
 ## Split train set and test set
-
+set.seed(60091)
 data_to_lda <- dfm_dgrl175_trim_docfreq
 n <- nrow(data_to_lda)
 
 splitter <- sample(1:n, round(n * 0.5))
 train_dgrl175 <- data_to_lda[splitter, ]
 test_dgrl175 <- data_to_lda[-splitter, ]
+
+## Test Number of Topics (topicmodels) package
+n_topics <- c(2, 5, 10, 20, 40, 60, 80, 100, 150, 200)
+
+optimal_k <- n_topics %>%
+  map(LDA, x = train_dgrl175, control = list(seed = 2023))
+
+
+data_frame(k = n_topics,
+           perplex = map_dbl(optimal_k, perplexity)) %>%
+  ggplot(aes(k, perplex)) +
+  geom_point() +
+  geom_line() +
+  labs(title = "Evaluating LDA topic models",
+       subtitle = "Optimal number of topics (smaller is better)",
+       x = "Number of topics",
+       y = "Perplexity")
