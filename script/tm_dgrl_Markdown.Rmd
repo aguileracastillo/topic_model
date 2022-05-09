@@ -100,7 +100,7 @@ The workflow for topic modeling includes text pre-processing, meaning further da
 
 Stemming algorithms: Porter / Snowball / Lancaster
 
-Stop words
+Stop words are context specific
 
 Dictionary based Quantitative Text Analysis Based on the work of Montobbio et al. 2022
 

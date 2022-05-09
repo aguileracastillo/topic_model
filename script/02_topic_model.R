@@ -112,6 +112,9 @@ tokens_lookup(dgrl175_tokens, dgrl175_dictionary, nomatch = "other") %>%
   dfm() %>%
   dfm_weight(scheme = "prop")
 
+### WORK RELATED VOCABULARY
+work_vocab <- c("job*", "employ*", "work*", "labo*", "occupat*", "workforc*", "workplac*", "unemploy*", "workload*", "task*", "staff*")
+
 #### CONSTRUCT A DOCUMENT-FEATURE MATRIX (DFM) ####
 dfm_dgrl175 <- dfm(dgrl175_tokens)
 print(dfm_dgrl175)
@@ -136,12 +139,26 @@ dfm_dgrl175_trim <- dfm_trim(dfm_dgrl175, min_termfreq = 100)
 print(dfm_dgrl175_trim)
 
 ## TRIM VERY COMMON FEATURES IF OCCURRENCE >10% OF DOCUMENTS => REMOVE
+## 6682 documents and 1226 features 96.9% sparse
 dfm_dgrl175_trim_docfreq <- dfm_trim(dfm_dgrl175_trim, max_docfreq = 0.1, docfreq_type = "prop")
 print(dfm_dgrl175_trim_docfreq)
 topfeatures(dfm_dgrl175_trim_docfreq, 250)
 
 #### FCM Feature Co-occurrence Matrix ####
+## What can be done with this? ##
 fcm_dfm_dgrl175_trim_docfreq <- fcm(dfm_dgrl175_trim_docfreq)
 dim(fcm_dfm_dgrl175_trim_docfreq)
 topfeatures(fcm_dfm_dgrl175_trim_docfreq, 50)
 
+###############################
+#### LDA Model
+###############################
+
+## Split train set and test set
+
+data_to_lda <- dfm_dgrl175_trim_docfreq
+n <- nrow(data_to_lda)
+
+splitter <- sample(1:n, round(n * 0.5))
+train_dgrl175 <- data_to_lda[splitter, ]
+test_dgrl175 <- data_to_lda[-splitter, ]
