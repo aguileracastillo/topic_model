@@ -27,7 +27,6 @@ library(tm)
 library(revtools)
 library(caret)
 library(here)
-library(bib2df)
 
 ## Set project path to GitHub 
 here()
