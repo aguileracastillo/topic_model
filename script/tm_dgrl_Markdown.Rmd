@@ -76,6 +76,8 @@ As advised by [@barberá2021], there are "consequential decisions" in the method
 
 The corpus used for this analysis is a subset of the journal articles in the version 17.5 of the Digital Government Reference Library. As argued by @grimmer2022a, texts are "expensive to produce, gather and collate", the contents of previous versions of this data set have been used as primary or secondary source of data exploring the Digital Government field. The approach of this chapter is not as ambitious as Ambrosino *et. al.*, nor focalized on a single journal publication as Antons *et. al.*, instead the aim is to analyze the abstracts of 6682 journal articles in the version 17.5 of the DGRL via the application of a structural topic model.
 
+Evidence synthesis
+
 STM
 
 reproducibility
