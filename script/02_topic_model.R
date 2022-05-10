@@ -26,7 +26,10 @@ dgrl175_tm %>% group_by(year.x) %>% count(sort = TRUE) %>%
 dgrl175_tm %>% count(year.x) %>% arrange(desc(year.x)) %>% print(n =40)
 
 ## Most frequent publication titles
-dgrl175_tm %>% count(pub_title.x) %>% arrange(desc(n)) %>% print(n = 100)
+top_journals <- dgrl175_tm %>% count(pub_title.x) %>% arrange(desc(n))
+print(top_journals)
+write.csv(top100, "~/GitHub/topic_model/data\\top100.csv", row.names = TRUE)
+
 
 ## After detecting uninformative but pervasive string => Remove
 dgrl175_tm$abstract.x <- gsub("â€*?", " ", dgrl175_tm$abstract.x)
@@ -147,7 +150,7 @@ train_dgrl175 <- data_to_lda[splitter, ]
 test_dgrl175 <- data_to_lda[-splitter, ]
 
 ## Test Number of Topics (topicmodels) package
-n_topics <- c(2, 5, 10, 20, 40, 60, 80, 100, 150, 200)
+n_topics <- c(10, 20, 50, 80, 100, 150, 200, 300)
 
 optimal_k <- n_topics %>%
   map(LDA, x = train_dgrl175, control = list(seed = 2023))

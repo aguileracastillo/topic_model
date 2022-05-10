@@ -9,6 +9,8 @@ bibliography: references.bib
 ---
 
 ```{r data, include = FALSE}
+library(tidyverse)
+library(tidytext)
 library(readr)
 library(dplyr)
 library(here)
@@ -27,6 +29,8 @@ mf_ris <- mf_ris %>%
 ## Rename Variables of Interest
 mf_ris <- mf_ris %>% rename(type = `Item.Type`, year = `Publication.Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication.Title`, abstract = `Abstract.Note`)
 
+# Corpus after initial cleaning
+to_corpus <- read.csv(here("data", "to_corpus.csv"))
 ```
 
 ```{r setup, include=FALSE}
@@ -60,11 +64,9 @@ The impact of modern technologies (i.e. automation, digitalization, robotization
 
 The reported impact of digitalization on the organization work is diverse [@barley2001], it may automate work, create or eliminate jobs, deskill or reskill workers but also, little or negligible impact whatsoever. Digital government as a research field is in a phase of consolidation, allowing for the exploration of promising subfields for further inquiry. Despite the momentum in digital government research, one aspect that, to the best of our knowledge remains underexplored, is the effects of technological change on the public sector workforce [@plesner2018].
 
-The digitalization process is allowing a more specific division of labor into the smallest possible tasks, opening more opportunities for the implementation of self-service solutions and facilitating scenarios for the co-production of public services [6], turning each citizen and user into "his or her own administrator, caseworker and bureaucrat" [7], and possibly generating administrative burden of citizens [8]. Therefore, it is deemed pertinent and timely to extend the scholarly exploration of the effects of technological change in the organization of work in public organizations and the potential consequences for the public sector workforce.
+Digitalization, in general, allows a more specific division of labor into the smallest possible tasks [@cherry2015], and in a public service context, opens more opportunities for the implementation of self-service solutions and facilitating scenarios for the co-production of public services [@scupola2021], turning each citizen and user into "his or her own administrator, caseworker and bureaucrat" [@schou2018], and possibly generating administrative burden of citizens [@madsen2021].
 
-The public sector is a large adopter of technologies and commands a significant proportion of a nation's workforce to perform constitutional functions, provide public services, implement policy goals, and manage public organizations.
-
-Scholars exploring labor-saving technologies have applied similar techniques expanding the methodological repertoire available and inspiring a similar pursuit for the exploration of the impact of technological change in a public sector context [@montobbio2022].
+Digital technologies and the novel design of public services may facilitate a more intricate division of labor into smaller components (tasks), reconfiguring the workflow of public services, fostering new ways for multi-actor co-production, and probably generating tasks, if not job redundancies, but also creating new occupations to cope with an increasingly digitalized public sector. Therefore, it is deemed pertinent and timely to extend the scholarly exploration of the effects of technological change in the organization of work in public organizations and the potential consequences for the public sector workforce.
 
 RQ
 
@@ -82,7 +84,9 @@ On occasions the scope of analysis can be very large, [@ambrosino2018] studied t
 
 As advised by [@barberá2021], there are "consequential decisions" in the methodological choices of automated text classification and the fact that human validation is a key component of text as data methods. The selection of a corpus in itself is deemed a crucial decision that can be prone to four types of bias: resource bias, incentive bias, medium bias and retrieval bias, these selection biases are well acknowledged in the text as data literature [@grimmer2022]. The inclusion criteria of the DGRL are: to have passed academic peer review, to be published in an academic journal, to be published in English language [@scholl2021]. The criteria described above may help to mitigate the potential selection biases, the DGRL v17.5 may probably ignore or leave out important research out of its scope, however, echoing Barberà et al, all decisions concerning text as data methodologies are "consequential" and our aim is to make our workflow reproducible by documenting the choices in the scripts associated with this document.
 
-The corpus used for this analysis is a subset of the journal articles in the version 17.5 of the Digital Government Reference Library. As argued by @grimmer2022a, texts are "expensive to produce, gather and collate", the contents of previous versions of this data set have been used as primary or secondary source of data exploring the Digital Government field. The approach of this chapter is not as ambitious as Ambrosino *et. al.*, nor focalized on a single journal publication as Antons *et. al.*, instead the aim is to analyze the abstracts of 6682 journal articles in the version 17.5 of the DGRL via the application of a structural topic model.
+The corpus used for this analysis is a subset of the journal articles in the version 17.5 of the Digital Government Reference Library. As argued by @grimmer2022a, texts are "expensive to produce, gather and collate", the contents of previous versions of this data set have been used as primary or secondary source of data exploring the Digital Government field. The approach of this chapter is not as ambitious as Ambrosino *et. al.*, nor focalized on a single journal publication as Antons *et. al.*, instead the aim is to analyze the abstracts of 6682 journal articles in the version 17.5 of the DGRL via the application of a topic model.
+
+Text based techniques and topic models have been used by scholars exploring labor-saving technologies in a corpus of patent data [@montobbio2022], thus expanding the methodological repertoire currently available and inspiring a similar inquiry on the impact of digitalization in the public sector workforce.
 
 Evidence synthesis --\>
 
@@ -105,14 +109,27 @@ The Digital Government Research Library version 17.5 is a large curated reposito
 After the initial data wrangling, the relevant data for 6682 journal articles or approximately 80.7% of the total number of articles in the DGRL v17.5 is further processed to create a corpus, the initial step towards a topic model. A visualization in the publication trend demonstrate an incipient increase in number of journal articles after year 2000 and a steep increase in the beginning of the 2010 decade to present.
 
 ```{r articles by year, echo = FALSE, include = TRUE}
-## Insert from code
+## Insert from 02_topic_model script
+dgrl175_tm <- to_corpus %>% filter(type.x == "journalArticle")
+dgrl175_tm %>% group_by(year.x) %>% count(sort = TRUE) %>%
+  ggplot(aes(year.x, n)) +
+  geom_line()+
+  xlab ("Year") +
+  ylab ("Number of Documents")
 ```
 
-The workflow for topic modeling includes text pre-processing, meaning further data cleaning and data transformation. This means that before creating a corpus object with the available information from the DGRL v17.5, the text should be prepared before running the initial explorations. Our main unit of analysis is the abstract of the journal articles contained in the processed data set of the DGRL v17.5. Text as a type of unstructured data can be structured for processing using the bag of words approach or the splitting of abstracts into separate word units or terms and every occurrence of a term is defined as a token. The creation of a bag of words is known as tokenizing. The bag of words approach deliberately ignores the syntax or structure of the text, additional treatment of text include the elimination of punctuation, transform each word to lowercase and in some cases stemming which is a way to reduce a word to its stem or root.
-
-Stemming algorithms: Porter / Snowball / Lancaster
+The workflow for topic modeling includes text pre-processing, meaning further data cleaning and data transformation. This means that before creating a corpus object with the available information from the DGRL v17.5, the text should be prepared before running the initial explorations. Our main unit of analysis is the abstract of the journal articles contained in the processed data set of the DGRL v17.5. Text as a type of unstructured data can be structured for processing using the bag of words approach or the splitting of abstracts into separate word units or terms and every occurrence of a term is defined as a token. The creation of a bag of words is known as tokenizing. The bag of words approach deliberately ignores the syntax or structure of the text, additional treatment of text include the elimination of punctuation, transform each word to lowercase and in some cases stemming which is a way to reduce a word to its stem or root in order to reduce the sparsity of the Document Frequency Matrix.
 
 Stop words are context specific
+
+LDA? Unsupervised learning... latent topics.
+
+As suggested by @webster2002a, a complete review covers the relevant literature and it is not limited by a single research methodology, set of journals or geographic region. In this exercise, the top 10 publication titles (journal name) in the corpus represent almost a third of the documents in the sample. By making quick title search in the Scimago Journal Rank website, it can be established that all names on the table are listed in this database.
+
+```{r top 10 journals in the sample, echo = FALSE, include = TRUE}}
+top10 <- dgrl175_tm %>% count(pub_title.x) %>% arrange(desc(n)) %>% head(10)
+kable(top10, col.names = c("Publication Title", "Number of Documents in Corpus"), align = "cc", caption = "Table 2. Top 10 Journals in represented in the corpus")
+```
 
 Dictionary based Quantitative Text Analysis Based on the work of Montobbio et al. 2022
 
