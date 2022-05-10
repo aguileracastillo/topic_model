@@ -153,7 +153,7 @@ optimal_k <- n_topics %>%
   map(LDA, x = train_dgrl175, control = list(seed = 2023))
 
 
-data_frame(k = n_topics,
+tibble(k = n_topics,
            perplex = map_dbl(optimal_k, perplexity)) %>%
   ggplot(aes(k, perplex)) +
   geom_point() +

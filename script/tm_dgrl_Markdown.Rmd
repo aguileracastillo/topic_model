@@ -54,7 +54,15 @@ by_type <- mf_ris %>% count(`type`) %>% arrange(desc(n))
 kable(by_type, col.names = c("Document Type", "Number of Documents"), align = "cc", caption = "Table 1. Contents of DGRL v17.5 without pre-processing")
 ```
 
-Previous explorations of this reference library using bibliometric and scientometric approaches have revealed the thematic evolution (Alcaide--Muñoz et al., 2017), and identified the most influential journals, conferences and leading scholars in the field (Scholl, 2021b). To our best knowledge this is the first attempt to run a topic model for a corpus in the field of Digital Government Research.
+Previous explorations of this reference library using bibliometric and scientometric approaches have revealed the thematic evolution [@alcaide-muñoz2017], and identified the most influential journals, conferences and leading scholars in the field [@scholl2021a]. This data set has been used as well for conducting a systematic review on the impacts of e-Government using a public value perspective [@maclean2021a]. According to [@webster2002], accumulating a "complete census" of the relevant literature and following a concept-centric framework are crucial in a literature review. Topic modeling enables the use of larger bibliographic data sets, and the extraction of relevant concepts from sizable corpora in a scalable way. To our best knowledge this is the first attempt to run a topic model for a corpus in the field of Digital Government Research.
+
+The impact of modern technologies (i.e. automation, digitalization, robotization) on labor has been on the research agenda of diverse disciplines and academic fields but explored mostly for a private sector context in advanced democracies. The public sector is not only a major employer in a variety of activities but also it is considered one of the largest adopters of information and communication technologies (ICT). The public sector commands a large, diverse, and in general, highly educated workforce. Recent technological developments have allowed the deployment of digital technologies, digital platforms, and digital infrastructures by both private corporations and public organizations with deep implications for the organization of work [@nambisan2019].
+
+The reported impact of digitalization on the organization work is diverse [@barley2001], it may automate work, create or eliminate jobs, deskill or reskill workers but also, little or negligible impact whatsoever. Digital government as a research field is in a phase of consolidation, allowing for the exploration of promising subfields for further inquiry. Despite the momentum in digital government research, one aspect that, to the best of our knowledge remains underexplored, is the effects of technological change on the public sector workforce [@plesner2018].
+
+The digitalization process is allowing a more specific division of labor into the smallest possible tasks, opening more opportunities for the implementation of self-service solutions and facilitating scenarios for the co-production of public services [6], turning each citizen and user into "his or her own administrator, caseworker and bureaucrat" [7], and possibly generating administrative burden of citizens [8]. Therefore, it is deemed pertinent and timely to extend the scholarly exploration of the effects of technological change in the organization of work in public organizations and the potential consequences for the public sector workforce.
+
+The public sector is a large adopter of technologies and commands a significant proportion of a nation's workforce to perform constitutional functions, provide public services, implement policy goals, and manage public organizations.
 
 Scholars exploring labor-saving technologies have applied similar techniques expanding the methodological repertoire available and inspiring a similar pursuit for the exploration of the impact of technological change in a public sector context [@montobbio2022].
 
@@ -76,7 +84,11 @@ As advised by [@barberá2021], there are "consequential decisions" in the method
 
 The corpus used for this analysis is a subset of the journal articles in the version 17.5 of the Digital Government Reference Library. As argued by @grimmer2022a, texts are "expensive to produce, gather and collate", the contents of previous versions of this data set have been used as primary or secondary source of data exploring the Digital Government field. The approach of this chapter is not as ambitious as Ambrosino *et. al.*, nor focalized on a single journal publication as Antons *et. al.*, instead the aim is to analyze the abstracts of 6682 journal articles in the version 17.5 of the DGRL via the application of a structural topic model.
 
-Evidence synthesis
+Evidence synthesis --\>
+
+What is digital government?
+
+Collect names (Buffat et al)
 
 STM
 
