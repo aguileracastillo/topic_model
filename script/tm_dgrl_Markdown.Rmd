@@ -126,7 +126,7 @@ LDA? Unsupervised learning... latent topics.
 
 As suggested by @webster2002a, a complete review covers the relevant literature and it is not limited by a single research methodology, set of journals or geographic region. In this exercise, the top 10 publication titles (journal name) in the corpus represent almost a third of the documents in the sample. By making quick title search in the Scimago Journal Rank website, it can be established that all names on the table are listed in this database.
 
-```{r top 10 journals in the sample, echo = FALSE, include = TRUE}}
+```{r top 10 journals in the sample, echo = FALSE, include = TRUE}
 top10 <- dgrl175_tm %>% count(pub_title.x) %>% arrange(desc(n)) %>% head(10)
 kable(top10, col.names = c("Publication Title", "Number of Documents in Corpus"), align = "cc", caption = "Table 2. Top 10 Journals in represented in the corpus")
 ```
