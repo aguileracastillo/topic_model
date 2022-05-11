@@ -145,7 +145,7 @@ set.seed(60091)
 data_to_lda <- dfm_dgrl175_trim_docfreq
 n <- nrow(data_to_lda)
 
-splitter <- sample(1:n, round(n * 0.5))
+splitter <- sample(1:n, round(n * 0.75))
 train_dgrl175 <- data_to_lda[splitter, ]
 test_dgrl175 <- data_to_lda[-splitter, ]
 
