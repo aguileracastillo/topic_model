@@ -9,6 +9,8 @@ library(quanteda.textplots)
 library(quanteda.textstats)
 library(stm)
 library(stminsights)
+library(topicmodels)
+library(tm)
 library(wordcloud)
 library(magrittr)
 
@@ -43,18 +45,6 @@ ndoc(dgrl175_corpus)
 head(docvars(dgrl175_corpus))
 summary(dgrl175_corpus, 5)
 docvars(dgrl175_corpus, field = "year.x")
-
-## Collocation Analysis (before tokenizing) Contiguous collocations of words
-dgrl175_col <- textstat_collocations(dgrl175_corpus,
-                                     pattern = "^[A-Z]",
-                                     valuetype = "regex",
-                                     method = "lambda",
-                                     size = 3,
-                                     min_count = 100,
-                                     smoothing = 0.5,
-                                     tolower = TRUE)
-head(dgrl175_col, 100)
-
 
 ## Histogram # Tokens in dgrl175_corpus
 ## Is is poss to make a histogram with tokens number?
@@ -177,3 +167,11 @@ tibble(k = n_topics,
        subtitle = "Optimal number of topics (smaller is better)",
        x = "Number of topics",
        y = "Perplexity")
+
+## SEEDEDLDA PACKAGE
+train_lda25 <- textmodel_lda(train_dgrl175, k = 25)
+terms(train_lda25, 10)
+train_lda80 <- textmodel_lda(train_dgrl175, k = 80)
+terms(train_lda80, 10)
+
+## TOPICMODELS PACKAGE
