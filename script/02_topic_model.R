@@ -92,6 +92,7 @@ View(kw_biblio)
 dgrl175_dictionary <- dictionary(list(verb = c("reduc*", "replac*", "elimin*", "save", "lower", "substitut*", "autom*"),
                                       object = c("labor", "worker*", "human", "employe*", "manpow*", "job*"),
                                       attribute = c("cost*", "expenditur*", "expense*", "hour*", "intens*", "task*", "time", "skill")))
+print(dgrl175_dictionary)
 
 ## Test tokens_lookup
 labor_saving <- tokens_lookup(dgrl175_tokens, dgrl175_dictionary, nomatch = "NULL")
@@ -173,5 +174,11 @@ train_lda25 <- textmodel_lda(train_dgrl175, k = 25)
 terms(train_lda25, 10)
 train_lda80 <- textmodel_lda(train_dgrl175, k = 80)
 terms(train_lda80, 10)
+train_lda100 <- textmodel_lda(train_dgrl175, k = 100)
+terms(train_lda100, 10)
+
+## number of topics determined by number of keys in dictionary ##
+dictionary_dgrl175 <- textmodel_seededlda(train_dgrl175, dictionary = dgrl175_dictionary)
+terms(dictionary_dgrl175, 25)
 
 ## TOPICMODELS PACKAGE
