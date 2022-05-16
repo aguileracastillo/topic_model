@@ -7,12 +7,14 @@ library(quanteda)
 library(quanteda.textmodels)
 library(quanteda.textplots)
 library(quanteda.textstats)
+library(seededlda)
 library(stm)
 library(stminsights)
 library(topicmodels)
 library(tm)
 library(wordcloud)
 library(magrittr)
+library(LDAvis)
 
 ## Topic Model of Journal Articles
 dgrl175_tm <- to_corpus %>% filter(type.x == "journalArticle")
@@ -181,4 +183,3 @@ terms(train_lda100, 10)
 dictionary_dgrl175 <- textmodel_seededlda(train_dgrl175, dictionary = dgrl175_dictionary)
 terms(dictionary_dgrl175, 25)
 
-## TOPICMODELS PACKAGE
