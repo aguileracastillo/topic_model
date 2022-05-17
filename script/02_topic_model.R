@@ -186,7 +186,7 @@ terms(train_lda100, 10)
 dictionary_dgrl175 <- textmodel_seededlda(train_dgrl175, dictionary = dgrl175_dictionary)
 terms(dictionary_dgrl175, 25)
 
-## CONVERT FOR VISUALIZATION IN GGPLOT2
+#### CONVERT FOR VISUALIZATION IN GGPLOT2 ####
 converted <- convert(train_dgrl175, to = "topicmodels")
 converted12 <- LDA(converted, k = 12, control = list(seed = 123))
 converted25 <- LDA(converted, k = 25, control = list(seed = 123))
@@ -233,4 +233,31 @@ top_terms %>%
   facet_wrap(facets = vars(topic), scales = "free", ncol = 4) +
   coord_flip()
 
-## LDAVIS 
+
+#### stm and LDAVIS ####
+## CONVERT FROM QUANTEDA TO STM
+quant2stm <- convert(train_dgrl175, to = "stm")
+
+## CALCULATE STM k= 25 ##
+dgrl_stm25 <- stm(quant2stm$documents, 
+                quant2stm$vocab, 
+                K = 25, 
+                data = quant2stm$meta, 
+                init.type = "Spectral")
+
+## PRINT WORDS PER TOPIC
+data.frame(t(labelTopics(dgrl_stm25, n = 10)$prob))
+
+## SHARE OF TOPICS OVER ALL CORPUS ##
+plot(
+  dgrl_stm25,
+  type = "summary",
+  text.cex = 0.5,
+  main = "STM topic shares",
+  xlab = "Share estimation"
+)
+
+## WORDCLOUD OF MOST PREVALENT TOPIC
+stm::cloud(dgrl_stm25,
+           topic = 12,
+           scale = c(2.25, .5))
