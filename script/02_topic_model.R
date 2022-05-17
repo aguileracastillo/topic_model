@@ -254,10 +254,30 @@ plot(
   type = "summary",
   text.cex = 0.5,
   main = "STM topic shares",
-  xlab = "Share estimation"
-)
+  xlab = "Share estimation")
 
-## WORDCLOUD OF MOST PREVALENT TOPIC
+## CONVERT FROM QUANTEDA TO STM
+quant2stm <- convert(train_dgrl175, to = "stm")
+
+## CALCULATE STM k= 50 ##
+dgrl_stm50 <- stm(quant2stm$documents, 
+                  quant2stm$vocab, 
+                  K = 50, 
+                  data = quant2stm$meta, 
+                  init.type = "Spectral")
+
+## PRINT WORDS PER TOPIC
+data.frame(t(labelTopics(dgrl_stm50, n = 10)$prob))
+
+## SHARE OF TOPICS OVER ALL CORPUS ##
+plot(
+  dgrl_stm50,
+  type = "summary",
+  text.cex = 0.5,
+  main = "STM topic shares",
+  xlab = "Share estimation")
+
+## WORDCLOUD OF MOST PREVALENT TOPIC error-- review
 stm::cloud(dgrl_stm25,
            topic = 12,
            scale = c(2.25, .5))
