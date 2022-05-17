@@ -15,6 +15,7 @@ library(tm)
 library(wordcloud)
 library(magrittr)
 library(LDAvis)
+library(ggplot2)
 
 ## Topic Model of Journal Articles
 dgrl175_tm <- to_corpus %>% filter(type.x == "journalArticle")
@@ -174,6 +175,8 @@ tibble(k = n_topics,
 ## SEEDEDLDA PACKAGE
 train_lda25 <- textmodel_lda(train_dgrl175, k = 25)
 terms(train_lda25, 10)
+train_lda50 <- textmodel_lda(train_dgrl175, k = 50)
+terms(train_lda50, 10)
 train_lda80 <- textmodel_lda(train_dgrl175, k = 80)
 terms(train_lda80, 10)
 train_lda100 <- textmodel_lda(train_dgrl175, k = 100)
@@ -183,3 +186,51 @@ terms(train_lda100, 10)
 dictionary_dgrl175 <- textmodel_seededlda(train_dgrl175, dictionary = dgrl175_dictionary)
 terms(dictionary_dgrl175, 25)
 
+## CONVERT FOR VISUALIZATION IN GGPLOT2
+converted <- convert(train_dgrl175, to = "topicmodels")
+converted12 <- LDA(converted, k = 12, control = list(seed = 123))
+converted25 <- LDA(converted, k = 25, control = list(seed = 123))
+converted50 <- LDA(converted, k = 50, control = list(seed = 123))
+tidy_converted12 <- tidy(converted12)
+tidy_converted25 <- tidy(converted25)
+tidy_converted50 <- tidy(converted50)
+
+
+
+## Visualization k = 12
+top_terms <- tidy_converted12 %>%
+  group_by(topic) %>%
+  top_n(5, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+top_terms %>%
+  mutate(
+    topic = factor(topic),
+    term = reorder_within(term, beta, topic)
+  ) %>%
+  ggplot(aes(term, beta, fill = topic)) +
+  geom_bar(alpha = 0.8, stat = "identity", show.legend = FALSE) +
+  scale_x_reordered() +
+  facet_wrap(facets = vars(topic), scales = "free", ncol = 2) +
+  coord_flip()
+
+## Visualization k = 25
+top_terms <- tidy_converted25 %>%
+  group_by(topic) %>%
+  top_n(5, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+top_terms %>%
+  mutate(
+    topic = factor(topic),
+    term = reorder_within(term, beta, topic)
+  ) %>%
+  ggplot(aes(term, beta, fill = topic)) +
+  geom_bar(alpha = 0.8, stat = "identity", show.legend = FALSE) +
+  scale_x_reordered() +
+  facet_wrap(facets = vars(topic), scales = "free", ncol = 4) +
+  coord_flip()
+
+## LDAVIS 
