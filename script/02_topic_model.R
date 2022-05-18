@@ -234,11 +234,22 @@ top_terms %>%
   coord_flip()
 
 
+
 #### stm and LDAVIS ####
+
 ## CONVERT FROM QUANTEDA TO STM
 quant2stm <- convert(train_dgrl175, to = "stm")
 
-## CALCULATE STM k= 25 ##
+## searchK function
+documents <- quant2stm$documents
+vocab <- quant2stm$vocab
+meta <- quant2stm$meta
+set.seed(02913)
+K <- c(5, 10, 15, 25, 50, 75, 100, 200)
+k_result <- searchK(documents, vocab, K, data = meta)
+
+
+## CALCULATE STM k = 25 ##
 dgrl_stm25 <- stm(quant2stm$documents, 
                 quant2stm$vocab, 
                 K = 25, 
@@ -255,9 +266,6 @@ plot(
   text.cex = 0.5,
   main = "STM topic shares",
   xlab = "Share estimation")
-
-## CONVERT FROM QUANTEDA TO STM
-quant2stm <- convert(train_dgrl175, to = "stm")
 
 ## CALCULATE STM k= 50 ##
 dgrl_stm50 <- stm(quant2stm$documents, 
@@ -277,7 +285,13 @@ plot(
   main = "STM topic shares",
   xlab = "Share estimation")
 
-## WORDCLOUD OF MOST PREVALENT TOPIC error-- review
-stm::cloud(dgrl_stm25,
-           topic = 12,
+## WORDCLOUD OF MOST PREVALENT TOPIC review usefulness
+stm::cloud(dgrl_stm50,
+           topic = 21,
            scale = c(2.25, .5))
+
+## EYEBALLING COVID RELATED TOPICS 
+plot(dgrl_stm50, type = "perspectives", topics = c(30,46)) 
+
+## DOCUMENT TOPIC PROPORTIONS
+plot(dgrl_stm50, type = "hist", topics = sample(1:50, size = 9))
