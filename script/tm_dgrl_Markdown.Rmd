@@ -1,5 +1,5 @@
 ---
-title: "Digitalization and the Organization of Work in the Digital Government Research Library v17.5: A Structural Topic Model"
+title: "Finding a needle in a haystack: A Structural Topic Model of the DGRL v17.5"
 author: "Andres Aguilera Castillo"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:

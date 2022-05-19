@@ -245,8 +245,24 @@ documents <- quant2stm$documents
 vocab <- quant2stm$vocab
 meta <- quant2stm$meta
 set.seed(02913)
-K <- c(5, 10, 15, 25, 50, 75, 100, 200)
+K <- c(25, 50, 75, 100)
 k_result <- searchK(documents, vocab, K, data = meta)
+
+#### From JSilge DO NOT RUN
+k_result %>%
+  transmute(K,
+            `Lower bound` = lbound,
+            Residuals = map_dbl(residual, "dispersion"),
+            `Semantic coherence` = map_dbl(semantic_coherence, mean),
+            `Held-out likelihood` = map_dbl(eval_heldout, "expected.heldout")) %>%
+  gather(Metric, Value, -K) %>%
+  ggplot(aes(K, Value, color = Metric)) +
+  geom_line(size = 1.5, alpha = 0.7, show.legend = FALSE) +
+  facet_wrap(~Metric, scales = "free_y") +
+  labs(x = "K (number of topics)",
+       y = NULL,
+       title = "Model diagnostics by number of topics",
+       subtitle = "These diagnostics indicate that a good number of topics would be around 60")
 
 
 ## CALCULATE STM k = 25 ##
