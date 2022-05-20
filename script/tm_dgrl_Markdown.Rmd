@@ -1,5 +1,5 @@
 ---
-title: "Finding the proverbial needle in a digital haystack: A Structural Topic Model of the Digital Government Research Library v17.5"
+title: "Finding the proverbial needle in a digital haystack: A Topic Model Approach to the Digital Government Research Library v17.5"
 author: "Andres Aguilera Castillo"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
@@ -39,7 +39,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Abstract
 
-Digital Government is a growing and vibrant multidisciplinary field of research, the fast increase in research output has challenged researchers to explore and use novel computational ways and methods to perform evidence synthesis on the extant literature and be able to map a scientific discipline, explore the thematic evolution over time and identify potential avenues for further research. Topic modeling has emerged as a powerful computational technique that contributes to the examination of large amounts of text data. This chapter aims to perform a 'smart literature review' on a subset of the Digital Government Reference Library (DGRL) version 17.5, by using text as data approach and a topic modeling technique known as Latent Dirichlet Allocation (LDA). To our best knowledge, this is the first attempt to use unsupervised machine learning techniques with this data set. This effort may contribute to creating a map of the field, identify the evolving themes in the literature and help to identify promising areas of research.
+Digital Government is a growing and vibrant multidisciplinary field of research, the fast increase in research output has challenged researchers to explore and use novel computational ways and methods to perform evidence synthesis on the extant literature and be able to map a scientific discipline, explore the thematic evolution over time and identify potential avenues for further research. Topic modeling has emerged as a powerful technique from the computer science field that is contributing to the examination of large amounts of text data. This chapter aims to perform a 'smart literature review' on a subset of the Digital Government Reference Library (DGRL) version 17.5, by using text as data approach and a topic modeling technique known as Latent Dirichlet Allocation (LDA). To our best knowledge, this is the first attempt to use unsupervised machine learning techniques with this data set. This effort may contribute to creating a map of the field, identify the evolving themes in the literature and help to identify promising areas of research.
 
 ## Introduction
 

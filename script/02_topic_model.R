@@ -59,6 +59,10 @@ dgrl175_tokens <- tokens(dgrl175_corpus, what = "word",
                       remove_numbers = TRUE,
                       remove_url = TRUE)
 
+## my_stopwords unused ##
+
+my_stopwords <- c("(c)", "elseiver", "ltd.", "all", "rights", "reserved")
+
 ## SELECT TOKENS (NO STOPWORDS) & TO LOWERCASE
 dgrl175_tokens <- tokens_select(dgrl175_tokens, pattern = stopwords("en"), selection = "remove")
 dgrl175_tokens <- tokens_tolower(dgrl175_tokens)
@@ -245,8 +249,10 @@ documents <- quant2stm$documents
 vocab <- quant2stm$vocab
 meta <- quant2stm$meta
 set.seed(02913)
-K <- c(25, 50, 75, 100)
-k_result <- searchK(documents, vocab, K, data = meta)
+K <- c(25, 50, 75)
+k_result <- searchK(documents, vocab, K, prevalence = ~ year.x, data = meta)
+
+plot(k_result)
 
 #### From JSilge DO NOT RUN
 k_result %>%
@@ -268,7 +274,9 @@ k_result %>%
 ## CALCULATE STM k = 25 ##
 dgrl_stm25 <- stm(quant2stm$documents, 
                 quant2stm$vocab, 
-                K = 25, 
+                K = 25,
+                prevalence = ~ year.x,
+                max.em.its = 75,
                 data = quant2stm$meta, 
                 init.type = "Spectral")
 
@@ -283,10 +291,12 @@ plot(
   main = "STM topic shares",
   xlab = "Share estimation")
 
-## CALCULATE STM k= 50 ##
+## CALCULATE STM k = 50 ##
 dgrl_stm50 <- stm(quant2stm$documents, 
                   quant2stm$vocab, 
-                  K = 50, 
+                  K = 50,
+                  prevalence = ~ year.x,
+                  max.em.its = 75,
                   data = quant2stm$meta, 
                   init.type = "Spectral")
 
@@ -296,6 +306,26 @@ data.frame(t(labelTopics(dgrl_stm50, n = 10)$prob))
 ## SHARE OF TOPICS OVER ALL CORPUS ##
 plot(
   dgrl_stm50,
+  type = "summary",
+  text.cex = 0.5,
+  main = "STM topic shares",
+  xlab = "Share estimation")
+
+## CALCULATE STM k = 75 ##
+dgrl_stm75 <- stm(quant2stm$documents, 
+                  quant2stm$vocab, 
+                  K = 75,
+                  prevalence = ~ year.x,
+                  max.em.its = 75,
+                  data = quant2stm$meta, 
+                  init.type = "Spectral")
+
+## PRINT WORDS PER TOPIC
+data.frame(t(labelTopics(dgrl_stm75, n = 10)$prob))
+
+## SHARE OF TOPICS OVER ALL CORPUS ##
+plot(
+  dgrl_stm75,
   type = "summary",
   text.cex = 0.5,
   main = "STM topic shares",
