@@ -69,6 +69,6 @@ plot(dgrl_stm50, type = "perspectives", topics = c(30,46))
 plot(dgrl_stm50, type = "hist", topics = sample(1:50, size = 9))
 
 ## Save image for stminsights ##
-save.image('dgrl_25_50.Rdata')
+#save.image('dgrl_25_50.Rdata')
 
 stminsights::run_stminsights(use_browser = TRUE)
