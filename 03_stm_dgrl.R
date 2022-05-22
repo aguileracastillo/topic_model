@@ -1,4 +1,5 @@
 #### Structural Topic Model ####
+library(stm)
 library(stminsights)
 
 ## CONVERT FROM QUANTEDA TO STM
@@ -67,5 +68,7 @@ plot(dgrl_stm50, type = "perspectives", topics = c(30,46))
 ## DOCUMENT TOPIC PROPORTIONS
 plot(dgrl_stm50, type = "hist", topics = sample(1:50, size = 9))
 
+## Save image for stminsights ##
+save.image('dgrl_25_50.Rdata')
 
-
+stminsights::run_stminsights(use_browser = TRUE)
