@@ -239,6 +239,5 @@ top_terms %>%
 
 
 
-#### stm and LDAVIS ####
 
 
