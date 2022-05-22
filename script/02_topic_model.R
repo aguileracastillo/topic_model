@@ -254,6 +254,11 @@ k_result <- searchK(documents, vocab, K, prevalence = ~ year.x, data = meta)
 
 plot(k_result)
 
+findingK <- searchK(quant2stm$documents, quant2stm$vocab, K = c(25, 50, 75, 100, 150, 200),
+        prevalence =~ year.x, data = quant2stm$meta, verbose=FALSE)
+
+plot(findingK)
+
 #### From JSilge DO NOT RUN
 k_result %>%
   transmute(K,
