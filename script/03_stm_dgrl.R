@@ -68,7 +68,30 @@ plot(dgrl_stm50, type = "perspectives", topics = c(30,46))
 ## DOCUMENT TOPIC PROPORTIONS
 plot(dgrl_stm50, type = "hist", topics = sample(1:50, size = 9))
 
-## Save image for stminsights ##
-#save.image('dgrl_25_50.Rdata')
+## LDAvis k=25 ##
+toLDAvis(dgrl_stm25,
+         quant2stm$documents,
+         R = 30,
+         plot.opts = list(xlab = "PC1", ylab = "PC2"),
+         lambda.step = 0.1,
+         out.dir = tempfile(),
+         open.browser = interactive(),
+         as.gist = FALSE,
+         reorder.topics = TRUE
+         )
 
-stminsights::run_stminsights(use_browser = TRUE)
+## LDAvis k=50 ##
+toLDAvis(dgrl_stm50,
+         quant2stm$documents,
+         R = 30,
+         plot.opts = list(xlab = "PC1", ylab = "PC2"),
+         lambda.step = 0.1,
+         out.dir = tempfile(),
+         open.browser = interactive(),
+         as.gist = FALSE,
+         reorder.topics = TRUE
+         )
+
+
+
+

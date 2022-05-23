@@ -93,6 +93,12 @@ View(kw_theor)
 kw_biblio <- kwic(dgrl175_tokens, pattern = "biblio*")
 View(kw_biblio)
 
+### KWIC WORK RELATED ###
+# work* 1k+ MATCHES
+kw_work <- kwic(dgrl175_tokens, pattern = "work*")
+head(kw_work)
+View(kw_work)
+
 #################
 ## Create a dictionary of words of interest
 ################
