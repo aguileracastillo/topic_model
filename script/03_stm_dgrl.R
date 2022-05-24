@@ -65,6 +65,28 @@ fx_50 <- estimateEffect(1:50 ~ year.x, dgrl_stm50, meta = quant2stm$meta)
 ## PRINT WORDS PER TOPIC
 data.frame(t(labelTopics(dgrl_stm50, n = 10)$prob))
 
+## CALCULATE STM k = 75 ##
+dgrl_stm75 <- stm(quant2stm$documents, 
+                  quant2stm$vocab, 
+                  K = 75,
+                  prevalence = ~ year.x,
+                  max.em.its = 75,
+                  data = quant2stm$meta, 
+                  init.type = "Spectral")
+
+data.frame(t(labelTopics(dgrl_stm75, n = 10)$prob))
+
+## CALCULATE STM k = 100 ##
+dgrl_stm100 <- stm(quant2stm$documents, 
+                  quant2stm$vocab, 
+                  K = 100,
+                  prevalence = ~ year.x,
+                  max.em.its = 75,
+                  data = quant2stm$meta, 
+                  init.type = "Spectral")
+
+data.frame(t(labelTopics(dgrl_stm100, n = 10)$prob))
+
 ## SHARE OF TOPICS OVER ALL CORPUS ##
 plot(
   dgrl_stm50,
