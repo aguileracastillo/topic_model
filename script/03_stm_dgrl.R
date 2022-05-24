@@ -6,11 +6,28 @@ library(stminsights)
 quant2stm <- convert(train_dgrl175, to = "stm")
 
 ## Running of searchK() with different values for k
-findingK <- searchK(quant2stm$documents, quant2stm$vocab, K = c(25, 50, 75, 100, 150, 200),
-                    prevalence =~ year.x, data = quant2stm$meta, set.seed(02913),verbose=FALSE)
+findingK <- searchK(quant2stm$documents, 
+                    quant2stm$vocab, 
+                    K = c(25, 50, 75, 100, 150, 200, 300),
+                    prevalence =~ year.x, 
+                    data = quant2stm$meta, 
+                    init.type = "Spectral",
+                    verbose=FALSE)
+
 
 plot(findingK)
 
+## CALCULATE STM k = 12 ##
+dgrl_stm12 <- stm(quant2stm$documents, 
+                  quant2stm$vocab, 
+                  K = 12,
+                  prevalence = ~ year.x,
+                  max.em.its = 75,
+                  data = quant2stm$meta, 
+                  init.type = "Spectral")
+
+## PRINT WORDS PER TOPIC
+data.frame(t(labelTopics(dgrl_stm12, n = 10)$prob))
 
 ## CALCULATE STM k = 25 ##
 dgrl_stm25 <- stm(quant2stm$documents, 
@@ -77,8 +94,7 @@ toLDAvis(dgrl_stm25,
          out.dir = tempfile(),
          open.browser = interactive(),
          as.gist = FALSE,
-         reorder.topics = TRUE
-         )
+         reorder.topics = TRUE)
 
 ## LDAvis k=50 ##
 toLDAvis(dgrl_stm50,
@@ -89,8 +105,7 @@ toLDAvis(dgrl_stm50,
          out.dir = tempfile(),
          open.browser = interactive(),
          as.gist = FALSE,
-         reorder.topics = TRUE
-         )
+         reorder.topics = TRUE)
 
 
 
