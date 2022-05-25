@@ -5,6 +5,8 @@ library(stminsights)
 ## CONVERT FROM QUANTEDA TO STM
 quant2stm <- convert(train_dgrl175, to = "stm")
 
+time <- as.numeric(quant2stm$meta$year.x)
+
 out <- list(documents = quant2stm$documents,
             vocab = quant2stm$vocab,
             meta = quant2stm$meta)
@@ -15,7 +17,25 @@ topic_train50 <- stm(documents = out$documents,
                      prevalence =~ year.x,
                      K = 50)
 
-fx <- estimateEffect(1:50 ~ year.x, topic_train50, meta = out$meta)
+plot(topic_train50)
+
+## PRINT WORDS PER TOPIC
+data.frame(t(labelTopics(topic_train50, n = 10)$prob))
+
+## Highest Prob / FREX / LIFT / Score
+train50_labels <- labelTopics(topic_train50, n = 10)
+
+fx <- estimateEffect(1:50 ~ s(year.x), 
+                     topic_train50, 
+                     meta = out$meta, 
+                     uncertainty = "Global")
+
+## Topic Prevalence over Time ##
+par(mfrow=c(3,3))
+for (i in seq_along(sample(1:50, size = 9)))
+{
+  plot(fx, "year.x", method = "continuous", topics = i, main = paste0(train50_labels$prob[i,1:3], collapse = ", "), printlegend = F)
+}
 
 save(topic_train50, fx, file = "topic_train50.RData")
 
