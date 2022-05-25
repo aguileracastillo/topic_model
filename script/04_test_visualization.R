@@ -20,3 +20,16 @@ fx <- estimateEffect(1:50 ~ year.x, topic_train50, meta = out$meta)
 save(topic_train50, fx, file = "topic_train50.RData")
 
 run_stminsights(use_browser = TRUE)
+
+## test ldavis ##
+toLDAvis(topic_train50,
+         quant2stm$documents,
+         R = 30,
+         plot.opts = list(xlab = "PC1", ylab = "PC2"),
+         lambda.step = 0.1,
+         out.dir = tempfile(),
+         open.browser = interactive(),
+         as.gist = FALSE,
+         reorder.topics = TRUE)
+
+

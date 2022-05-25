@@ -205,8 +205,6 @@ tidy_converted12 <- tidy(converted12)
 tidy_converted25 <- tidy(converted25)
 tidy_converted50 <- tidy(converted50)
 
-
-
 ## Visualization k = 12
 top_terms <- tidy_converted12 %>%
   group_by(topic) %>%
