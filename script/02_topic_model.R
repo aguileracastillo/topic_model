@@ -27,8 +27,9 @@ dgrl175_tm %>% group_by(year.x) %>% count(sort = TRUE) %>%
   xlab ("Year") +
   ylab ("Number of Documents")
 
-## Publications by year
-dgrl175_tm %>% count(year.x) %>% arrange(desc(year.x)) %>% print(n =40)
+## Publications by year after 2000
+dgrl175_tm %>% filter(year.x > 1999) %>% count(year.x) %>% arrange(desc(year.x)) %>% print(n = 23)
+
 
 ## Most frequent publication titles
 top_journals <- dgrl175_tm %>% count(pub_title.x) %>% arrange(desc(n))
@@ -59,12 +60,12 @@ dgrl175_tokens <- tokens(dgrl175_corpus, what = "word",
                       remove_numbers = TRUE,
                       remove_url = TRUE)
 
-## my_stopwords unused ##
+## my_stopwords from downstream eyeballing ##
 
-my_stopwords <- c("(c)", "elseiver", "ltd.", "all", "rights", "reserved")
+my_stopwords <- c("(c)", "elsevier", "ltd*", "all", "rights", "reserved", "abstract", "copyright*", "inc*", "e.g*")
 
 ## SELECT TOKENS (NO STOPWORDS) & TO LOWERCASE
-dgrl175_tokens <- tokens_select(dgrl175_tokens, pattern = stopwords("en"), selection = "remove")
+dgrl175_tokens <- tokens_select(dgrl175_tokens, pattern = c(stopwords("en"), my_stopwords), selection = "remove")
 dgrl175_tokens <- tokens_tolower(dgrl175_tokens)
 print(dgrl175_tokens)
 
@@ -74,7 +75,7 @@ dgrl175_tokens <- tokens_wordstem(dgrl175_tokens, language = "english")
 ## No stemming to provide a more human readable descriptor (De Battisti et al 2015)
 
 ### How to view a document in a corpus
-dgrl175_corpus[[3]]
+dgrl175_corpus[[5410]]
 
 #### KEYWORDS-IN-CONTEXT (theories sample test)
 # NPM 28 MATCHES
@@ -123,7 +124,7 @@ print(dfm_dgrl175)
 ndoc(dfm_dgrl175)
 nfeat(dfm_dgrl175)
 
-## 6682 documents and 18825 features (99.60% sparse)
+## 6682 documents and 18774 features (99.61% sparse)
 
 ### TOP FEATURES IN DFM_DGRL -- Best practice remove very rare and very common
 topfeatures(dfm_dgrl175, 250)
@@ -136,12 +137,12 @@ dfm_dgrl_tfidf <- dfm_tfidf(dfm_dgrl175)
 print(dfm_dgrl_tfidf)
 
 #### DIMENSIONALITY REDUCTION ####
-## TRIM VERY RARE FEATURES Sparse matrix > 1096 features 94.43% sparsity
+## TRIM VERY RARE FEATURES Sparse matrix > 1083 features 94.43% sparsity
 dfm_dgrl175_trim <- dfm_trim(dfm_dgrl175, min_termfreq = 100)
 print(dfm_dgrl175_trim)
 
 ## TRIM VERY COMMON FEATURES IF OCCURRENCE >10% OF DOCUMENTS => REMOVE
-## 6682 documents and 929 features 96.65% sparse
+## 6682 documents and 918 features 96.65% sparse
 dfm_dgrl175_trim_docfreq <- dfm_trim(dfm_dgrl175_trim, max_docfreq = 0.1, docfreq_type = "prop")
 print(dfm_dgrl175_trim_docfreq)
 topfeatures(dfm_dgrl175_trim_docfreq, 250)
@@ -165,32 +166,12 @@ splitter <- sample(1:n, round(n * 0.75))
 train_dgrl175 <- data_to_lda[splitter, ]
 test_dgrl175 <- data_to_lda[-splitter, ]
 
-## Test Number of Topics (topicmodels) package
-n_topics <- c(10, 20, 50, 80, 100, 150, 200, 300)
-
-optimal_k <- n_topics %>%
-  map(LDA, x = train_dgrl175, control = list(seed = 2023))
 
 
-tibble(k = n_topics,
-           perplex = map_dbl(optimal_k, perplexity)) %>%
-  ggplot(aes(k, perplex)) +
-  geom_point() +
-  geom_line() +
-  labs(title = "Evaluating LDA topic models",
-       subtitle = "Optimal number of topics (smaller is better)",
-       x = "Number of topics",
-       y = "Perplexity")
-
-## SEEDEDLDA PACKAGE
+## TESTING SEEDEDLDA PACKAGE
 train_lda25 <- textmodel_lda(train_dgrl175, k = 25)
 terms(train_lda25, 10)
-train_lda50 <- textmodel_lda(train_dgrl175, k = 50)
-terms(train_lda50, 10)
-train_lda80 <- textmodel_lda(train_dgrl175, k = 80)
-terms(train_lda80, 10)
-train_lda100 <- textmodel_lda(train_dgrl175, k = 100)
-terms(train_lda100, 10)
+
 
 ## number of topics determined by number of keys in dictionary ##
 dictionary_dgrl175 <- textmodel_seededlda(train_dgrl175, dictionary = dgrl175_dictionary)
@@ -240,8 +221,4 @@ top_terms %>%
   scale_x_reordered() +
   facet_wrap(facets = vars(topic), scales = "free", ncol = 4) +
   coord_flip()
-
-
-
-
 

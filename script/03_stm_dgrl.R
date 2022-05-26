@@ -8,7 +8,7 @@ quant2stm <- convert(train_dgrl175, to = "stm")
 ## Running of searchK() with different values for k
 findingK <- searchK(quant2stm$documents, 
                     quant2stm$vocab, 
-                    K = c(25, 50, 75, 100, 150, 200, 300),
+                    K = c(10, 30, 50, 80, 100),
                     prevalence =~ year.x, 
                     data = quant2stm$meta, 
                     init.type = "Spectral",
@@ -17,91 +17,98 @@ findingK <- searchK(quant2stm$documents,
 
 plot(findingK)
 
-## CALCULATE STM k = 12 ##
-dgrl_stm12 <- stm(quant2stm$documents, 
+finding_smallK <- searchK(quant2stm$documents, 
+                    quant2stm$vocab, 
+                    K = c(25:50),
+                    prevalence =~ year.x, 
+                    data = quant2stm$meta, 
+                    init.type = "Spectral",
+                    verbose=FALSE)
+
+## Potential at k = 33, k = 45, k = 47
+plot(finding_smallK)
+
+## CALCULATE STM k = 33 ##
+dgrl_stm33 <- stm(quant2stm$documents, 
                   quant2stm$vocab, 
-                  K = 12,
+                  K = 33,
                   prevalence = ~ year.x,
                   max.em.its = 75,
                   data = quant2stm$meta, 
                   init.type = "Spectral")
 
 ## PRINT WORDS PER TOPIC
-data.frame(t(labelTopics(dgrl_stm12, n = 10)$prob))
-
-## CALCULATE STM k = 25 ##
-dgrl_stm25 <- stm(quant2stm$documents, 
-                  quant2stm$vocab, 
-                  K = 25,
-                  prevalence = ~ year.x,
-                  max.em.its = 75,
-                  data = quant2stm$meta, 
-                  init.type = "Spectral")
-
-fx_25 <- estimateEffect(1:25 ~ year.x, dgrl_stm25, meta = quant2stm$meta)
-
-## PRINT WORDS PER TOPIC
-data.frame(t(labelTopics(dgrl_stm25, n = 10)$prob))
+data.frame(t(labelTopics(dgrl_stm33, n = 10)$prob))
 
 ## SHARE OF TOPICS OVER ALL CORPUS ##
 plot(
-  dgrl_stm25,
+  dgrl_stm33,
   type = "summary",
   text.cex = 0.5,
   main = "STM topic shares",
   xlab = "Share estimation")
 
-## CALCULATE STM k = 50 ##
-dgrl_stm50 <- stm(quant2stm$documents, 
+## CALCULATE STM k = 45 ##
+dgrl_stm45 <- stm(quant2stm$documents, 
                   quant2stm$vocab, 
-                  K = 50,
+                  K = 45,
                   prevalence = ~ year.x,
                   max.em.its = 75,
                   data = quant2stm$meta, 
                   init.type = "Spectral")
 
-fx_50 <- estimateEffect(1:50 ~ year.x, dgrl_stm50, meta = quant2stm$meta)
-
-## PRINT WORDS PER TOPIC
-data.frame(t(labelTopics(dgrl_stm50, n = 10)$prob))
-
-## CALCULATE STM k = 75 ##
-dgrl_stm75 <- stm(quant2stm$documents, 
-                  quant2stm$vocab, 
-                  K = 75,
-                  prevalence = ~ year.x,
-                  max.em.its = 75,
-                  data = quant2stm$meta, 
-                  init.type = "Spectral")
-
-data.frame(t(labelTopics(dgrl_stm75, n = 10)$prob))
-
-## CALCULATE STM k = 100 ##
-dgrl_stm100 <- stm(quant2stm$documents, 
-                  quant2stm$vocab, 
-                  K = 100,
-                  prevalence = ~ year.x,
-                  max.em.its = 75,
-                  data = quant2stm$meta, 
-                  init.type = "Spectral")
-
-data.frame(t(labelTopics(dgrl_stm100, n = 10)$prob))
+data.frame(t(labelTopics(dgrl_stm45, n = 10)$prob))
 
 ## SHARE OF TOPICS OVER ALL CORPUS ##
 plot(
-  dgrl_stm50,
+  dgrl_stm45,
   type = "summary",
   text.cex = 0.5,
   main = "STM topic shares",
   xlab = "Share estimation")
+
+## CALCULATE STM k = 47 ##
+dgrl_stm47 <- stm(quant2stm$documents, 
+                  quant2stm$vocab, 
+                  K = 47,
+                  prevalence = ~ year.x,
+                  max.em.its = 75,
+                  data = quant2stm$meta, 
+                  init.type = "Spectral")
+
+## PRINT WORDS PER TOPIC
+data.frame(t(labelTopics(dgrl_stm47, n = 10)$prob))
+
+plot(
+  dgrl_stm47,
+  type = "summary",
+  text.cex = 0.5,
+  main = "STM topic shares",
+  xlab = "Share estimation")
+
+## estimateEffect k = 33, 45, 47
+fx_33 <- estimateEffect(1:33 ~ year.x, dgrl_stm33, meta = quant2stm$meta)
+
+
+## Highest Prob / FREX / LIFT / Score
+train33_labels <- labelTopics(dgrl_stm33, n = 10)
+train33_labels
+
+train47_labels <- labelTopics(dgrl_stm47, n = 10)
+train47_labels
+
+
+
+## FindThoughts
+
 
 
 ## WORDCLOUD OF MOST PREVALENT TOPIC review usefulness
-stm::cloud(dgrl_stm50,
-           topic = 21,
+stm::cloud(dgrl_stm47,
+           topic = 20,
            scale = c(2.25, .5))
 
-## EYEBALLING COVID RELATED TOPICS 
+## EYEBALLING TOPICS 
 plot(dgrl_stm50, type = "perspectives", topics = c(30,46)) 
 
 ## DOCUMENT TOPIC PROPORTIONS

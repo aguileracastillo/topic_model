@@ -11,30 +11,31 @@ out <- list(documents = quant2stm$documents,
             vocab = quant2stm$vocab,
             meta = quant2stm$meta)
 
-topic_train50 <- stm(documents = out$documents,
+topic_train33 <- stm(documents = out$documents,
                      vocab = out$vocab,
                      data = out$meta,
                      prevalence =~ year.x,
-                     K = 50)
+                     K = 33)
 
-plot(topic_train50)
+plot(topic_train33)
 
 ## PRINT WORDS PER TOPIC
-data.frame(t(labelTopics(topic_train50, n = 10)$prob))
+data.frame(t(labelTopics(topic_train33, n = 10)$prob))
 
 ## Highest Prob / FREX / LIFT / Score
-train50_labels <- labelTopics(topic_train50, n = 10)
+train33_labels <- labelTopics(topic_train33, n = 10)
+train33_labels
 
-fx <- estimateEffect(1:50 ~ s(year.x), 
-                     topic_train50, 
+fx33 <- estimateEffect(1:33 ~ s(year.x), 
+                     topic_train33, 
                      meta = out$meta, 
                      uncertainty = "Global")
 
 ## Topic Prevalence over Time ##
 par(mfrow=c(3,3))
-for (i in seq_along(sample(1:50, size = 9)))
+for (i in seq_along(sample(1:33, size = 9)))
 {
-  plot(fx, "year.x", method = "continuous", topics = i, main = paste0(train50_labels$prob[i,1:3], collapse = ", "), printlegend = F)
+  plot(fx, "year.x", method = "continuous", topics = i, main = paste0(train33_labels$prob[i,1:3], collapse = ", "), printlegend = F)
 }
 
 save(topic_train50, fx, file = "topic_train50.RData")
@@ -42,7 +43,7 @@ save(topic_train50, fx, file = "topic_train50.RData")
 run_stminsights(use_browser = TRUE)
 
 ## test ldavis ##
-toLDAvis(topic_train50,
+toLDAvis(topic_train33,
          quant2stm$documents,
          R = 30,
          plot.opts = list(xlab = "PC1", ylab = "PC2"),
