@@ -17,8 +17,10 @@ library(magrittr)
 library(LDAvis)
 library(ggplot2)
 
-## Topic Model of Journal Articles
+## Topic Model of Journal Articles / 2000 ~ 2021
 dgrl175_tm <- to_corpus %>% filter(type.x == "journalArticle")
+dgrl175_tm <- dgrl175_tm %>% filter(year.x > 1999)
+dgrl175_tm <- dgrl175_tm %>% filter(year.x < 2022)
 
 ## r articles by year to insert in md
 dgrl175_tm %>% group_by(year.x) %>% count(sort = TRUE) %>%
@@ -27,14 +29,14 @@ dgrl175_tm %>% group_by(year.x) %>% count(sort = TRUE) %>%
   xlab ("Year") +
   ylab ("Number of Documents")
 
-## Publications by year after 2000
-dgrl175_tm %>% filter(year.x > 1999) %>% count(year.x) %>% arrange(desc(year.x)) %>% print(n = 23)
+## Publications by year 2000 ~ 2021 n=6664
+dgrl175_tm %>% count(year.x) %>% arrange(desc(year.x)) %>% print(n = 23)
 
 
 ## Most frequent publication titles
 top_journals <- dgrl175_tm %>% count(pub_title.x) %>% arrange(desc(n))
 print(top_journals)
-write.csv(top100, "~/GitHub/topic_model/data\\top100.csv", row.names = TRUE)
+write.csv(top_journals, "~/GitHub/topic_model/data\\top_journals.csv", row.names = TRUE)
 
 
 ## After detecting uninformative but pervasive string => Remove
@@ -75,7 +77,7 @@ dgrl175_tokens <- tokens_wordstem(dgrl175_tokens, language = "english")
 ## No stemming to provide a more human readable descriptor (De Battisti et al 2015)
 
 ### How to view a document in a corpus
-dgrl175_corpus[[5410]]
+dgrl175_corpus[[1170]]
 
 #### KEYWORDS-IN-CONTEXT (theories sample test)
 # NPM 28 MATCHES
@@ -124,7 +126,7 @@ print(dfm_dgrl175)
 ndoc(dfm_dgrl175)
 nfeat(dfm_dgrl175)
 
-## 6682 documents and 18774 features (99.61% sparse)
+## 6664 documents and 18748 features (99.60% sparse)
 
 ### TOP FEATURES IN DFM_DGRL -- Best practice remove very rare and very common
 topfeatures(dfm_dgrl175, 250)
@@ -137,12 +139,12 @@ dfm_dgrl_tfidf <- dfm_tfidf(dfm_dgrl175)
 print(dfm_dgrl_tfidf)
 
 #### DIMENSIONALITY REDUCTION ####
-## TRIM VERY RARE FEATURES Sparse matrix > 1083 features 94.43% sparsity
+## TRIM VERY RARE FEATURES Sparse matrix > 1081 features 94.42% sparsity
 dfm_dgrl175_trim <- dfm_trim(dfm_dgrl175, min_termfreq = 100)
 print(dfm_dgrl175_trim)
 
 ## TRIM VERY COMMON FEATURES IF OCCURRENCE >10% OF DOCUMENTS => REMOVE
-## 6682 documents and 918 features 96.65% sparse
+## 6682 documents and 916 features 96.64% sparse
 dfm_dgrl175_trim_docfreq <- dfm_trim(dfm_dgrl175_trim, max_docfreq = 0.1, docfreq_type = "prop")
 print(dfm_dgrl175_trim_docfreq)
 topfeatures(dfm_dgrl175_trim_docfreq, 250)
@@ -168,7 +170,7 @@ test_dgrl175 <- data_to_lda[-splitter, ]
 
 
 
-## TESTING SEEDEDLDA PACKAGE
+#### TESTING SEEDEDLDA PACKAGE #### Do not run
 train_lda25 <- textmodel_lda(train_dgrl175, k = 25)
 terms(train_lda25, 10)
 

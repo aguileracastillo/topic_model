@@ -14,9 +14,36 @@ findingK <- searchK(quant2stm$documents,
                     init.type = "Spectral",
                     verbose=FALSE)
 
-
+## Visualization of Goodness of Fit 
 plot(findingK)
 
+## SearchK for small K
+
+find_smallestK <- searchK(quant2stm$documents, 
+                          quant2stm$vocab, 
+                          K = c(5:25),
+                          prevalence =~ year.x, 
+                          data = quant2stm$meta, 
+                          init.type = "Spectral",
+                          verbose=FALSE)
+
+plot(find_smallestK)
+
+## Potential at k = 24
+
+## CALCULATE STM k = 24 ##
+dgrl_stm24 <- stm(quant2stm$documents, 
+                  quant2stm$vocab, 
+                  K = 24,
+                  prevalence = ~ year.x,
+                  max.em.its = 75,
+                  data = quant2stm$meta, 
+                  init.type = "Spectral")
+
+## PRINT WORDS PER TOPIC
+data.frame(t(labelTopics(dgrl_stm24, n = 10)$prob))
+
+## Search for medium K
 finding_smallK <- searchK(quant2stm$documents, 
                     quant2stm$vocab, 
                     K = c(25:50),
@@ -25,79 +52,79 @@ finding_smallK <- searchK(quant2stm$documents,
                     init.type = "Spectral",
                     verbose=FALSE)
 
-## Potential at k = 33, k = 45, k = 47
+## Potential at k = 35, k = 44, k = 49
 plot(finding_smallK)
 
-## CALCULATE STM k = 33 ##
-dgrl_stm33 <- stm(quant2stm$documents, 
+## CALCULATE STM k = 35 ##
+dgrl_stm35 <- stm(quant2stm$documents, 
                   quant2stm$vocab, 
-                  K = 33,
+                  K = 35,
                   prevalence = ~ year.x,
                   max.em.its = 75,
                   data = quant2stm$meta, 
                   init.type = "Spectral")
 
 ## PRINT WORDS PER TOPIC
-data.frame(t(labelTopics(dgrl_stm33, n = 10)$prob))
+data.frame(t(labelTopics(dgrl_stm35, n = 10)$prob))
 
 ## SHARE OF TOPICS OVER ALL CORPUS ##
 plot(
-  dgrl_stm33,
+  dgrl_stm35,
   type = "summary",
   text.cex = 0.5,
   main = "STM topic shares",
   xlab = "Share estimation")
 
-## CALCULATE STM k = 45 ##
-dgrl_stm45 <- stm(quant2stm$documents, 
+## CALCULATE STM k = 44 ##
+dgrl_stm44 <- stm(quant2stm$documents, 
                   quant2stm$vocab, 
-                  K = 45,
+                  K = 44,
                   prevalence = ~ year.x,
                   max.em.its = 75,
                   data = quant2stm$meta, 
                   init.type = "Spectral")
 
-data.frame(t(labelTopics(dgrl_stm45, n = 10)$prob))
+data.frame(t(labelTopics(dgrl_stm44, n = 10)$prob))
 
 ## SHARE OF TOPICS OVER ALL CORPUS ##
 plot(
-  dgrl_stm45,
+  dgrl_stm44,
   type = "summary",
   text.cex = 0.5,
   main = "STM topic shares",
   xlab = "Share estimation")
 
-## CALCULATE STM k = 47 ##
-dgrl_stm47 <- stm(quant2stm$documents, 
+## CALCULATE STM k = 49 ##
+dgrl_stm49 <- stm(quant2stm$documents, 
                   quant2stm$vocab, 
-                  K = 47,
+                  K = 49,
                   prevalence = ~ year.x,
                   max.em.its = 75,
                   data = quant2stm$meta, 
                   init.type = "Spectral")
 
 ## PRINT WORDS PER TOPIC
-data.frame(t(labelTopics(dgrl_stm47, n = 10)$prob))
+data.frame(t(labelTopics(dgrl_stm49, n = 10)$prob))
 
 plot(
-  dgrl_stm47,
+  dgrl_stm49,
   type = "summary",
   text.cex = 0.5,
   main = "STM topic shares",
   xlab = "Share estimation")
 
-## estimateEffect k = 33, 45, 47
-fx_33 <- estimateEffect(1:33 ~ year.x, dgrl_stm33, meta = quant2stm$meta)
+
 
 
 ## Highest Prob / FREX / LIFT / Score
-train33_labels <- labelTopics(dgrl_stm33, n = 10)
-train33_labels
+train35_labels <- labelTopics(dgrl_stm35, n = 10)
+train35_labels
 
-train47_labels <- labelTopics(dgrl_stm47, n = 10)
-train47_labels
+train44_labels <- labelTopics(dgrl_stm44, n = 10)
+train44_labels
 
-
+## estimateEffect k = 33, 45, 47
+fx_33 <- estimateEffect(1:33 ~ year.x, dgrl_stm33, meta = quant2stm$meta)
 
 ## FindThoughts
 
@@ -125,8 +152,8 @@ toLDAvis(dgrl_stm12,
          as.gist = FALSE,
          reorder.topics = TRUE)
 
-## LDAvis k=25 ##
-toLDAvis(dgrl_stm25,
+## LDAvis k=24 ##
+toLDAvis(dgrl_stm24,
          quant2stm$documents,
          R = 30,
          plot.opts = list(xlab = "PC1", ylab = "PC2"),
