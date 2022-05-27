@@ -123,8 +123,9 @@ train35_labels
 train44_labels <- labelTopics(dgrl_stm44, n = 10)
 train44_labels
 
-## estimateEffect k = 33, 45, 47
-fx_33 <- estimateEffect(1:33 ~ year.x, dgrl_stm33, meta = quant2stm$meta)
+## estimateEffect k = 35, 45, 47
+fx_35 <- estimateEffect(1:35 ~ year.x, dgrl_stm35, meta = quant2stm$meta)
+
 
 ## FindThoughts
 
@@ -141,17 +142,6 @@ plot(dgrl_stm50, type = "perspectives", topics = c(30,46))
 ## DOCUMENT TOPIC PROPORTIONS
 plot(dgrl_stm50, type = "hist", topics = sample(1:50, size = 9))
 
-## LDAvis k= 12 ##
-toLDAvis(dgrl_stm12,
-         quant2stm$documents,
-         R = 30,
-         plot.opts = list(xlab = "PC1", ylab = "PC2"),
-         lambda.step = 0.1,
-         out.dir = tempfile(),
-         open.browser = interactive(),
-         as.gist = FALSE,
-         reorder.topics = TRUE)
-
 ## LDAvis k=24 ##
 toLDAvis(dgrl_stm24,
          quant2stm$documents,
@@ -163,8 +153,8 @@ toLDAvis(dgrl_stm24,
          as.gist = FALSE,
          reorder.topics = TRUE)
 
-## LDAvis k=50 ##
-toLDAvis(dgrl_stm50,
+## LDAvis k = 49 ##
+toLDAvis(dgrl_stm49,
          quant2stm$documents,
          R = 30,
          plot.opts = list(xlab = "PC1", ylab = "PC2"),
@@ -175,7 +165,7 @@ toLDAvis(dgrl_stm50,
          reorder.topics = TRUE)
 
 ## LDAvis k=75 ##
-toLDAvis(dgrl_stm75,
+toLDAvis(dgrl_stm24,
          quant2stm$documents,
          R = 30,
          plot.opts = list(xlab = "PC1", ylab = "PC2"),
@@ -185,8 +175,8 @@ toLDAvis(dgrl_stm75,
          as.gist = FALSE,
          reorder.topics = TRUE)
 
-## LDAvis k = 100 ##
-toLDAvis(dgrl_stm100,
+## LDAvis k = 50 ##
+toLDAvis(dgrl_stm50,
          quant2stm$documents,
          R = 30,
          plot.opts = list(xlab = "PC1", ylab = "PC2"),
