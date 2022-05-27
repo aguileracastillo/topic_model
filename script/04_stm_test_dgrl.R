@@ -3,13 +3,13 @@ library(stm)
 library(stminsights)
 
 ## CONVERT FROM QUANTEDA TO STM
-quant2stm <- convert(train_dgrl175, to = "stm")
+test_stm <- convert(test_dgrl175, to = "stm")
 
-time <- as.numeric(quant2stm$meta$year.x)
+time <- as.numeric(test_stm$meta$year.x)
 
-out <- list(documents = quant2stm$documents,
-            vocab = quant2stm$vocab,
-            meta = quant2stm$meta)
+out <- list(documents = test_stm$documents,
+            vocab = test_stm$vocab,
+            meta = test_stm$meta)
 
 topic_train33 <- stm(documents = out$documents,
                      vocab = out$vocab,
@@ -44,7 +44,7 @@ run_stminsights(use_browser = TRUE)
 
 ## test ldavis ##
 toLDAvis(topic_train33,
-         quant2stm$documents,
+         test_stm$documents,
          R = 30,
          plot.opts = list(xlab = "PC1", ylab = "PC2"),
          lambda.step = 0.1,
