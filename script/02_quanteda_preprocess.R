@@ -55,26 +55,64 @@ docvars(dgrl175_corpus, field = "year.x")
 ## Histogram # Tokens in dgrl175_corpus
 ## Is is poss to make a histogram with tokens number?
 
+
 ## TOKENIZATION & REMOVE PUNTUATION, SYMBOLS, NUMBERS, URL
 dgrl175_tokens <- tokens(dgrl175_corpus, what = "word",
                       remove_punct = TRUE,
                       remove_symbols = TRUE,
                       remove_numbers = TRUE,
-                      remove_url = TRUE)
+                      remove_url = TRUE,
+                      padding = TRUE)
+  
 
 ## my_stopwords from downstream eyeballing ##
 
 my_stopwords <- c("(c)", "elsevier", "ltd*", "all", "rights", "reserved", "abstract", "copyright*", "inc*", "e.g*")
 
 ## SELECT TOKENS (NO STOPWORDS) & TO LOWERCASE
-dgrl175_tokens <- tokens_select(dgrl175_tokens, pattern = c(stopwords("en"), my_stopwords), selection = "remove")
+dgrl175_tokens <- tokens_select(dgrl175_tokens, pattern = c(stopwords("en"), my_stopwords), 
+                                selection = "remove", padding = TRUE)
 dgrl175_tokens <- tokens_tolower(dgrl175_tokens)
 print(dgrl175_tokens)
 
-## APPLY STEMMING ALGORITHM
-dgrl175_tokens <- tokens_wordstem(dgrl175_tokens, language = "english")
+### WORD COLLOCATIONS ### --> "future research" #42
+word_collocations <- textstat_collocations(dgrl175_tokens, min_count = 10)
+head(word_collocations, 50)
+
+#### n-gram search ####
+## Unigram ##
+dgrl175_unigram = tokens_ngrams(dgrl175_tokens, n = 1)
+dgrl175_unigram_dfm <- dfm(dgrl175_unigram)
+unigram_freq <-textstat_frequency(dgrl175_unigram_dfm)
+
+#plot wordcloud to show most frequent words
+textplot_wordcloud(dgrl175_unigram_dfm, max_words = 80,
+                   ordered_color = TRUE)
+
+## Bi-gram ##
+dgrl175_bigram = tokens_ngrams(dgrl175_tokens, n = 2)
+dgrl175_bigram_dfm <- dfm(dgrl175_bigram)
+bigram_freq <-textstat_frequency(dgrl175_bigram_dfm)
+
+#plot wordcloud to show most frequent words
+textplot_wordcloud(dgrl175_bigram_dfm, max_words = 50,
+                   ordered_color = TRUE)
+
+## Trigram ##
+dgrl175_trigram = tokens_ngrams(dgrl175_tokens, n = 3)
+dgrl175_trigram_dfm <- dfm(dgrl175_trigram)
+trigram_freq <-textstat_frequency(dgrl175_trigram_dfm)
+
+#plot wordcloud to show most frequent words
+textplot_wordcloud(dgrl175_trigram_dfm, max_words = 50,
+                   ordered_color = TRUE)
+
+## APPLY STEMMING ALGORITHM??
+#dgrl175_tokens <- tokens_wordstem(dgrl175_tokens, language = "english")
 
 ## No stemming to provide a more human readable descriptor (De Battisti et al 2015)
+
+## POS with SpaCyR ##
 
 ### How to view a document in a corpus
 dgrl175_corpus[[1170]]
