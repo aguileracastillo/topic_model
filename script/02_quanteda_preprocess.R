@@ -99,7 +99,7 @@ dgrl175_bigram_dfm <- dfm(dgrl175_bigram)
 bigram_freq <-textstat_frequency(dgrl175_bigram_dfm)
 
 #plot wordcloud to show most frequent words
-textplot_wordcloud(dgrl175_bigram_dfm, max_words = 50,
+textplot_wordcloud(dgrl175_bigram_dfm, max_words = 40,
                    ordered_color = TRUE)
 
 ## Trigram ##
@@ -110,9 +110,6 @@ trigram_freq <-textstat_frequency(dgrl175_trigram_dfm)
 #plot wordcloud to show most frequent words
 textplot_wordcloud(dgrl175_trigram_dfm, max_words = 30,
                    ordered_color = TRUE)
-
-
-## No stemming to provide a more human readable descriptor (De Battisti et al 2015)
 
 ## POS with SpaCyR ##
 
@@ -166,7 +163,7 @@ print(dfm_dgrl175)
 ndoc(dfm_dgrl175)
 nfeat(dfm_dgrl175)
 
-## 6664 documents and 18748 features (99.60% sparse)
+## 6664 documents and 18749 features (99.60% sparse)
 
 ### TOP FEATURES IN DFM_DGRL -- Best practice remove very rare and very common
 topfeatures(dfm_dgrl175, 250)
@@ -179,12 +176,12 @@ dfm_dgrl_tfidf <- dfm_tfidf(dfm_dgrl175)
 print(dfm_dgrl_tfidf)
 
 #### DIMENSIONALITY REDUCTION ####
-## TRIM VERY RARE FEATURES Sparse matrix > 1081 features 94.42% sparsity
+## TRIM VERY RARE FEATURES Sparse matrix > 6664 docs 1082 features 94.42% sparsity
 dfm_dgrl175_trim <- dfm_trim(dfm_dgrl175, min_termfreq = 100)
 print(dfm_dgrl175_trim)
 
 ## TRIM VERY COMMON FEATURES IF OCCURRENCE >10% OF DOCUMENTS => REMOVE
-## 6682 documents and 916 features 96.64% sparse
+## 6664 documents and 916 features 96.64% sparse
 dfm_dgrl175_trim_docfreq <- dfm_trim(dfm_dgrl175_trim, max_docfreq = 0.1, docfreq_type = "prop")
 print(dfm_dgrl175_trim_docfreq)
 topfeatures(dfm_dgrl175_trim_docfreq, 250)

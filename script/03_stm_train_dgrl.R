@@ -51,6 +51,11 @@ dgrl_stm17 <- stm(train_stm$documents,
 ## PRINT WORDS PER TOPIC
 data.frame(t(labelTopics(dgrl_stm17, n = 10)$prob))
 
+fx_17 <- estimateEffect(1:17 ~ s(year.x), 
+                       dgrl_stm17, 
+                       meta = out$meta, 
+                       uncertainty = "Global")
+
 ## SHARE OF TOPICS OVER ALL CORPUS ##
 plot(
   dgrl_stm17,
@@ -158,7 +163,7 @@ plot(dgrl_stm17, type = "perspectives", topics = c(6, 12))
 ## DOCUMENT TOPIC PROPORTIONS
 plot(dgrl_stm50, type = "hist", topics = sample(1:50, size = 9))
 
-## LDAvis k=24 ##
+## LDAvis k=17 ##
 toLDAvis(dgrl_stm17,
          train_stm$documents,
          R = 30,
