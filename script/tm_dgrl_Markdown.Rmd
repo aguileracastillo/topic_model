@@ -133,6 +133,8 @@ After the initial data wrangling, the relevant data for 6682 journal articles or
 ```{r articles by year, echo = FALSE, include = TRUE}
 ## Insert from 02_topic_model script
 dgrl175_tm <- to_corpus %>% filter(type.x == "journalArticle")
+dgrl175_tm <- dgrl175_tm %>% filter(year.x > 1999)
+dgrl175_tm <- dgrl175_tm %>% filter(year.x < 2022)
 dgrl175_tm %>% group_by(year.x) %>% count(sort = TRUE) %>%
   ggplot(aes(year.x, n)) +
   geom_line()+
@@ -164,6 +166,12 @@ Theory based Watanabe.
 Results
 
 ## Discussion
+
+The identification and visualization of bigrams and trigrams enrich the researcher's ability to have a quick overview of the co-ocurrence of words, this contribute to the quick detection of meaning word combinations contributing to the interpretation of the contents of the corpus.
+
+Key term extractions from the corpus
+
+Insert bigrams and trigrams graphics
 
 ## Conclusions
 

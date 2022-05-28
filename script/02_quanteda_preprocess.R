@@ -16,6 +16,7 @@ library(wordcloud)
 library(magrittr)
 library(LDAvis)
 library(ggplot2)
+library(spacyr)
 
 ## Topic Model of Journal Articles / 2000 ~ 2021
 dgrl175_tm <- to_corpus %>% filter(type.x == "journalArticle")
@@ -77,7 +78,7 @@ print(dgrl175_tokens)
 
 ### WORD COLLOCATIONS ### --> "future research" #42
 word_collocations <- textstat_collocations(dgrl175_tokens, min_count = 10)
-head(word_collocations, 50)
+head(word_collocations, 100)
 
 #### n-gram search ####
 ## Unigram ##
@@ -89,13 +90,13 @@ unigram_freq <-textstat_frequency(dgrl175_unigram_dfm)
 textplot_wordcloud(dgrl175_unigram_dfm, max_words = 80,
                    ordered_color = TRUE)
 
-## Bi-gram ##
+## Bigram ##
 dgrl175_bigram = tokens_ngrams(dgrl175_tokens, n = 2)
 dgrl175_bigram_dfm <- dfm(dgrl175_bigram)
 bigram_freq <-textstat_frequency(dgrl175_bigram_dfm)
 
 #plot wordcloud to show most frequent words
-textplot_wordcloud(dgrl175_bigram_dfm, max_words = 50,
+textplot_wordcloud(dgrl175_bigram_dfm, max_words = 35,
                    ordered_color = TRUE)
 
 ## Trigram ##
@@ -104,7 +105,7 @@ dgrl175_trigram_dfm <- dfm(dgrl175_trigram)
 trigram_freq <-textstat_frequency(dgrl175_trigram_dfm)
 
 #plot wordcloud to show most frequent words
-textplot_wordcloud(dgrl175_trigram_dfm, max_words = 50,
+textplot_wordcloud(dgrl175_trigram_dfm, max_words = 35,
                    ordered_color = TRUE)
 
 ## APPLY STEMMING ALGORITHM??
