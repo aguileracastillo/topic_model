@@ -7,6 +7,7 @@ library(quanteda)
 library(quanteda.textmodels)
 library(quanteda.textplots)
 library(quanteda.textstats)
+library(tidytext)
 library(seededlda)
 library(stm)
 library(stminsights)
@@ -19,9 +20,8 @@ library(ggplot2)
 library(spacyr)
 
 ## Topic Model of Journal Articles / 2000 ~ 2021
-dgrl175_tm <- to_corpus %>% filter(type.x == "journalArticle")
-dgrl175_tm <- dgrl175_tm %>% filter(year.x > 1999)
-dgrl175_tm <- dgrl175_tm %>% filter(year.x < 2022)
+dgrl175_tm <- to_corpus %>% filter(type.x == "journalArticle") %>%
+  filter(year.x > 1999) %>% filter(year.x < 2022)
 
 ## r articles by year to insert in md
 dgrl175_tm %>% group_by(year.x) %>% count(sort = TRUE) %>%
@@ -39,7 +39,6 @@ top_journals <- dgrl175_tm %>% count(pub_title.x) %>% arrange(desc(n))
 print(top_journals)
 write.csv(top_journals, "~/GitHub/topic_model/data\\top_journals.csv", row.names = TRUE)
 
-
 ## After detecting uninformative but pervasive string => Remove
 dgrl175_tm$abstract.x <- gsub("â€*?", " ", dgrl175_tm$abstract.x)
 
@@ -56,7 +55,6 @@ docvars(dgrl175_corpus, field = "year.x")
 ## Histogram # Tokens in dgrl175_corpus
 ## Is is poss to make a histogram with tokens number?
 
-
 ## TOKENIZATION & REMOVE PUNTUATION, SYMBOLS, NUMBERS, URL
 dgrl175_tokens <- tokens(dgrl175_corpus, what = "word",
                       remove_punct = TRUE,
@@ -68,7 +66,8 @@ dgrl175_tokens <- tokens(dgrl175_corpus, what = "word",
 
 ## my_stopwords from downstream eyeballing ##
 
-my_stopwords <- c("(c)", "elsevier", "ltd*", "all", "rights", "reserved", "abstract", "copyright*", "inc*", "e.g*")
+my_stopwords <- c("(c)", "elsevier", "ltd*", "all", "rights", "reserved",
+                  "abstract", "copyright*", "inc*", "e.g*")
 
 ## SELECT TOKENS (NO STOPWORDS) & TO LOWERCASE
 dgrl175_tokens <- tokens_select(dgrl175_tokens, pattern = c(stopwords("en"), my_stopwords), 
@@ -80,14 +79,18 @@ print(dgrl175_tokens)
 word_collocations <- textstat_collocations(dgrl175_tokens, min_count = 10)
 head(word_collocations, 100)
 
+## APPLY STEMMING ALGORITHM??
+dgrl175_tokens <- tokens_wordstem(dgrl175_tokens, language = "english")
+
 #### n-gram search ####
+
 ## Unigram ##
 dgrl175_unigram = tokens_ngrams(dgrl175_tokens, n = 1)
 dgrl175_unigram_dfm <- dfm(dgrl175_unigram)
 unigram_freq <-textstat_frequency(dgrl175_unigram_dfm)
 
 #plot wordcloud to show most frequent words
-textplot_wordcloud(dgrl175_unigram_dfm, max_words = 80,
+textplot_wordcloud(dgrl175_unigram_dfm, max_words = 100,
                    ordered_color = TRUE)
 
 ## Bigram ##
@@ -96,7 +99,7 @@ dgrl175_bigram_dfm <- dfm(dgrl175_bigram)
 bigram_freq <-textstat_frequency(dgrl175_bigram_dfm)
 
 #plot wordcloud to show most frequent words
-textplot_wordcloud(dgrl175_bigram_dfm, max_words = 35,
+textplot_wordcloud(dgrl175_bigram_dfm, max_words = 50,
                    ordered_color = TRUE)
 
 ## Trigram ##
@@ -105,11 +108,9 @@ dgrl175_trigram_dfm <- dfm(dgrl175_trigram)
 trigram_freq <-textstat_frequency(dgrl175_trigram_dfm)
 
 #plot wordcloud to show most frequent words
-textplot_wordcloud(dgrl175_trigram_dfm, max_words = 35,
+textplot_wordcloud(dgrl175_trigram_dfm, max_words = 30,
                    ordered_color = TRUE)
 
-## APPLY STEMMING ALGORITHM??
-#dgrl175_tokens <- tokens_wordstem(dgrl175_tokens, language = "english")
 
 ## No stemming to provide a more human readable descriptor (De Battisti et al 2015)
 

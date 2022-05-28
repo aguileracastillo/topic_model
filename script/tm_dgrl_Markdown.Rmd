@@ -169,7 +169,7 @@ Results
 
 The identification and visualization of bigrams and trigrams enrich the researcher's ability to have a quick overview of the co-ocurrence of words, this contribute to the quick detection of meaning word combinations contributing to the interpretation of the contents of the corpus.
 
-Key term extractions from the corpus
+Key term extractions from the corpus - Stemming
 
 Insert bigrams and trigrams graphics
 
