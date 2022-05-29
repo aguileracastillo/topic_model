@@ -23,6 +23,15 @@ library(spacyr)
 dgrl175_tm <- to_corpus %>% filter(type.x == "journalArticle") %>%
   filter(year.x > 1999) %>% filter(year.x < 2022)
 
+## Add time grouping
+dgrl175_tm <- mutate(dgrl175_tm, 
+                     period = ifelse(year.x %in% 2000:2004, "1",
+                                     ifelse(year.x %in% 2005:2009, "2",
+                                            ifelse(year.x %in% 2010:2014, "3",
+                                                   ifelse(year.x %in% 2015:2019, "4",
+                                                          ifelse(year.x %in% 2020:2021, "5", "0"))))))
+                                                 
+
 ## r articles by year to insert in md
 dgrl175_tm %>% group_by(year.x) %>% count(sort = TRUE) %>%
   ggplot(aes(year.x, n)) +
@@ -144,7 +153,8 @@ View(kw_work)
 ################
 dgrl175_dictionary <- dictionary(list(verb = c("reduc*", "replac*", "elimin*", "save", "lower", "substitut*", "autom*"),
                                       object = c("labor", "worker*", "human", "employe*", "manpow*", "job*"),
-                                      attribute = c("cost*", "expenditur*", "expense*", "hour*", "intens*", "task*", "time", "skill")))
+                                      attribute = c("cost*", "expenditur*", "expense*", "hour*", "intens*", "task*", "time", "skill"),
+                                      research = c("practic*", "implicat*", "literat*", "review*", "research*", "limitat*", "cas*", "stud*", "conten*", "analy*", "futur*", "method")))
 print(dgrl175_dictionary)
 
 ## Test tokens_lookup
@@ -204,7 +214,6 @@ n <- nrow(data_to_lda)
 splitter <- sample(1:n, round(n * 0.75))
 train_dgrl175 <- data_to_lda[splitter, ]
 test_dgrl175 <- data_to_lda[-splitter, ]
-
 
 
 #### TESTING SEEDEDLDA PACKAGE #### Do not run

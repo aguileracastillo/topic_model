@@ -5,7 +5,7 @@ library(stminsights)
 ## CONVERT FROM QUANTEDA TO STM
 train_stm <- convert(train_dgrl175, to = "stm")
 
-time <- as.factor(train_stm$meta$year.x)
+train_stm$meta$period <- as.numeric(train_stm$meta$period)
 
 out <- list(documents = train_stm$documents,
             vocab = train_stm$vocab,
@@ -17,7 +17,7 @@ str(train_stm)
 findingK <- searchK(train_stm$documents, 
                     train_stm$vocab, 
                     K = c(10, 30, 50, 80, 100),
-                    prevalence = ~ year.x, 
+                    prevalence = ~period, 
                     data = train_stm$meta, 
                     init.type = "Spectral",
                     verbose=FALSE)
@@ -30,35 +30,55 @@ plot(findingK)
 find_smallestK <- searchK(train_stm$documents, 
                           train_stm$vocab, 
                           K = c(5:25),
-                          prevalence = ~ year.x, 
+                          prevalence = ~ period, 
                           data = train_stm$meta, 
                           init.type = "Spectral",
                           verbose=FALSE)
 
 plot(find_smallestK)
 
-## Potential at k = 17, 21
+find_mediumK <- searchK(train_stm$documents, 
+                          train_stm$vocab, 
+                          K = c(25:50),
+                          prevalence = ~ period, 
+                          data = train_stm$meta, 
+                          init.type = "Spectral",
+                          verbose=FALSE)
 
-## CALCULATE STM k = 17 ##
-dgrl_stm17 <- stm(train_stm$documents, 
+plot(find_mediumK)
+
+## Potential at k = 21, 24
+
+## CALCULATE STM k = 21 ##
+dgrl_stm21 <- stm(train_stm$documents, 
                   train_stm$vocab, 
-                  K = 17,
-                  prevalence = ~ year.x,
+                  K = 21,
+                  prevalence = ~ period,
                   max.em.its = 75,
                   data = train_stm$meta, 
                   init.type = "Spectral")
 
 ## PRINT WORDS PER TOPIC
-data.frame(t(labelTopics(dgrl_stm17, n = 10)$prob))
+data.frame(t(labelTopics(dgrl_stm21, n = 10)$prob))
 
-fx_17 <- estimateEffect(1:17 ~ s(year.x), 
-                       dgrl_stm17, 
+train21_labels <- labelTopics(dgrl_stm21, n = 10)
+train21_labels
+
+fx_21 <- estimateEffect(1:21 ~ year.x + period, 
+                       dgrl_stm21, 
                        meta = out$meta, 
                        uncertainty = "Global")
 
+## Topic Prevalence over Time ##
+par(mfrow=c(3,3))
+for (i in seq_along(sample(1:21, size = 9)))
+{
+  plot(fx_21, "year.x", method = "continuous", topics = i, main = paste0(train21_labels$prob[i,1:3], collapse = ", "), printlegend = F)
+}
+
 ## SHARE OF TOPICS OVER ALL CORPUS ##
 plot(
-  dgrl_stm17,
+  dgrl_stm21,
   type = "summary",
   text.cex = 0.5,
   main = "STM topic shares",
@@ -133,8 +153,6 @@ plot(
   text.cex = 0.5,
   main = "STM topic shares",
   xlab = "Share estimation")
-
-
 
 
 ## Highest Prob / FREX / LIFT / Score
