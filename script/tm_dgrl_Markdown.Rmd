@@ -69,7 +69,7 @@ The relationship between digitalization and work is complex and multifaceted, it
 
 This initial argumentation lead us to formulate the following research questions:
 
-RQ1: What does topic modeling techniques applied to DGRL v17.5 reveal about the conceptual, intellectual and thematic evolution this academic field? --\> Run LDA
+RQ1: What does topic modeling techniques applied to the Digital Government Research Library v17.5 reveal about the conceptual, intellectual and thematic evolution this academic field? --\> Run LDA
 
 RQ2: What structural changes can be interpreted from the topic model? --\> (Covariates)
 
