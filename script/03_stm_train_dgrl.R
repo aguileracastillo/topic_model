@@ -1,5 +1,8 @@
 #### Structural Topic Model ####
 library(stm)
+library(dplyr)
+library(broom)
+library(tidytext)
 library(stminsights)
 
 ## CONVERT FROM QUANTEDA TO STM
@@ -47,7 +50,7 @@ find_mediumK <- searchK(train_stm$documents,
 
 plot(find_mediumK)
 
-## Potential at k = 21, 24
+### Potential at k = 21, 24
 
 ## CALCULATE STM k = 21 ##
 dgrl_stm21 <- stm(train_stm$documents, 
@@ -64,7 +67,7 @@ data.frame(t(labelTopics(dgrl_stm21, n = 10)$prob))
 train21_labels <- labelTopics(dgrl_stm21, n = 10)
 train21_labels
 
-fx_21 <- estimateEffect(1:21 ~ year.x + period, 
+fx_21 <- estimateEffect(1:21 ~ period, 
                        dgrl_stm21, 
                        meta = out$meta, 
                        uncertainty = "Global")
@@ -83,6 +86,34 @@ plot(
   text.cex = 0.5,
   main = "STM topic shares",
   xlab = "Share estimation")
+
+## TIDY APPROACH TO GRAPHICS ##
+
+# tidy the word-topic combinations
+td_beta21 <- tidy(dgrl_stm21)
+td_beta21
+
+# Examine the topics
+td_beta21 %>%
+  group_by(topic) %>%
+  top_n(10, beta) %>%
+  ungroup() %>%
+  ggplot(aes(term, beta)) +
+  geom_col() +
+  facet_wrap(~ topic, scales = "free") +
+  coord_flip()
+
+# tidy the document-topic combinations, with optional document names
+td_gamma21 <- tidy(dgrl_stm21, matrix = "gamma",
+                 document_names = rownames(train_stm))
+td_gamma21
+
+
+# tidy theta
+td_theta21 <- tidy(dgrl_stm21, matrix = "theta",
+                   document_names = rownames(train_stm))
+
+td_theta21
 
 ## Search for medium K
 finding_smallK <- searchK(train_stm$documents, 
