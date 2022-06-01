@@ -9,6 +9,7 @@ library(stminsights)
 train_stm <- convert(train_dgrl175, to = "stm")
 
 train_stm$meta$period <- as.numeric(train_stm$meta$period)
+train_stm$meta$year.x <- as.numeric(train_stm$meta$year.x)
 
 out <- list(documents = train_stm$documents,
             vocab = train_stm$vocab,
@@ -20,7 +21,7 @@ str(train_stm)
 findingK <- searchK(train_stm$documents, 
                     train_stm$vocab, 
                     K = c(10, 30, 50, 80, 100),
-                    prevalence = ~period, 
+                    prevalence = ~year.x, 
                     data = train_stm$meta, 
                     init.type = "Spectral",
                     verbose=FALSE)
@@ -33,7 +34,7 @@ plot(findingK)
 find_smallestK <- searchK(train_stm$documents, 
                           train_stm$vocab, 
                           K = c(5:25),
-                          prevalence = ~ period, 
+                          prevalence = ~ year.x, 
                           data = train_stm$meta, 
                           init.type = "Spectral",
                           verbose=FALSE)
@@ -43,34 +44,107 @@ plot(find_smallestK)
 find_mediumK <- searchK(train_stm$documents, 
                           train_stm$vocab, 
                           K = c(25:50),
-                          prevalence = ~ period, 
+                          prevalence = ~ year.x, 
                           data = train_stm$meta, 
                           init.type = "Spectral",
                           verbose=FALSE)
 
 plot(find_mediumK)
 
-### Potential at k = 21, 24
+### Write potential options for K (S/M/L)
 
-## CALCULATE STM k = 21 ##
-dgrl_stm21 <- stm(train_stm$documents, 
+## CALCULATE STM k = 22 ##
+dgrl_stm22 <- stm(train_stm$documents, 
                   train_stm$vocab, 
-                  K = 21,
-                  prevalence = ~ period,
+                  K = 22,
+                  prevalence = ~ year.x,
                   max.em.its = 75,
                   data = train_stm$meta, 
                   init.type = "Spectral")
 
 ## PRINT WORDS PER TOPIC
-data.frame(t(labelTopics(dgrl_stm21, n = 10)$prob))
+data.frame(t(labelTopics(dgrl_stm22, n = 10)$prob))
+
+train22_labels <- labelTopics(dgrl_stm22, n = 10)
+train22_labels
+
+## ESTIMATE EFFECT
+fx_22 <- estimateEffect(1:22 ~ year.x, 
+                        dgrl_stm22, 
+                        meta = out$meta, 
+                        uncertainty = "Global")
+
+## VISUALIZE MODEL
+
+plot(fx_22, "year.x", method = "continuous", topics = 7,
+     model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
+axis(1,at=c(2000,2005,2010,2015,2020),
+     labels=c(2000,2005,2010,2015,2020),las=2)
+
+plot(fx_22, "year.x", method = "continuous", topics = 11,
+     model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
+axis(1,at=c(2000,2005,2010,2015,2020),
+     labels=c(2000,2005,2010,2015,2020),las=2)
+
+plot(fx_22, "year.x", method = "continuous", topics = 4,
+     model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
+axis(1,at=c(2000,2005,2010,2015,2020),
+     labels=c(2000,2005,2010,2015,2020),las=2)
+
+
+## Topic Prevalence over Time ##
+par(mfrow=c(3,3))
+for (i in seq_along(sample(1:22, size = 9)))
+{
+  plot(fx_22, "year.x", method = "continuous", topics = i, main = paste0(train22_labels$prob[i,1:3], collapse = ", "), printlegend = F)
+}
+
+## SHARE OF TOPICS OVER ALL CORPUS ##
+plot(
+  dgrl_stm22,
+  type = "summary",
+  text.cex = 0.5,
+  main = "STM topic shares",
+  xlab = "Share estimation") 
+
+### MEDIUM SIZE K
+
+## CALCULATE STM k = 46 ##
+dgrl_stm46 <- stm(train_stm$documents, 
+                  train_stm$vocab, 
+                  K = 46,
+                  prevalence = ~ year.x,
+                  max.em.its = 75,
+                  data = train_stm$meta, 
+                  init.type = "Spectral")
+
+## PRINT WORDS PER TOPIC
+data.frame(t(labelTopics(dgrl_stm46, n = 10)$prob))
 
 train21_labels <- labelTopics(dgrl_stm21, n = 10)
 train21_labels
 
-fx_21 <- estimateEffect(1:21 ~ period, 
+fx_21 <- estimateEffect(1:21 ~ year.x, 
                        dgrl_stm21, 
                        meta = out$meta, 
                        uncertainty = "Global")
+
+
+plot(fx_21, "year.x", method = "continuous", topics = 7,
+     model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
+axis(1,at=c(2000,2005,2010,2015,2020),
+     labels=c(2000,2005,2010,2015,2020),las=2)
+
+plot(fx_21, "year.x", method = "continuous", topics = 11,
+     model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
+axis(1,at=c(2000,2005,2010,2015,2020),
+     labels=c(2000,2005,2010,2015,2020),las=2)
+
+plot(fx_21, "year.x", method = "continuous", topics = 4,
+     model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
+axis(1,at=c(2000,2005,2010,2015,2020),
+     labels=c(2000,2005,2010,2015,2020),las=2)
+
 
 ## Topic Prevalence over Time ##
 par(mfrow=c(3,3))
