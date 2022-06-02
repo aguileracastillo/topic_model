@@ -18,6 +18,7 @@ library(naniar)
 library(knitr)
 library(magrittr)
 library(ggplot2)
+library(quanteda.textplots)
 # Import DGRL version 17.5 (2021/12/15) 16531 References
 # https://faculty.washington.edu/jscholl/dgrl/index.php 
 # Master RIS file 
@@ -31,6 +32,7 @@ mf_ris <- mf_ris %>% rename(type = `Item.Type`, year = `Publication.Year`, autho
 
 # Corpus after initial cleaning
 to_corpus <- read.csv(here("data", "to_corpus.csv"))
+
 ```
 
 ```{r setup, include=FALSE}
@@ -157,6 +159,11 @@ Text as data methods are inherently iterative thus requiring the adoption of sui
 
 Quanteda pre-processing workflow includes functions that allow the finding of multi-word expressions via collocation analysis, this might be useful to identify proper names and other meaningful words. However, the "killer application" is the finding of n-grams, meaning the identification of single words (unigrams), or sequence of words (bigrams, trigrams) that tend to occur together with high frequency and may carry valuable information about the contents of the corpus.
 
+```{r , echo=FALSE, out.width="50%", fig.cap="Bigrams Visualization"}
+
+knitr::include_graphics("foo/bar.png")
+```
+
 ```{r bigrams_dgrl, echo = FALSE, include = TRUE, fig.align = "center", out.width= "75%"}
 textplot_wordcloud(dgrl175_bigram_dfm, max_words = 40,
                    ordered_color = TRUE)
@@ -166,7 +173,7 @@ This visualization showsthe top 40 bigrams found in the corpus, it can be seen t
 
 Other salient bigrams include "smart_citi", "local_govern", and "open_data". A closer examination provides hints on methodological aspects, the bigram "case_studi" carries a lot of meaning informing about the prevalence of this method in the sample. The prevalence of theoretical frameworks like "public_valu", for the public value theory shows the important evolution from New Public Management to alternative theoretical frameworks [@panagiotopoulos2019]. For a summary of the dominant theoretical frameworks used in Digital Government Research refer to the work of Bannister and Connelly [@bannister2015].
 
-```{r trigrams_dgrl, echo = FALSE, include = TRUE, fig.align = "center", out.width= "75%"}}
+```{r trigrams_dgrl, echo = FALSE, include = TRUE, fig.align = "center", out.width= "75%"}
 textplot_wordcloud(dgrl175_trigram_dfm, max_words = 30,
                    ordered_color = TRUE)
 ```
