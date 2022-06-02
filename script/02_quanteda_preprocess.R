@@ -86,7 +86,7 @@ print(dgrl175_tokens)
 
 ### WORD COLLOCATIONS ### --> "future research" #42
 word_collocations <- textstat_collocations(dgrl175_tokens, min_count = 10)
-head(word_collocations, 100)
+head(word_collocations, 25)
 
 ## APPLY STEMMING ALGORITHM??
 dgrl175_tokens <- tokens_wordstem(dgrl175_tokens, language = "english")

@@ -49,7 +49,7 @@ Topic modeling is an iterative process, thus this manuscript explores the traini
 
 [^1]: Best practices found in the literature suggest the split of sample data for topic modeling between a training and test data set. The structural topic model used in this manuscript have been trained on 75% of the data. A subsequent product will make use of the held out data.
 
-The Digital Government Research Library is a collection of bibliographic references associated with Digital Government scholarship. In its 17.5 version, it contains more than 16500 references, including journal articles, book chapters and conference papers. Contributions to this research domain come from established disciplines such as information science, computer science, organization science, sociology, public administration, and political science [@scholl2021].
+The corpus used for this analysis is a subset of the journal articles in the version 17.5 of the Digital Government Reference Library. As argued by @grimmer2022a, texts are "expensive to produce, gather and collate", the contents of previous versions of this data set have been used as primary or secondary source of data exploring the Digital Government field. The Digital Government Research Library is a collection of bibliographic references associated with Digital Government scholarship. In its 17.5 version, it contains more than 16500 references, including journal articles, book chapters and conference papers. Contributions to this research domain come from established disciplines such as information science, computer science, organization science, sociology, public administration, and political science [@scholl2021].
 
 Previous explorations of this reference library have revealed the thematic evolution using bibliometric and scientometric approaches [@alcaide-muñoz2017], and identified the most influential journals, conferences and leading scholars in the field [@scholl2021a]. This data set has been used as well for conducting a systematic review on the impacts of e-Government using a public value perspective [@maclean2021a]. According to [@webster2002], accumulating a "complete census" of the relevant literature and following a concept-centric framework are crucial in a literature review. Concept-centric approaches with topic modeling might be conducted via the use of "seed word dictionaries" in semi-supervised topic models [@watanabe2020], but this technique is out of the scope of this manuscript.
 
@@ -101,64 +101,36 @@ Topic modeling techniques applied to bibliographic data have been explored in di
 
 Structural Topic Modeling is a conceptual and technical evolution of the the typical topic modeling approach by incorporating the estimation of topic prevalence using covariates found in the metadata of the corpus [@roberts2016]. Applications of this method to bibliographic data have estimated the role of covariates such as temporal and geographic information in the analysis of the dissertation titles in economics and chemistry in East and West Germany before and after the German reunification [@rehs2020].
 
-LDA is an unsupervised machine learning method which means the relationship between words and topics is ignored prior to the execution of the model. Thus is deemed good practice to split the data between a training set and a test set. Our approach was to train the model with 75% of the corpus, leaving the remaining proportion for testing purposes. The optimal number of topics (k) is unknown and the researcher should selected this parameter. In general, a low number of topics is used for an overview, instead, a higher number of topics is used for more granular analysis of the corpus [@asmussen2019a].
+As advised by [@barberá2021], there are "consequential decisions" in the methodological choices of automated text classification and the fact that human validation is a key component of text as data methods. The selection of a corpus in itself is deemed a crucial decision that can be prone to four types of bias: resource bias, incentive bias, medium bias and retrieval bias, these selection biases are well acknowledged in the text as data literature [@grimmer2022]. It may be probable that the DGRL v17.5 has omitted important research that is not included in this collection. All decisions concerning text as data methodologies are "consequential", our aim is to make our workflow reproducible by documenting all the choices in the scripts associated with this document.
 
-The evaluation of topic models can be performed through the calculation of goodness of fit statistics and the iterative calibration of the model to increase interpretability via "eye balling" the topics and their word-probability, and human judgement, meaning the implicit knowledge of the researcher on the subject matter of a corpus. A rule of thumb found in the documentation of the stm R package states that for small corpora, like the one used for this analysis containing "a few hundred to a few thousand" documents, 5 to 50 topics is "a good place to start. In addition, the stm R package includes functions for model selection, visualization and estimation of the effects of covariates in topic prevalence.
+LDA is an unsupervised machine learning method which means the relationship between words and topics is ignored prior to the execution of the model. Thus is deemed good practice to split the data between a training set and a test set. Our approach is to train the model with 75% of the corpus, leaving the remaining proportion for testing purposes. The optimal number of topics (k) is unknown and the researcher should selected this parameter, there is technically no "right number of topics" and this choice might be specific to a corpus and research design [@grimmer2013]. In general, a low number of topics is used for an overview, instead, a higher number of topics is used for more granular analysis of the corpus [@asmussen2019a].
 
-Among the goodness of fit statistics is the held-out likelihood, also know as perplexity, which measures how well the probability model predicts unseen data. The lower the number of this statistic the higher the accuracy of the model for this task. Semantic coherence is another goodness of fit measure that is maximized when the most probable words in a topic co-occur frequently [@roberts2014].
+The evaluation of topic models can be performed through the calculation of goodness of fit statistics and the iterative calibration of the model to increase interpretability via "eye balling" the topics and their word-probability, and human judgement, meaning the implicit knowledge of the researcher on the subject matter of a corpus. A rule of thumb found in the documentation of the stm R package states that for small corpora, like the one used for this analysis containing "a few hundred to a few thousand" documents, 5 to 50 topics is "a good place to start, then an iterative calibration of the model is due. In addition, the stm R package includes functions for model selection, visualization and estimation of the effects of covariates in topic prevalence [@roberts2019a].
 
-Lower bound
+Four goodness of fit measures are usually considered when exploring the optimal number of topics to apply to a corpus: perplexity, coherence, residuals and lower bound. The held-out likelihood, also know as perplexity, measures how well the probability model predicts unseen data, a lower number in this measure implies a higher the accuracy of the model. Semantic coherence is maximized when the most probable words in a topic co-occur frequently [@roberts2014]. The lower bound indicator explains the convergence in the iterations of the model, when there is small change among iterations the model is considered converged. As for residuals, this diagnostic measure calculates the sample dispersion, if the number for this value is greater than one (\>1) it suggests that the number of topics are set too low [@taddy2011].
 
-Residuals
+Text is a type of unstructured data that requires intensive processing to be able to work with it. This means that before being able to create and analyze a corpus object containing the information deemed of interest, "consequential decisions" have to be made. It is considered a best practice to use version control systems in the all the phases of the analysis for efficiency but also for replicability and transparency purposes.
 
-The workflow for topic modeling includes text pre-processing, meaning further data cleaning and data transformation. This means that before creating a corpus object with the available information from the DGRL v17.5, the text should be prepared before running the initial explorations. Our main unit of analysis is the abstract of the journal articles contained in the processed data set of the DGRL v17.5. Text as a type of unstructured data can be structured for processing using the bag of words approach or the splitting of abstracts into separate word units or terms and every occurrence of a term is defined as a token. The creation of a bag of words is known as tokenizing. The bag of words approach deliberately ignores the syntax or structure of the text, additional treatment of text include the elimination of punctuation, transform each word to lowercase and in some cases stemming which is a way to reduce a word to its stem or root in order to reduce the sparsity of the Document Frequency Matrix.
+Text data is incredibly diverse in length and contents. Social media posts, political speeches, press releases and customer reviews are the usual targets of this kind analysis. For researchers exploring bibliographic data the unit of analysis can be the title of the document, the abstract or the whole text of the documents in the corpus. Text data can be coerced into a type of structure for processing using the bag of words approach. The bag of words assumption means that the order of words within each document is ignored and the thematic structure of the document can be inferred by the frequency distribution of words [@maier2018a].
 
-Probabilistic topic models are a type of unsupervised machine learning processes that allow the exploration of a vast collection of documents (also known as corpus), perform the automated classification of large amounts of textual data and hence assist scholars in research tasks such as discovery, measurement, prediction and causal inference.
+The bag of words approach deliberately ignores the syntax or structure of the text, the creation of a bag of words is known as tokenizing. Additional treatment of text include the elimination of punctuation, transform each word to lowercase and in some cases stemming which is a way to reduce a word to its stem or root in order to reduce the sparsity of the resulting matrices. Even though these steps may seem difficult to understand at first, the publication of open software packages, the availability of vast documentation, tutorials and vibrant online knowledge communities have lowered the technical barriers of this powerful computational tool for research.
 
-The implementation of LDA to textual data has a relatively agreed-upon workflow.
-
-Model optimization measures: predictive likelihood \* perplexity \* coherence \* exclusivity \* cutoff criteria loadings Antons et al 2016.
-
-Computational tools like topic models are enabling researchers to explore and analyze larger data sets of bibliographic information to conduct evidence synthesis.
-
-The scholarly exploration of the linkages between digitalization and the organization of work remains relatively unexplored in a public sector context.
-
-Maier
-
-Evidence synthesis --\>
-
-What is digital government?
-
-Digital Government Research (DGR) as a multidisciplinary research field is experiencing rapid growth in its research output. The diversity in scope and methods of these disciplines converge in the field of Digital Government enriching it, but at the same time, raising questions as regards the lack of native theoretical developments, thus relying upon frameworks, theories, and conceptualizations from related disciplines [@bannister2015].
-
-Collect names (Buffat et al)
-
-STM
-
-reproducibility
-
-human interpretable
-
-Insert list of top journals.
+Computational tools like topic models are enabling researchers to explore and analyze larger data sets of bibliographic information to conduct evidence synthesis by facilitating the exploration of a vast corpora, perform the automated classification of textual data and assist scholars in research tasks such as discovery, measurement, prediction and causal inference.
 
 ## Methods and Data
 
 The Digital Government Research Library version 17.5 is a large curated repository of publications contributing to the field of Digital Government Research (DGR), it contains more than 16500 references among its records. The most prevalent types of documents are conference papers (33.2%) and journal articles (50%). The inclusion criteria of the DGRL are: to have passed academic peer review, to be published in an academic journal, to be published in English language [@scholl2021]. The Library can be downloaded from the website [DGRL](https://faculty.washington.edu/jscholl/dgrl/index.php).
 
-As advised by [@barberá2021], there are "consequential decisions" in the methodological choices of automated text classification and the fact that human validation is a key component of text as data methods. The selection of a corpus in itself is deemed a crucial decision that can be prone to four types of bias: resource bias, incentive bias, medium bias and retrieval bias, these selection biases are well acknowledged in the text as data literature [@grimmer2022]. It may be probable that the DGRL v17.5 has omitted important research that is not included in this collection. All decisions concerning text as data methodologies are "consequential", our aim is to make our workflow reproducible by documenting all the choices in the scripts associated with this document.
-
-The script for the initial data cleaning and wrangling, including the R functions and packages used, is available for revision, clarity, and replicability. A second script describes the phase of pre-processing related to preparing the unstructured text data into a format that is usable for analysis. Steps like tokenization, removal of stopwords, symbols, and special characters, and conversion to lowercase, are part of this phase. The pre-processing was conducted in R statistical software using the functions of the quanteda R package [@benoit2018].
-
-The download package contains three types of bibliographic files BibTeX, RIS, and ENL (EndNote). In its raw and unprocessed form, the data has a large proportion of missing values, mostly clustered in metadata not considered relevant for the analysis. By exploring the BiBTeX, RIS and ENL files, we noticed that the data sets had a large amount of missing data and that some information was available in a file type but not other. For this exercise, the following variables have been deemed of interest for the analysis: type of reference (conference paper or journal article), year of publication, author, document title, publication title and the presence of an abstract. Text is a type of unstructured data that requires meticulous processing before using it. For replicability purposes, the script for data wrangling, cleaning and overall processing of the topic model is available in the scripts section of the [GitHub](https://github.com/aguileracastillo/topic_model) repository for this project.
-
 ```{r types of documents, echo=FALSE}
 by_type <- mf_ris %>% count(`type`) %>% arrange(desc(n))
-kable(by_type, col.names = c("Document Type", "Number of Documents"), align = "cc", caption = "Table 1. Contents of DGRL v17.5 without pre-processing")
+kable(by_type, col.names = c("Document Type", "Number of Documents"), align = "cc", caption = "Contents of DGRL v17.5 without processing")
 ```
 
-The corpus used for this analysis is a subset of the journal articles in the version 17.5 of the Digital Government Reference Library. As argued by @grimmer2022a, texts are "expensive to produce, gather and collate", the contents of previous versions of this data set have been used as primary or secondary source of data exploring the Digital Government field. The approach of this chapter is not as ambitious as Ambrosino *et. al.*, nor focalized on a single journal publication as Antons *et. al.*, instead the aim is to analyze the abstracts of 6682 journal articles in the version 17.5 of the DGRL via the application of a topic model.
+The download package contains three types of bibliographic files BibTeX, RIS, and ENL (EndNote). In its raw and unprocessed form, the data has a large proportion of missing values, mostly clustered in metadata not considered relevant for the analysis. By exploring the different bibliographic formats, BiBTeX, RIS and ENL files, we noticed that the data sets had a large amount of missing data and that some information was available in a file type but not other. The script for initial data wrangling and data transformation documents the steps and choices made to the initial filtering and de-duplication. The unique digital object identifier (DOI) served as a exact key to merge the data sets, also as a "quality control" step to retain documents with valid DOIs.
 
-After the initial data wrangling, the relevant data for 6682 journal articles or approximately 80.7% of the total number of articles in the DGRL v17.5 is further processed to create a corpus, the initial step towards a topic model. A visualization in the publication trend demonstrate an incipient increase in number of journal articles after year 2000 and a steep increase in the beginning of the 2010 decade to present.
+The following variables have been deemed of interest for the analysis: type of reference (conference paper or journal article), year of publication, author, document title, publication title and the presence of an abstract. Text is a type of unstructured data that requires meticulous processing before using it. For replicability purposes, the script for the initial data cleaning and wrangling, including the R functions and packages used is available for revision, clarity, and replicability purposes and made publicly available in the scripts section of the [GitHub](https://github.com/aguileracastillo/topic_model) repository for this project.
+
+After the initial data wrangling, the relevant data for 6682 journal articles or approximately 80.7% of the total number of articles in the DGRL v17.5 is further processed to create a corpus, the initial step towards a topic model. Documents published before year 2000 were dropped from further analysis due to their negligible quantity, also a single observation from year 2022. A visualization in the publication trend demonstrate an incipient increase in number of journal articles after year 2000 and a steep increase in the beginning of the 2010 decade to present.
 
 ```{r articles by year, echo = FALSE, include = TRUE, fig.align = "center", out.width= "75%"}
 ## Insert from 02_topic_model script
@@ -172,24 +144,50 @@ dgrl175_tm %>% group_by(year.x) %>% count(sort = TRUE) %>%
   ylab ("Number of Documents")
 ```
 
-Stop words are context specific
+The subsequent step is the creation of a corpus object. A second script describes the phase of pre-processing related to preparing the unstructured text data into a format that is usable for analysis. Steps like tokenization, removal of stopwords, symbols, and special characters, and conversion to lowercase, are part of this phase [@maier2018a]. There are several software packages for text analysis, mining, and visualization, our choice for pre-processing was conducted in R statistical software using the functions of the quanteda R package [@benoit2018]. After several iterations, we deemed pertinent the use of an stemming algorithm to aid to the dimensionality reduction in the matrices by cutting words to their root form.
 
-Split into train and test data set Define K perplexity Asmussen (more or less topics) granularity.
-
-//
-
-LDA? Unsupervised learning... latent topics.
-
-As suggested by @webster2002a, a complete review covers the relevant literature and it is not limited by a single research methodology, set of journals or geographic region. In this exercise, the top 10 publication titles (journal name) in the corpus represent almost a third of the documents in the sample. By making quick title search in the Scimago Journal Rank website, it can be established that all names on the table are listed in this database.
+As suggested by @webster2002a, a complete review covers the relevant literature and it is not limited by a single research methodology, set of journals or geographic region, topic models contribute to expand the options available to researchers and the scope and reach of their inquiries. In this exercise, the top 10 publication titles (journal name) in the corpus represent almost a third of the documents in the sample. By making quick title search in the Scimago Journal Rank website, it can be established that all publication titles on the table are listed in this database.
 
 ```{r top 10 journals in the sample, echo = FALSE, include = TRUE}
 top10 <- dgrl175_tm %>% count(pub_title.x) %>% arrange(desc(n)) %>% head(10)
-kable(top10, col.names = c("Publication Title", "Number of Documents in Corpus"), align = "cc", caption = "Table 2. Top 10 Journals in represented in the corpus")
+kable(top10, col.names = c("Publication Title", "Number of Documents in Corpus"), align = "cc", caption = "Top 10 Journals in represented in the corpus")
 ```
+
+Text as data methods are inherently iterative thus requiring the adoption of suitable workflows and best practices for model calibration and version control systems of its operations, even though stop words are considered language specific and Natural Language Processing applications are advancing in sophistication, some stop words are corpus specific. Case in point, in the downstream of this process we found a strings with no meaning at all and a cluster of words that were very prevalent in the corpus but added no value to the analysis including "elsevier", "ltd\*", "all", "rights", "reserved", "abstract", "copyright\*", "inc\*", "e.g\*".
+
+Quanteda pre-processing workflow includes functions that allow the finding of multi-word expressions via collocation analysis, this might be useful to identify proper names and other meaningful words. However, the "killer application" is the finding of n-grams, meaning the identification of single words (unigrams), or sequence of words (bigrams, trigrams) that tend to occur together with high frequency and may carry valuable information about the contents of the corpus.
+
+```{r bigrams_dgrl, echo = FALSE, include = TRUE, fig.align = "center", out.width= "75%"}
+textplot_wordcloud(dgrl175_bigram_dfm, max_words = 40,
+                   ordered_color = TRUE)
+```
+
+This visualization showsthe top 40 bigrams found in the corpus, it can be seen that the words have been stemmed to their root form, the most salient bigram is "social_media" implying the centrality of these platforms for digital government scholarship, from adoption and use by public organizations [@mergel2013; @mergel2013], to the role of social media in political campaigns [@karlsen2010; @mascheroni2013], the regulation of disinformation [@marsden2020], and the provision of public services [@tursunbayeva2017; @criado2021].
+
+Other salient bigrams include "smart_citi", "local_govern", and "open_data". A closer examination provides hints on methodological aspects, the bigram "case_studi" carries a lot of meaning informing about the prevalence of this method in the sample. The prevalence of theoretical frameworks like "public_valu", for the public value theory shows the important evolution from New Public Management to alternative theoretical frameworks [@panagiotopoulos2019]. For a summary of the dominant theoretical frameworks used in Digital Government Research refer to the work of Bannister and Connelly [@bannister2015].
+
+```{r trigrams_dgrl, echo = FALSE, include = TRUE, fig.align = "center", out.width= "75%"}}
+textplot_wordcloud(dgrl175_trigram_dfm, max_words = 30,
+                   ordered_color = TRUE)
+```
+
+This visualization shows the top 30 trigrams found in the corpus, clearly dominant in the wordcloud is "open_govern_data", this is a concept usually associated with the public value theory. A literature review on the public value of e-government found that open government data contributes to values like openness, transparency, participation, communication and collaboration [@twizeyimana2019].
+
+The next salient trigram is "structur_equat_model", the dominant position of this trigram refering to a quantitative method contrasts the reported over-reliance of qualitative methods in the digital government field, also the trigram "partial_least_squar" hint of the importance of these methodologies in the corpus. Definitely something worth exploring deeper.
+
+The trigram "technolog_accept_model" refers to the technology acceptance model found in the seminal work of [@davis1989] and adapted to the digital government field by [@hung2006], also "new_public_manag" provides a glimpse of the prevalence of this theoretical "paradigm" in the corpus [@oflynn2007].
+
+Split into train and test data set Define K perplexity Asmussen (more or less topics) granularity.
+
+// The selection of the unit of analysis, for this exercise is the abstracts of the journal articles found in the Digital Government Research Library.
+
+LDA? Unsupervised learning... latent topics.
 
 Dictionary based Quantitative Text Analysis Based on the work of Montobbio et al. 2022
 
 Truncated words
+
+Major thematic clusters are identified
 
 Theory based Watanabe.
 
@@ -200,6 +198,8 @@ Results
 The identification and visualization of bigrams and trigrams enrich the researcher's ability to have a quick overview of the co-ocurrence of words, this contribute to the quick detection of meaning word combinations contributing to the interpretation of the contents of the corpus.
 
 Key term extractions from the corpus - Stemming
+
+Collect names (Buffat et al)
 
 Insert bigrams and trigrams graphics
 
