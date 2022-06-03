@@ -75,11 +75,11 @@ Supervised, semi-supervised and unsupervised machine learning techniques for tex
 
 This initial argumentation lead us to formulate the following research questions:
 
-RQ1: What does topic modeling techniques applied to the Digital Government Research Library v17.5 reveal about the conceptual, intellectual and thematic evolution this academic field? --\> Run LDA
+RQ1: What does topic modeling techniques applied to the Digital Government Research Library v17.5 reveal about the conceptual, intellectual and thematic evolution this academic field? --\> Text mining and STM
 
 RQ2: What structural changes can be interpreted from the topic model? --\> (Covariates)
 
-RQ3: What does the extant literature (corpus) on Digital Government reveal on the linkage between digitalization and the organization of work? -- SeededLDA?
+RQ3: What does the extant literature (corpus) on Digital Government reveal on the linkage between digitalization and the organization of work? -- SeededLDA? (in-progress)
 
 The objective of this exercise is to analyze and present the results of the application of a structural topic model, a novel method for evidence synthesis, in the exploration of the effects of digitalization in the organization of work in the public sector. The advent of computerization and digitalization has had broad impacts in most aspects of contemporary life, including scientific research. Digitalization has influenced how research is designed and conducted, allowing for the creation and increased availability of ever-growing data sets that require powerful computational methods and enhanced tools to handle abundant information [@meyer2015]. Therefore, this manuscript aims to offset the reported "excessive use" of qualitative methods in e-government research [@arduini2014a], and answering to calls in the extant literature towards the pursuit of quantitative and empirically oriented approaches [@wirtz2016].
 
@@ -148,7 +148,7 @@ dgrl175_tm %>% group_by(year.x) %>% count(sort = TRUE) %>%
 
 The subsequent step is the creation of a corpus object. A second script describes the phase of pre-processing related to preparing the unstructured text data into a format that is usable for analysis. Steps like tokenization, removal of stopwords, symbols, and special characters, and conversion to lowercase, are part of this phase [@maier2018a]. There are several software packages for text analysis, mining, and visualization, our choice for pre-processing was conducted in R statistical software using the functions of the quanteda R package [@benoit2018]. After several iterations, we deemed pertinent the use of an stemming algorithm to aid to the dimensionality reduction in the matrices by cutting words to their root form.
 
-As suggested by @webster2002a, a complete review covers the relevant literature and it is not limited by a single research methodology, set of journals or geographic region, topic models contribute to expand the options available to researchers and the scope and reach of their inquiries. In this exercise, the top 10 publication titles (journal name) in the corpus represent almost a third of the documents in the sample. By making quick title search in the Scimago Journal Rank website, it can be established that all publication titles on the table are listed in this database.
+As suggested by @webster2002a, a complete review covers the relevant literature and it is not limited by a single research methodology, set of journals or geographic region, topic models contribute to expand the options available to researchers and the amplify the scope and reach of their inquiries. In this exercise, the top 10 publication titles (journal name) in the corpus represent almost a third of the documents in the sample. By making quick search in the Scimago Journal Rank website, it can be established that all publication titles on the table are listed in this database.
 
 ```{r top 10 journals in the sample, echo = FALSE, include = TRUE}
 top10 <- dgrl175_tm %>% count(pub_title.x) %>% arrange(desc(n)) %>% head(10)
@@ -159,23 +159,19 @@ Text as data methods are inherently iterative thus requiring the adoption of sui
 
 Quanteda pre-processing workflow includes functions that allow the finding of multi-word expressions via collocation analysis, this might be useful to identify proper names and other meaningful words. However, the "killer application" is the finding of n-grams, meaning the identification of single words (unigrams), or sequence of words (bigrams, trigrams) that tend to occur together with high frequency and may carry valuable information about the contents of the corpus.
 
-```{r , echo=FALSE, out.width="50%", fig.cap="Bigrams Visualization"}
+```{r , echo=FALSE, out.width="100%", warning=FALSE, fig.cap ="DGRL Corpus Bigrams Visualization"}
 
-knitr::include_graphics("foo/bar.png")
-```
 
-```{r bigrams_dgrl, echo = FALSE, include = TRUE, fig.align = "center", out.width= "75%"}
-textplot_wordcloud(dgrl175_bigram_dfm, max_words = 40,
-                   ordered_color = TRUE)
+knitr::include_graphics(here("graphics", "bigram_dgrl175.png"))
 ```
 
 This visualization showsthe top 40 bigrams found in the corpus, it can be seen that the words have been stemmed to their root form, the most salient bigram is "social_media" implying the centrality of these platforms for digital government scholarship, from adoption and use by public organizations [@mergel2013; @mergel2013], to the role of social media in political campaigns [@karlsen2010; @mascheroni2013], the regulation of disinformation [@marsden2020], and the provision of public services [@tursunbayeva2017; @criado2021].
 
 Other salient bigrams include "smart_citi", "local_govern", and "open_data". A closer examination provides hints on methodological aspects, the bigram "case_studi" carries a lot of meaning informing about the prevalence of this method in the sample. The prevalence of theoretical frameworks like "public_valu", for the public value theory shows the important evolution from New Public Management to alternative theoretical frameworks [@panagiotopoulos2019]. For a summary of the dominant theoretical frameworks used in Digital Government Research refer to the work of Bannister and Connelly [@bannister2015].
 
-```{r trigrams_dgrl, echo = FALSE, include = TRUE, fig.align = "center", out.width= "75%"}
-textplot_wordcloud(dgrl175_trigram_dfm, max_words = 30,
-                   ordered_color = TRUE)
+```{r , echo=FALSE, out.width="100%", warning=FALSE, fig.cap ="DGRL Corpus Trigrams Visualization"}
+
+knitr::include_graphics(here("graphics", "trigram_dgrl175.png"))
 ```
 
 This visualization shows the top 30 trigrams found in the corpus, clearly dominant in the wordcloud is "open_govern_data", this is a concept usually associated with the public value theory. A literature review on the public value of e-government found that open government data contributes to values like openness, transparency, participation, communication and collaboration [@twizeyimana2019].
