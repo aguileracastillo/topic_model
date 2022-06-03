@@ -117,6 +117,10 @@ Text data is incredibly diverse in length and contents. Social media posts, poli
 
 The bag of words approach deliberately ignores the syntax or structure of the text, the creation of a bag of words is known as tokenizing. Additional treatment of text include the elimination of punctuation, transform each word to lowercase and in some cases stemming which is a way to reduce a word to its stem or root in order to reduce the sparsity of the resulting matrices. Even though these steps may seem difficult to understand at first, the publication of open software packages, the availability of vast documentation, tutorials and vibrant online knowledge communities have lowered the technical barriers of this powerful computational tool for research.
 
+The next step in pre-processing is the creation of the document-feature matrix[^2] containing all the documents and the tokenized text, the usual result is a very sparse matrix. Best practices found in the literature suggest to perform dimensionality reduction to the matrix by dropping features with very low frequency of occurrence and the very common features, the most common words in the corpus given that it is assumed that these very common words will not contribute to the discovery of the latent structure of the corpus.
+
+[^2]: In the quanteda R package the Document-Feature Matrix is equivalent to the Document-Term Matrix of alternative text mining software. Features in this context are the individual tokens (single words) from the documents in the corpus.
+
 Computational tools like topic models are enabling researchers to explore and analyze larger data sets of bibliographic information to conduct evidence synthesis by facilitating the exploration of a vast corpora, perform the automated classification of textual data and assist scholars in research tasks such as discovery, measurement, prediction and causal inference.
 
 ## Methods and Data
@@ -165,9 +169,11 @@ Quanteda pre-processing workflow includes functions that allow the finding of mu
 knitr::include_graphics(here("graphics", "bigram_dgrl175.png"))
 ```
 
-This visualization showsthe top 40 bigrams found in the corpus, it can be seen that the words have been stemmed to their root form, the most salient bigram is "social_media" implying the centrality of these platforms for digital government scholarship, from adoption and use by public organizations [@mergel2013; @mergel2013], to the role of social media in political campaigns [@karlsen2010; @mascheroni2013], the regulation of disinformation [@marsden2020], and the provision of public services [@tursunbayeva2017; @criado2021].
+This visualization shows the top 40 bigrams found in the corpus, it can be seen that the words have been stemmed to their root form, the most salient bigram is "social_media" implying the centrality of these platforms for digital government scholarship, from adoption and use by public organizations [@mergel2013; @mergel2013], to the role of social media in political campaigns [@karlsen2010; @mascheroni2013], the regulation of disinformation [@marsden2020], and the provision of public services [@tursunbayeva2017; @criado2021].
 
-Other salient bigrams include "smart_citi", "local_govern", and "open_data". A closer examination provides hints on methodological aspects, the bigram "case_studi" carries a lot of meaning informing about the prevalence of this method in the sample. The prevalence of theoretical frameworks like "public_valu", for the public value theory shows the important evolution from New Public Management to alternative theoretical frameworks [@panagiotopoulos2019]. For a summary of the dominant theoretical frameworks used in Digital Government Research refer to the work of Bannister and Connelly [@bannister2015].
+Other salient bigrams include "smart_citi", "local_govern", and "open_data". A closer examination provides hints on methodological aspects, the bigram "case_studi" carries a lot of meaning informing about the frequency of this method in the sample. The ubiquity of the bigram "public_valu", for the public value theory shows the important evolution from New Public Management to alternative theoretical frameworks [@panagiotopoulos2019]. For a summary of the most frequent theoretical frameworks used in Digital Government Research refer to the work of @bannister2015a.
+
+The ubiquity of the word service in bigrams such as "public_servic", "servic_deliveri", "servic_qualiti", "govern_servic" that provide a glimpse in the nature of government operations, the creation of public services but not necessarily with a service logic as argued by @cordella2018. This also suggests the influence of the work by @vargo2004a on service-dominant logic and its conceptual evolution including digital aspects [@barrett2015], and the adaptation to a public sector context by introducing a "public service logic" [@osborne2017], evidencing the rich conceptual roots from the field of service innovation studies that support digital government scholarship.
 
 ```{r , echo=FALSE, out.width="100%", warning=FALSE, fig.cap ="DGRL Corpus Trigrams Visualization"}
 
@@ -176,11 +182,11 @@ knitr::include_graphics(here("graphics", "trigram_dgrl175.png"))
 
 This visualization shows the top 30 trigrams found in the corpus, clearly dominant in the wordcloud is "open_govern_data", this is a concept usually associated with the public value theory. A literature review on the public value of e-government found that open government data contributes to values like openness, transparency, participation, communication and collaboration [@twizeyimana2019].
 
-The next salient trigram is "structur_equat_model", the dominant position of this trigram refering to a quantitative method contrasts the reported over-reliance of qualitative methods in the digital government field, also the trigram "partial_least_squar" hint of the importance of these methodologies in the corpus. Definitely something worth exploring deeper.
+The next salient trigram is "structur_equat_model", the dominant position of this trigram in the visualization of this contrasts the reported over-reliance of qualitative methods in the digital government field, also the trigram "partial_least_squar" hint of the importance of these methodologies in the corpus. Definitely something worth exploring deeper.
 
-The trigram "technolog_accept_model" refers to the technology acceptance model found in the seminal work of [@davis1989] and adapted to the digital government field by [@hung2006], also "new_public_manag" provides a glimpse of the prevalence of this theoretical "paradigm" in the corpus [@oflynn2007].
+The trigram "technolog_accept_model" refers to the technology acceptance model found in the seminal work of [@davis1989] and adapted to the digital government field by [@hung2006], also the trigram "new_public_manag" provides a glimpse of the prevalence of this "paradigm" in the corpus [@oflynn2007].
 
-Split into train and test data set Define K perplexity Asmussen (more or less topics) granularity.
+The next steps in the preparation of the data for the topic model include se visualizations are justSplit into train and test data set Define K perplexity Asmussen (more or less topics) granularity.
 
 // The selection of the unit of analysis, for this exercise is the abstracts of the journal articles found in the Digital Government Research Library.
 
