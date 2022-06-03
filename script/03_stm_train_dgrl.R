@@ -3,6 +3,7 @@ library(stm)
 library(dplyr)
 library(broom)
 library(tidytext)
+library(LDAvis)
 library(stminsights)
 
 ## CONVERT FROM QUANTEDA TO STM
@@ -53,10 +54,21 @@ findingK <- searchK(train_stm$documents,
 
 plot(findingK)
 
+## Between 70 ~ 90
+find_needle <- searchK(train_stm$documents, 
+                          train_stm$vocab, 
+                          K = c(70:90),
+                          prevalence = ~ year.x, 
+                          data = train_stm$meta, 
+                          init.type = "Spectral",
+                          verbose=FALSE)
+
+plot(find_needle)
+
 
 ### Potential options for K (S/M/L) => 22, 44, 53, 80
 
-## CALCULATE STM k = 22 ##
+#### CALCULATE STM k = 22 ####
 dgrl_stm22 <- stm(train_stm$documents, 
                   train_stm$vocab, 
                   K = 22,
@@ -77,18 +89,21 @@ fx_22 <- estimateEffect(1:22 ~ year.x,
                         meta = out$meta, 
                         uncertainty = "Global")
 
-## VISUALIZE MODEL
+## VISUALIZE TOPIC PREVALENCE
 
+## Topic 7 Covid-19
 plot(fx_22, "year.x", method = "continuous", topics = 7,
      model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
 axis(1,at=c(2000,2005,2010,2015,2020),
      labels=c(2000,2005,2010,2015,2020),las=2)
 
+## Topic 11 Elections 
 plot(fx_22, "year.x", method = "continuous", topics = 11,
      model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
 axis(1,at=c(2000,2005,2010,2015,2020),
      labels=c(2000,2005,2010,2015,2020),las=2)
 
+## Topic 4 AI
 plot(fx_22, "year.x", method = "continuous", topics = 4,
      model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
 axis(1,at=c(2000,2005,2010,2015,2020),
@@ -110,40 +125,40 @@ plot(
   main = "STM topic shares",
   xlab = "Share estimation") 
 
-### MEDIUM SIZE K
-
-## CALCULATE STM k = 46 ##
-dgrl_stm46 <- stm(train_stm$documents, 
+#### CALCULATE STM k = 44 ####
+dgrl_stm44 <- stm(train_stm$documents, 
                   train_stm$vocab, 
-                  K = 46,
+                  K = 44,
                   prevalence = ~ year.x,
                   max.em.its = 75,
                   data = train_stm$meta, 
                   init.type = "Spectral")
 
 ## PRINT WORDS PER TOPIC
-data.frame(t(labelTopics(dgrl_stm46, n = 10)$prob))
+data.frame(t(labelTopics(dgrl_stm44, n = 10)$prob))
 
-train21_labels <- labelTopics(dgrl_stm21, n = 10)
-train21_labels
+train44_labels <- labelTopics(dgrl_stm44, n = 10)
+train44_labels
 
-fx_21 <- estimateEffect(1:21 ~ year.x, 
-                       dgrl_stm21, 
+fx_44 <- estimateEffect(1:44 ~ year.x, 
+                       dgrl_stm44, 
                        meta = out$meta, 
                        uncertainty = "Global")
 
-
-plot(fx_21, "year.x", method = "continuous", topics = 7,
+## Topic 10 Cybersecurity
+plot(fx_44, "year.x", method = "continuous", topics = 10,
      model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
 axis(1,at=c(2000,2005,2010,2015,2020),
      labels=c(2000,2005,2010,2015,2020),las=2)
 
-plot(fx_21, "year.x", method = "continuous", topics = 11,
+## Topic 43 Covid-19
+plot(fx_44, "year.x", method = "continuous", topics = 43,
      model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
 axis(1,at=c(2000,2005,2010,2015,2020),
      labels=c(2000,2005,2010,2015,2020),las=2)
 
-plot(fx_21, "year.x", method = "continuous", topics = 4,
+## Topic 8 Cloud
+plot(fx_44, "year.x", method = "continuous", topics = 8,
      model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
 axis(1,at=c(2000,2005,2010,2015,2020),
      labels=c(2000,2005,2010,2015,2020),las=2)
@@ -151,20 +166,78 @@ axis(1,at=c(2000,2005,2010,2015,2020),
 
 ## Topic Prevalence over Time ##
 par(mfrow=c(3,3))
-for (i in seq_along(sample(1:21, size = 9)))
+for (i in seq_along(sample(1:44, size = 9)))
 {
-  plot(fx_21, "year.x", method = "continuous", topics = i, main = paste0(train21_labels$prob[i,1:3], collapse = ", "), printlegend = F)
+  plot(fx_44, "year.x", method = "continuous", topics = i, main = paste0(train44_labels$prob[i,1:3], collapse = ", "), printlegend = F)
 }
 
 ## SHARE OF TOPICS OVER ALL CORPUS ##
 plot(
-  dgrl_stm21,
+  dgrl_stm44,
   type = "summary",
   text.cex = 0.5,
   main = "STM topic shares",
   xlab = "Share estimation")
 
-## TIDY APPROACH TO GRAPHICS ##
+
+#### CALCULATE STM k = 53 ####
+dgrl_stm53 <- stm(train_stm$documents, 
+                  train_stm$vocab, 
+                  K = 53,
+                  prevalence = ~ year.x,
+                  max.em.its = 75,
+                  data = train_stm$meta, 
+                  init.type = "Spectral")
+
+## PRINT WORDS PER TOPIC
+data.frame(t(labelTopics(dgrl_stm53, n = 10)$prob))
+
+train53_labels <- labelTopics(dgrl_stm53, n = 10)
+train53_labels
+
+fx_53 <- estimateEffect(1:53 ~ year.x, 
+                        dgrl_stm53, 
+                        meta = out$meta, 
+                        uncertainty = "Global")
+
+## Topic 6 Mobile Phone
+plot(fx_53, "year.x", method = "continuous", topics = 6,
+     model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
+axis(1,at=c(2000,2005,2010,2015,2020),
+     labels=c(2000,2005,2010,2015,2020),las=2)
+
+## Topic 38 Web
+plot(fx_53, "year.x", method = "continuous", topics = 38,
+     model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
+axis(1,at=c(2000,2005,2010,2015,2020),
+     labels=c(2000,2005,2010,2015,2020),las=2)
+
+## Topic 9 SM and Elections
+plot(fx_53, "year.x", method = "continuous", topics = 25,
+     model = z, printlegend = FALSE, xaxt = "n", xlab = "Year")
+axis(1,at=c(2000,2005,2010,2015,2020),
+     labels=c(2000,2005,2010,2015,2020),las=2)
+
+
+## Topic Prevalence over Time ##
+par(mfrow=c(3,3))
+for (i in seq_along(sample(1:53, size = 9)))
+{
+  plot(fx_21, "year.x", method = "continuous", topics = i, main = paste0(train53_labels$prob[i,1:3], collapse = ", "), printlegend = F)
+}
+
+## SHARE OF TOPICS OVER ALL CORPUS ##
+plot(
+  dgrl_stm53,
+  type = "summary",
+  text.cex = 0.5,
+  main = "STM topic shares",
+  xlab = "Share estimation")
+
+## Topic Quality
+
+
+#### TIDY APPROACH TO GRAPHICS Under exploration #### 
 
 # tidy the word-topic combinations
 td_beta21 <- tidy(dgrl_stm21)
@@ -192,107 +265,26 @@ td_theta21 <- tidy(dgrl_stm21, matrix = "theta",
 
 td_theta21
 
-## Search for medium K
-finding_smallK <- searchK(train_stm$documents, 
-                    train_stm$vocab, 
-                    K = c(25:50),
-                    prevalence =~ year.x, 
-                    data = train_stm$meta, 
-                    init.type = "Spectral",
-                    verbose=FALSE)
 
-## Potential at k = 35, k = 44, k = 49
-plot(finding_smallK)
-
-## CALCULATE STM k = 35 ##
-dgrl_stm35 <- stm(train_stm$documents, 
-                  train_stm$vocab, 
-                  K = 35,
-                  prevalence = ~ year.x,
-                  max.em.its = 75,
-                  data = train_stm$meta, 
-                  init.type = "Spectral")
-
-## PRINT WORDS PER TOPIC
-data.frame(t(labelTopics(dgrl_stm35, n = 10)$prob))
-
-## SHARE OF TOPICS OVER ALL CORPUS ##
-plot(
-  dgrl_stm35,
-  type = "summary",
-  text.cex = 0.5,
-  main = "STM topic shares",
-  xlab = "Share estimation")
-
-## CALCULATE STM k = 44 ##
-dgrl_stm44 <- stm(train_stm$documents, 
-                  train_stm$vocab, 
-                  K = 44,
-                  prevalence = ~ year.x,
-                  max.em.its = 75,
-                  data = train_stm$meta, 
-                  init.type = "Spectral")
-
-data.frame(t(labelTopics(dgrl_stm44, n = 10)$prob))
-
-## SHARE OF TOPICS OVER ALL CORPUS ##
-plot(
-  dgrl_stm44,
-  type = "summary",
-  text.cex = 0.5,
-  main = "STM topic shares",
-  xlab = "Share estimation")
-
-## CALCULATE STM k = 49 ##
-dgrl_stm49 <- stm(train_stm$documents, 
-                  train_stm$vocab, 
-                  K = 49,
-                  prevalence = ~ year.x,
-                  max.em.its = 75,
-                  data = train_stm$meta, 
-                  init.type = "Spectral")
-
-## PRINT WORDS PER TOPIC
-data.frame(t(labelTopics(dgrl_stm49, n = 10)$prob))
-
-plot(
-  dgrl_stm49,
-  type = "summary",
-  text.cex = 0.5,
-  main = "STM topic shares",
-  xlab = "Share estimation")
-
-
-## Highest Prob / FREX / LIFT / Score
-train17_labels <- labelTopics(dgrl_stm17, n = 10)
-train17_labels
-
-train44_labels <- labelTopics(dgrl_stm44, n = 10)
-train44_labels
-
-## estimateEffect k = 35, 45, 47
-fx_35 <- estimateEffect(1:35 ~ year.x, dgrl_stm35, meta = train_stm$meta)
-
-
-## FindThoughts
+#### FindThoughts ####
 
 
 
 ## WORDCLOUD OF MOST PREVALENT TOPIC review usefulness
-stm::cloud(dgrl_stm47,
-           topic = 20,
-           scale = c(2.25, .5))
+stm::cloud(dgrl_stm53,
+           topic = 45,
+           scale = c(3.25, .95))
 
 ## EYEBALLING TOPICS 
 plot(dgrl_stm17, type = "perspectives", topics = c(6, 12)) 
 
 ## DOCUMENT TOPIC PROPORTIONS
-plot(dgrl_stm50, type = "hist", topics = sample(1:50, size = 9))
+plot(dgrl_stm53, type = "hist", topics = sample(1:53, size = 9))
 
-## LDAvis k=17 ##
-toLDAvis(dgrl_stm17,
+#### LDAvis k=53 ####
+toLDAvis(dgrl_stm53,
          train_stm$documents,
-         R = 30,
+         R = 25,
          plot.opts = list(xlab = "PC1", ylab = "PC2"),
          lambda.step = 0.1,
          out.dir = tempfile(),
@@ -300,36 +292,5 @@ toLDAvis(dgrl_stm17,
          as.gist = FALSE,
          reorder.topics = TRUE)
 
-## LDAvis k = 49 ##
-toLDAvis(dgrl_stm49,
-         train_stm$documents,
-         R = 30,
-         plot.opts = list(xlab = "PC1", ylab = "PC2"),
-         lambda.step = 0.1,
-         out.dir = tempfile(),
-         open.browser = interactive(),
-         as.gist = FALSE,
-         reorder.topics = TRUE)
 
-## LDAvis k=75 ##
-toLDAvis(dgrl_stm24,
-         train_stm$documents,
-         R = 30,
-         plot.opts = list(xlab = "PC1", ylab = "PC2"),
-         lambda.step = 0.1,
-         out.dir = tempfile(),
-         open.browser = interactive(),
-         as.gist = FALSE,
-         reorder.topics = TRUE)
-
-## LDAvis k = 50 ##
-toLDAvis(dgrl_stm50,
-         train_stm$documents,
-         R = 30,
-         plot.opts = list(xlab = "PC1", ylab = "PC2"),
-         lambda.step = 0.1,
-         out.dir = tempfile(),
-         open.browser = interactive(),
-         as.gist = FALSE,
-         reorder.topics = TRUE)
 

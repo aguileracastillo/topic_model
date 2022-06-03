@@ -1,10 +1,11 @@
 ---
-title: "The needle and the haystack: A literature review using Structural Topic Modeling in a Digital Government Corpus"
+title: 'The needle and the haystack: A literature review using Structural Topic Modeling in a Digital Government Corpus'
 author: "Andres Aguilera Castillo"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-  pdf_document: default
+  word_document: default
   html_document: default
+  pdf_document: default
 bibliography: references.bib
 ---
 
@@ -161,7 +162,7 @@ top10 <- dgrl175_tm %>% count(pub_title.x) %>% arrange(desc(n)) %>% head(10)
 kable(top10, col.names = c("Publication Title", "Number of Documents in Corpus"), align = "cc", caption = "Top 10 Journals in represented in the corpus")
 ```
 
-Text as data methods are inherently iterative thus requiring the adoption of suitable workflows and best practices for model calibration and version control systems of its operations, even though stop words are considered language specific and Natural Language Processing applications are advancing in sophistication, some stop words are corpus specific. Case in point, in the downstream of this process we found a strings with no meaning at all and a cluster of words that were very prevalent in the corpus but added no value to the analysis including "elsevier", "ltd\*", "all", "rights", "reserved", "abstract", "copyright\*", "inc\*", "e.g\*".
+Text as data methods are inherently iterative thus requiring the adoption of suitable workflows and best practices for model calibration and version control systems of its operations, even though stop words are considered language specific and Natural Language Processing applications are advancing in sophistication, some stop words are corpus specific. In the downstream of this process we found strings with no relevant meaning to the analysis but very prevalent in the corpus, thus the importance in the construction of the workflow in a programmatic manner in an R environment.
 
 Quanteda pre-processing workflow includes functions that allow the finding of multi-word expressions via collocation analysis, this might be useful to identify proper names and other meaningful words. However, the "killer application" is the finding of n-grams, meaning the identification of single words (unigrams), or sequence of words (bigrams, trigrams) that tend to occur together with high frequency and may carry valuable information about the contents of the corpus.
 
@@ -188,9 +189,9 @@ The next salient trigram is "structur_equat_model", the dominant position of thi
 
 The trigram "technolog_accept_model" refers to the technology acceptance model found in the seminal work of [@davis1989] and adapted to the digital government field by [@hung2006], also the trigram "new_public_manag" provides a glimpse of the prevalence of this "paradigm" in the corpus [@oflynn2007].
 
-The visualizations above are steps conducted before the casting of a Document-Feature Matrix, which is the method to be able to conduct the quantitative analysis of the corpus. From this step in the process we gather that the corpus under study contains 6664 documents (abstracts) with their respective metadata and 18749 features (unique tokenized words). This is a very sparse matrix and the logical step is to conduct two process for dimensionality reduction: remove very common and very rare words. For the removal of rare words, the parameter was set to retain words with a minimum term frequency of 100, for the most common words, the criteria was to remove words that appears in more than 10% of the documents in the corpus. After these decisions the number of documents remain the same, the number of features, the vocabulary that will be used for the topic model, was reduced to 916. The script for these steps is documented in the GitHub page for this project for replicability purposes.
+The next step in the process is to create a Document-Feature Matrix, which is the method to provide a structure to the text and be able to conduct the quantitative analysis of the corpus. From this step in the process we gather that the corpus under study contains 6664 documents (abstracts) with their respective metadata and 18749 features (unique tokenized words). This is a very sparse matrix and the logical step is to conduct two process for dimensionality reduction: remove very common and very rare words. For the removal of rare words, the parameter was set to retain words with a minimum term frequency of 100, for the most common words, the criteria was to remove words that appears in more than 10% of the documents in the corpus. After these decisions the number of documents remain the same, the number of features, the vocabulary that will be used for the topic model, was reduced to 916. The documented code for these steps can be found in the GitHub page for this project for replicability purposes.
 
-The next steps in the preparation of the data to for topic modeling is to split the data between a train and a test set, at a proportion of 75/25 respectively. The structural topic model presented below has been calibrated with the the training set, the next logical step is to use the calibrated parameters with the unseen data. As before, the novelty of the structural topic model is possibility to include covariates found in the metadata to estimate topic prevalence, for our analysis, it was used the year of publication as covariate of interest.
+One crucial step before the initial calibration of the model is to split the data between a train and a test set, the results presented in this manuscript are from the 75% of the training set sample. The remaining 25% is unseen data to be tested with the calibrated parameters of the training of the model. The novelty of the structural topic model is possibility to include covariates found in the metadata to estimate topic prevalence, for our analysis the year of publication as covariate of interest.
 
 The stm package includes the function searchK() that performs the estimation models with different K values to provide statistical analysis for goodness of fit measures in topic modeling. Perplexity, semantic coherence, residuals and lower bound can be visualized as a result of this function thus helping researchers to select the optimal number of topics. However, statistical goodness of fit is not enough and it is widely advised to apply human validation and human judgement in the decision of the number of topics to model.
 
