@@ -18,19 +18,9 @@ out <- list(documents = train_stm$documents,
 str(train_stm)
 
 #### searchK() with different values for k
-findingK <- searchK(train_stm$documents, 
-                    train_stm$vocab, 
-                    K = c(10, 30, 50, 80, 100),
-                    prevalence = ~year.x, 
-                    data = train_stm$meta, 
-                    init.type = "Spectral",
-                    verbose=FALSE)
-
-## Visualization of Goodness of Fit 
-plot(findingK)
+## Visualization of Goodness of Fit Measures 
 
 ## SearchK for small K
-
 find_smallestK <- searchK(train_stm$documents, 
                           train_stm$vocab, 
                           K = c(5:25),
@@ -41,17 +31,30 @@ find_smallestK <- searchK(train_stm$documents,
 
 plot(find_smallestK)
 
+## Medium K
 find_mediumK <- searchK(train_stm$documents, 
-                          train_stm$vocab, 
-                          K = c(25:50),
-                          prevalence = ~ year.x, 
-                          data = train_stm$meta, 
-                          init.type = "Spectral",
-                          verbose=FALSE)
+                        train_stm$vocab, 
+                        K = c(25:60),
+                        prevalence = ~ year.x, 
+                        data = train_stm$meta, 
+                        init.type = "Spectral",
+                        verbose=FALSE)
 
 plot(find_mediumK)
 
-### Write potential options for K (S/M/L)
+## Larger K
+findingK <- searchK(train_stm$documents, 
+                    train_stm$vocab, 
+                    K = c(60, 70, 80, 90, 100),
+                    prevalence = ~year.x, 
+                    data = train_stm$meta, 
+                    init.type = "Spectral",
+                    verbose=FALSE)
+
+plot(findingK)
+
+
+### Potential options for K (S/M/L) => 22, 44, 53, 80
 
 ## CALCULATE STM k = 22 ##
 dgrl_stm22 <- stm(train_stm$documents, 

@@ -43,6 +43,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Digital Government is a growing and vibrant multidisciplinary field of research, the fast increase in research output has challenged researchers to explore and use novel computational ways and methods to perform evidence synthesis on the extant literature and be able to map a scientific discipline, explore the thematic evolution over time and identify potential avenues for further research. Topic modeling has emerged as a powerful technique from the computer science field that is contributing to the examination of large amounts of text data. This manuscript demonstrates the training of a topic model aimed to assemble a 'smart literature review' on a subset of the Digital Government Reference Library (DGRL) version 17.5. Structural topic modeling is a conceptual and methodological evolution of 'vanilla' topic modeling that allow the estimation of covariates contained in the metadata of corpora to calculate topic prevalence in a corpus. To our best knowledge, this is the first attempt to use unsupervised machine learning techniques with this data set. This effort may contribute to creating a map of the field, identify the evolving themes in the literature and help to identify promising areas of research.
 
+Findings?
+
 ## Introduction
 
 Recent trends in global scientific output demonstrate a rapid and sustained increase in the production of vast amounts of unstructured data in the form of digitized text. This bounty in content is challenging researchers to explore and pursue novel methodological approaches and techniques to examine massive volumes of scientific publications in a systematic, efficient and reproducible manner. The expanding amount of bibliographic information available is exceeding traditional approaches for processing research output making it necessary to apply computational-assisted approaches for science mapping and evidence synthesis.
@@ -136,7 +138,7 @@ The download package contains three types of bibliographic files BibTeX, RIS, an
 
 The following variables have been deemed of interest for the analysis: type of reference (conference paper or journal article), year of publication, author, document title, publication title and the presence of an abstract. Text is a type of unstructured data that requires meticulous processing before using it. For replicability purposes, the script for the initial data cleaning and wrangling, including the R functions and packages used is available for revision, clarity, and replicability purposes and made publicly available in the scripts section of the [GitHub](https://github.com/aguileracastillo/topic_model) repository for this project.
 
-After the initial data wrangling, the relevant data for 6682 journal articles or approximately 80.7% of the total number of articles in the DGRL v17.5 is further processed to create a corpus, the initial step towards a topic model. Documents published before year 2000 were dropped from further analysis due to their negligible quantity, also a single observation from year 2022. A visualization in the publication trend demonstrate an incipient increase in number of journal articles after year 2000 and a steep increase in the beginning of the 2010 decade to present.
+After the initial data wrangling, the relevant data for 6682 journal articles or approximately 80.7% of the total number of articles in the DGRL v17.5 is further processed to create a corpus, the initial step towards a topic model. Then, documents published before year 2000 were dropped from further analysis due to their negligible quantity, also a single observation from year 2022. A visualization in the publication trend demonstrate an incipient increase in number of journal articles after year 2000 and a steep increase in the beginning of the 2010 decade to present.
 
 ```{r articles by year, echo = FALSE, include = TRUE, fig.align = "center", out.width= "75%"}
 ## Insert from 02_topic_model script
@@ -186,21 +188,13 @@ The next salient trigram is "structur_equat_model", the dominant position of thi
 
 The trigram "technolog_accept_model" refers to the technology acceptance model found in the seminal work of [@davis1989] and adapted to the digital government field by [@hung2006], also the trigram "new_public_manag" provides a glimpse of the prevalence of this "paradigm" in the corpus [@oflynn2007].
 
-The next steps in the preparation of the data for the topic model include se visualizations are justSplit into train and test data set Define K perplexity Asmussen (more or less topics) granularity.
+The visualizations above are steps conducted before the casting of a Document-Feature Matrix, which is the method to be able to conduct the quantitative analysis of the corpus. From this step in the process we gather that the corpus under study contains 6664 documents (abstracts) with their respective metadata and 18749 features (unique tokenized words). This is a very sparse matrix and the logical step is to conduct two process for dimensionality reduction: remove very common and very rare words. For the removal of rare words, the parameter was set to retain words with a minimum term frequency of 100, for the most common words, the criteria was to remove words that appears in more than 10% of the documents in the corpus. After these decisions the number of documents remain the same, the number of features, the vocabulary that will be used for the topic model, was reduced to 916. The script for these steps is documented in the GitHub page for this project for replicability purposes.
 
-// The selection of the unit of analysis, for this exercise is the abstracts of the journal articles found in the Digital Government Research Library.
+The next steps in the preparation of the data to for topic modeling is to split the data between a train and a test set, at a proportion of 75/25 respectively. The structural topic model presented below has been calibrated with the the training set, the next logical step is to use the calibrated parameters with the unseen data. As before, the novelty of the structural topic model is possibility to include covariates found in the metadata to estimate topic prevalence, for our analysis, it was used the year of publication as covariate of interest.
 
-LDA? Unsupervised learning... latent topics.
+The stm package includes the function searchK() that performs the estimation models with different K values to provide statistical analysis for goodness of fit measures in topic modeling. Perplexity, semantic coherence, residuals and lower bound can be visualized as a result of this function thus helping researchers to select the optimal number of topics. However, statistical goodness of fit is not enough and it is widely advised to apply human validation and human judgement in the decision of the number of topics to model.
 
-Dictionary based Quantitative Text Analysis Based on the work of Montobbio et al. 2022
-
-Truncated words
-
-Major thematic clusters are identified
-
-Theory based Watanabe.
-
-Results
+The following graphic show the diverse goodness of fit measures calculated for different values for K in a range from 25 to 60 topics that can be used for hints for further exploration and analysis, the values for held-out likelihood, or perplexity seem to be optimal for x values, semantic coherence is higher in topics X, Y and Z, the residuals values above 1 indicate sample dispersion that is interpreted as the number of K is too low, the lower bound value indicate model convergence, small changes between the compared values are preferred.
 
 ## Discussion
 
