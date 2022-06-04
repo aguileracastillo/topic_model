@@ -42,7 +42,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Abstract
 
-Digital Government is a growing and vibrant multidisciplinary field of research, the fast increase in research output has challenged researchers to explore and use novel computational ways and methods to perform evidence synthesis on the extant literature and be able to map a scientific discipline, explore the thematic evolution over time and identify potential avenues for further research. Topic modeling has emerged as a powerful technique from the computer science field that is contributing to the examination of large amounts of text data. This manuscript demonstrates the training and testing of a structural topic model aimed to assemble a 'smart literature review' on a subset of the Digital Government Reference Library (DGRL) version 17.5. Structural topic modeling is a conceptual and methodological evolution of 'vanilla' topic modeling that allow the estimation of covariates contained in the metadata of corpora to calculate topic prevalence in a corpus. To our best knowledge, this is the first attempt to use unsupervised machine learning techniques with this data set. This effort may contribute to creating a map of the field, identify the evolving themes in the literature and help to identify promising areas of research.
+Digital Government is a growing and vibrant multidisciplinary field of research, the fast increase in research output has challenged researchers to explore and use novel computational ways and methods to perform evidence synthesis on the extant literature and be able to map a scientific discipline, explore the thematic evolution over time and identify potential avenues for further research. Topic modeling has emerged as a powerful technique from the computer science field that is contributing to the examination of large amounts of text data. This manuscript demonstrates the training a structural topic model aimed to assemble a 'smart literature review' on a subset of the Digital Government Reference Library (DGRL) version 17.5. Structural topic modeling is a conceptual and methodological evolution of 'vanilla' topic modeling that allow the estimation of covariates contained in the metadata of corpora to calculate topic prevalence in a corpus. To our best knowledge, this is the first attempt to use unsupervised machine learning techniques with this data set. This effort may contribute to creating a map of the field, identify the evolving themes in the literature and help to identify promising areas of research.
 
 Findings?
 
@@ -202,7 +202,13 @@ The following graphic shows the visualization of the results of the function sea
 knitr::include_graphics(here("graphics", "data_driven_K.png"))
 ```
 
-The different indicators for goodness of fit and the iterative revision of these parameters with the training set led us to choose k=53 as an optimal number of topics to use with the unseen data. The code for the test set is in a separate script and can be found in the GitHub repository for this project.
+The different indicators for goodness of fit and the iterative revision of these parameters with the training set led us to choose k=53 as an optimal number of topics. The following graph presents the estimated topic proportions found in the training set. Topic 47, 27 and 51 are estimated to be more prevalent in the analyzed set.
+
+```{r , echo=FALSE, out.width="100%", warning=FALSE, fig.cap ="Topic Proportions K=53"}
+knitr::include_graphics(here("graphics", "topic_proportions_training_set.png"))
+```
+
+For illustration purposes, the words associated with these topics
 
 ## Discussion
 

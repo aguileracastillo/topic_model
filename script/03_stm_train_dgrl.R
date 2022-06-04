@@ -189,11 +189,23 @@ dgrl_stm53 <- stm(train_stm$documents,
                   data = train_stm$meta, 
                   init.type = "Spectral")
 
+## SHARE OF TOPICS OVER ALL CORPUS ##
+plot(
+  dgrl_stm53,
+  type = "summary",
+  text.cex = 0.8,
+  main = "Estimated Topic Proportions Training Set",
+  xlab = "Share estimation")
+
 ## PRINT WORDS PER TOPIC
 data.frame(t(labelTopics(dgrl_stm53, n = 10)$prob))
 
 train53_labels <- labelTopics(dgrl_stm53, n = 10)
 train53_labels
+
+## Top 3 Topics
+top3_train53 <- labelTopics(dgrl_stm53, c(47,27,51))
+top3_train53
 
 fx_53 <- estimateEffect(1:53 ~ year.x, 
                         dgrl_stm53, 
@@ -226,13 +238,7 @@ for (i in seq_along(sample(1:53, size = 9)))
   plot(fx_21, "year.x", method = "continuous", topics = i, main = paste0(train53_labels$prob[i,1:3], collapse = ", "), printlegend = F)
 }
 
-## SHARE OF TOPICS OVER ALL CORPUS ##
-plot(
-  dgrl_stm53,
-  type = "summary",
-  text.cex = 0.8,
-  main = "Estimated Topic Proportions Training Set",
-  xlab = "Share estimation")
+
 
 ## Topic Quality
 
