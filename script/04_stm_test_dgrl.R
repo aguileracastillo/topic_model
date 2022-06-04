@@ -5,29 +5,52 @@ library(stminsights)
 ## CONVERT FROM QUANTEDA TO STM
 test_stm <- convert(test_dgrl175, to = "stm")
 
-time <- as.numeric(test_stm$meta$year.x)
+test_stm$meta$year.x <- as.numeric(test_stm$meta$year.x)
+test_stm$meta$period <- as.numeric(test_stm$meta$period)
 
 out <- list(documents = test_stm$documents,
             vocab = test_stm$vocab,
             meta = test_stm$meta)
 
-topic_train33 <- stm(documents = out$documents,
-                     vocab = out$vocab,
-                     data = out$meta,
-                     prevalence =~ year.x,
-                     K = 33)
+str(test_stm)
 
-plot(topic_train33)
+## k=53 with Test set
+dgrl_test_stm53 <- stm(test_stm$documents, 
+                       test_stm$vocab, 
+                       K = 53,
+                       prevalence = ~ year.x,
+                       max.em.its = 75,
+                       data = test_stm$meta, 
+                       init.type = "Spectral")
+
+## SHARE OF TOPICS OVER ALL CORPUS ##
+plot(
+  dgrl_test_stm53,
+  type = "summary",
+  text.cex = 0.8,
+  main = "Estimated Topic Proportions Test Set",
+  xlab = "Share estimation")
+
+#### Topic Quality do not run ####
+topicQuality(dgrl_test_stm53, 
+             documents = test_stm$documents, 
+             xlab = "Semantic Coherence",
+             ylab = "Exclusivity",
+             labels = dgrl_test_stm53$theta,
+             M = 10)
+
+## PRINT WORDS PER TOPIC
+data.frame(t(labelTopics(dgrl_test_stm53, n = 10)$prob))
 
 ## PRINT WORDS PER TOPIC
 data.frame(t(labelTopics(topic_train33, n = 10)$prob))
 
 ## Highest Prob / FREX / LIFT / Score
-train33_labels <- labelTopics(topic_train33, n = 10)
-train33_labels
+test53_labels <- labelTopics(dgrl_test_stm53, n = 10)
+test53_labels
 
-fx33 <- estimateEffect(1:33 ~ s(year.x), 
-                     topic_train33, 
+fx_test_53 <- estimateEffect(1:53 ~ year.x, 
+                     dgrl_test_stm53, 
                      meta = out$meta, 
                      uncertainty = "Global")
 

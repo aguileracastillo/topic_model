@@ -125,7 +125,7 @@ textplot_wordcloud(dgrl175_trigram_dfm, max_words = 30,
 ### How to view a document in a corpus
 dgrl175_corpus[[1170]]
 
-#### KEYWORDS-IN-CONTEXT (theories sample test)
+#### KEYWORDS-IN-CONTEXT (theories sample test) ####
 # NPM 28 MATCHES
 kw_npm <- kwic(dgrl175_tokens, pattern = "npm")
 head(kw_npm)
@@ -147,6 +147,7 @@ View(kw_biblio)
 kw_work <- kwic(dgrl175_tokens, pattern = "work*")
 head(kw_work)
 View(kw_work)
+
 
 #################
 ## Create a dictionary of words of interest
@@ -178,7 +179,7 @@ nfeat(dfm_dgrl175)
 ### TOP FEATURES IN DFM_DGRL -- Best practice remove very rare and very common
 topfeatures(dfm_dgrl175, 250)
 ## Wordclouds
-set.seed(123)
+set.seed(1253)
 textplot_wordcloud(dfm_dgrl175, max_words = 100)
 
 ### TFIDF Term Frequency-Inverse Document Frequency
@@ -216,7 +217,7 @@ train_dgrl175 <- data_to_lda[splitter, ]
 test_dgrl175 <- data_to_lda[-splitter, ]
 
 
-#### TESTING SEEDEDLDA PACKAGE #### Do not run
+#### TESTING SEEDEDLDA PACKAGE Do not run #### 
 train_lda25 <- textmodel_lda(train_dgrl175, k = 25)
 terms(train_lda25, 10)
 

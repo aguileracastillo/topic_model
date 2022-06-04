@@ -230,8 +230,8 @@ for (i in seq_along(sample(1:53, size = 9)))
 plot(
   dgrl_stm53,
   type = "summary",
-  text.cex = 0.5,
-  main = "STM topic shares",
+  text.cex = 0.8,
+  main = "Estimated Topic Proportions Training Set",
   xlab = "Share estimation")
 
 ## Topic Quality
