@@ -3,9 +3,9 @@ title: 'The needle and the haystack: A literature review using Structural Topic 
 author: "Andres Aguilera Castillo"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-  word_document: default
-  html_document: default
   pdf_document: default
+  html_document: default
+  word_document: default
 bibliography: references.bib
 ---
 
