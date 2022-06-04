@@ -224,30 +224,45 @@ knitr::include_graphics(here("graphics", "topic45_stm_vis.png"))
 
 ```
 
+The exploration of the linkages between digitalization and impacts on the workforce are negligible but not discouraging. The exploration via topic modeling of labor related issues and digitalization sustains the initial argument that this subject has not been covered by the extant literature. The following visualization pinpoints the word "worker" is shared by some topics in the corpus but not necessarily interpretable or meaningful for our exploration.
+
+```{r echo=FALSE, fig.align = "center", out.width="100%", warning=FALSE, fig.cap ="Topic 45 Expected Proportion over Time"}
+knitr::include_graphics(here("graphics", "worker_topics.png"))
+
+```
+
+In addition, the documents use for this exploration are limited to the abstracts of journal articles found in the Digital Government Research Library. A less "computational" search has allowed us to identify scholarly work that is conceptually and empirically exploring the implications of digitalization for the public sector workforce. The research might be incipient but it is definitely not absent.
+
+Studies about the work in the public sector have argued that public sector jobs tend to be more "secure" than private sector ones [@kopelman2016], however there are empirical approaches have identified instances in which there is a reconfiguration of work after the implementation of digital programs [@scupola2016]. A recent systematic review conducted by @maclean2021a has contributed to identify the taxonomy of impacts related to the organization of work in the public sector workforce, among them, changes in productivity, staff reduction or substitution and job enlargement. The pervasive adoption of integrative technologies, namely the Internet of Things (IoT), artificial intelligence (AI), cloud computing and big data applications "change the nature of work of public managers", and reshape the workforce [@pencheva2020; @kim2021a]. All these topics mentioned above have increasing proportion trends in the literature hinting of important emerging topics to explore
+
+The extant literature conceptualizes the potential impact of novel technologies in the reconfiguration of work [@wirtz2018; @wirtz2021; @zuiderwijk2021], the public sector play an important role in the value chain of artificial intelligence both as a downstream user but also as creator and curator of large data sets used for diverse AI applications. Nonetheless, it can be also argued that AI program deployments are fairly recent and the stance might be a cautious "too soon to tell."
+
 ## Discussion
 
-RQ1: What does topic modeling techniques applied to the Digital Government Research Library v17.5 reveal about the conceptual, intellectual and thematic evolution this academic field? --\> Text mining and STM
+The use of topic modeling techniques to a corpus of Digital Government Research is an exercise that to the best of our knowledge has not been implemented before in the field. Computer-assisted techniques for evidence synthesis are becoming more and more available out of the computer science field and are enabling researchers in other areas to make use of powerful and novel tools to explore the ever growing research output is most fields of knowledge thus enriching the methodological repertoire of said researchers. In addition, the incorporation of these new methodologies in research practice include the adoption of "best practices" for data processing, analysis, and the communication of research in a reproducible and transparent way.
 
-RQ2: What structural changes can be interpreted from the topic model? --\> (Covariates)
+It was particularly unanticipated to see massive footprint of social media in Digital Government scholarship, the ample reach of this issue include government-citizens interactions, the delivery of public services, and the influence in political campaigning. Another "unanticipated" aspect was the prevalence of quantitative approaches as discussed above with the word prevalence of bigrams and trigrams. Digital Government scholarship has been associated in general with qualitative approaches, it is refreshing to find an interesting interaction between qualitative and quantitative approaches.
 
-RQ3: What does the extant literature (corpus) on Digital Government reveal on the linkage between digitalization and the organization of work? -- SeededLDA? (in-progress)
+Even though, the Technology Adoption Model (TAM) did not appear at "first sight" in the early stages of the analysis, its "discovery" in the downstream of the workflow as the most prevalent topic in the whole corpus reinforces calls found in the literature on the importance of human judgement and human validation in the analysis of topic models. Computational approaches are not yet sophisticated enough to substitute the implicit knowledge of a researcher, but it definitely augments the analytical capabilties and the amount of data taken into account for analysis.
 
-The identification and visualization of bigrams and trigrams enrich the researcher's ability to have a quick overview of the co-ocurrence of words, this contribute to the quick detection of meaning word combinations contributing to the interpretation of the contents of the corpus.
+The use of an 'enhanced' topic modeling technique (STM) that incorporates covariates found in the metadata of documents for topic prevalence estimation is an important evolution in the field and provide researchers the analytical tools to estimate the probabilities of topic prevalence given the covariates of interest (in our case, a time variable). Computational social science is not an isolated 'research trend', the exponential growth in research output, and the increased availability of diverse types of data due to the digitalization of everyday life is pushing early stage researchers to learn how to work with (bigger) data and feel comfortable about it.
 
-Dominance of social media
+Case in point the centrality in the corpus of open government data. Governments are in general "data rich but analytics poor". The availability of open government data is in principle associated with the creation of public values for citizens. But maybe in a circular argument, what is the point of data availability if citizens (and firms!) lack data literacy to make sense of the large troves of government data that can unleash huge amounts of value if harness properly.
 
-Key term extractions from the corpus - Stemming
+Even though it was not presented in this manuscript, but it is part of the visualizations stored in the GitHub repository, the probabilities estimation of all the 53 topics show an increased attention for topics related to the "iABCD" technologies (internet of things, artificial intelligence, blockchain, cloud and data analytics), these technologies have been conceptually associated with transformations in the organization of work, thus the exploration of the nexus between digital technologies and the public sector workforce seem promising.
 
-Collect names (Buffat et al)
-
-Insert bigrams and trigrams graphics
+The exploration via topic modeling and text mining techniques of a corpus in the Digital Government Research field did not provide enough evidence of groundbreaking empirical research linking digitalization with labor transformation in the public sector workforce. Is this a discouraging finding of an uninteresting topic of research or a major gap in the literature? We would like to argue for the second opinion.
 
 ## Conclusions
 
-Public value theory concepts dominate the corpus
+There is a major gap in the extant literature as regards as the exploration of the impacts of digitalization on the public sector workforce. The Digital Government Research Library has been explored in depth in order to find any significant linkages in the literature connecting these two issues to no big success. However, this does not mean the topic has not been conceptually explored in diverse scholarly publications. As argued above, this may be the opportunity to chase a relevant and emerging topics in digital government.
 
-Not as qualitative as initially assumed.
+Important developments have updated our initial assumptions, the health crisis of 2020 fostered the adoption of digital technologies and the reorganization of work processes in the whole economy, culturally it pushed citizens and firms to be more comfortable with a technology mediated interaction, a different public encounter. A digital public encounter changes the organization of work and the provision of services by government organizations. The public sector is not only a large employer but also a major adopter of ICT technologies (not to mention AI applications) and a key player in the big data value chain.
 
-Work related topics are a very periferic in the sample.
+It is worth pursuing this argumentative line giving the increased importance of the iABCD technologies in the digital government literature evidence by the increased topic prevalence over time. Several factors make this line of inquiry complex, the public sector as a non-market does not have prices for output and the measuring of productivity remains a big challenge for economists and public administration scholars.
+
+Public sector organizations operate in very heterogeneous fields with varied levels of technological sophistication, not to mention complex institutional configurations, including particular path dependencies and conflicting public policy goals. However, this complexity is not discouraging but promising of an intellectually challenging pursuit.
+
+It is evident the extant research the deep impact of smartphones and the ample diffusion of social media in Digital Government Research and the government interaction with citizens. What can happen with artificial intelligence? Even though this field has been under exploration for more than 50 years, it is just until now that many of the applications are becoming 'tangible' due to the massive amounts of data available product of the ongoing digitalization process. Countries in Europe are considering carefully the implications of these technologies given the prevalent use of them in 'algorithmic management systems'. Legislation and operational rules are now under consideration to provide a regulatory framework to the prevalent use of these technologies in the management of human resources, algorithms are currently influencing important work related decisions like recruitment, performance evaluation, task allocation among others. These issues are deemed relevant to explore also in a public sector context.
 
 ## References

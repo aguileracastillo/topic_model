@@ -241,7 +241,13 @@ for (i in seq_along(sample(1:53, size = 53)))
   plot(fx_53, "year.x", method = "continuous", topics = i, main = paste0(train53_labels$prob[i,1:3], collapse = ", "), printlegend = T)
 }
 
-
+## Tweak Plot ??##
+## Topic Prevalence over Time ##
+par(mfrow=c(1,1))
+for (i in seq_along(sample(1:53, size = 53)))
+{
+  plot(fx_53, "year.x", method = "continuous", topics = c(4,8,26), main = paste0(train53_labels$prob[i,1:3], collapse = ", "), printlegend = T)
+}
 
 ## Topic Quality
 
