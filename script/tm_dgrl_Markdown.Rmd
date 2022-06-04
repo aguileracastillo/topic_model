@@ -208,7 +208,7 @@ The different indicators for goodness of fit and the iterative revision of these
 knitr::include_graphics(here("graphics", "topic_proportions_training_set.png"))
 ```
 
-For illustration purposes, the words associated with these topics
+Topic modeling estimation is not necessarily difficult, the real work for researchers comes in the interpretation and visualization of the model output. The visualization settings of the stm package have clear strengths like the inclusion of covariates in calculating topic prevalence but also crippling limitations regarding the visualization of the models, however there have been important developments in associated software packages that enhance interpretability such as LDAvis [@sievert2014].
 
 ## Discussion
 

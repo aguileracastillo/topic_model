@@ -207,6 +207,9 @@ train53_labels
 top3_train53 <- labelTopics(dgrl_stm53, c(47,27,51))
 top3_train53
 
+## Sage Labels?
+print(sageLabels(dgrl_stm53))
+
 fx_53 <- estimateEffect(1:53 ~ year.x, 
                         dgrl_stm53, 
                         meta = out$meta, 
