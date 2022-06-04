@@ -210,16 +210,30 @@ knitr::include_graphics(here("graphics", "topic_proportions_training_set.png"))
 
 Topic modeling estimation is not necessarily difficult, the real work for researchers comes in the interpretation and visualization of the model output. The visualization settings of the stm package have clear strengths like the inclusion of covariates in calculating topic prevalence but also crippling limitations regarding the visualization of the models, however there have been important developments in associated software packages that enhance interpretability such as LDAvis [@sievert2014].
 
-Visualization of topic models is probably one of the most powerful tools developed in recent years to help researchers to interpret the results of a model and may explain the increasing adoption of these techniques out of the computer science field. A visualization of the top 30 terms in the analyzed sample are shown below, this in itself may not be incredibly informative as a static image but gives a quick overview of the most prevalent words in the corpus, and the visualization engine layout of the LDAvis package. On the left side pane are the topics that have been modeled in previous steps, the proximity in the visualization can be interpreted as "relatedness" among the topics. "Smart", "trust", "secur", "website", "vote" provide hints on the latent structure of the documents. The LDAvis shiny app allows an interactive exploration of topics, a few visualizations of the results will be presented in this manuscript for illustration purposes.
+Visualization of topic models is probably one of the most powerful tools developed in recent years to help researchers to interpret the results of a model and may explain the increasing adoption of these techniques out of the computer science field. A visualization of the top 30 terms in the analyzed sample are shown below, this in itself may not be incredibly informative as a static image but gives a quick overview of the most prevalent words in the corpus, and the visualization engine layout of the LDAvis package. On the left side pane are the topics that have been modeled in previous steps, the proximity in the visualization can be interpreted as "relatedness" among the topics. Topic 1 in the LDAvis output is the most prevalent topic in the corpus, at first sight it might be a sort of boilerplate topic, but by careful inspection one of the terms that are exclusive to this grouping is the feature "tam", meaningless in itself, but for the scholars in the field this acronym means "Technology Acceptance Model" widely used among information system scholarship, In addition, other words/concepts like "perceived usefulness" and "ease of use" are also found in in this grouping. The visualization of the rest of the topics in this format defeats the purpose of the manuscript, however the code and tools for visualization are explained in the GitHub repository.
 
-```{r, , echo=FALSE, fig.align = "center", out.width="100%", warning=FALSE, fig.cap ="Top Features in the Sample"}
-knitr::include_graphics(here("graphics", "top30_ldavis.png"))
+```{r, echo=FALSE, fig.align = "center", out.width="100%", warning=FALSE, fig.cap ="Top Features in the Sample"}
+knitr::include_graphics(here("graphics", "topic1_ldavis_tam.png"))
+
+```
+
+Topic 45 is a grouping that was estimated to be highly frequent in the corpus, it contains words that are identifiable with recurrent themes in the literature like "collabor", "share", "coordin", "co-creat". However in the inspection of the covariate year it shows that is a topic that has decreasing probabilities over the years. Important caveats apply, as argued above, Digital Government Research is experimenting increasing scholarly attention and the decreasing trend may just reflect a proportional adjustment to the rapid increase in research output.
+
+```{r}
 
 ```
 
 ## Discussion
 
+RQ1: What does topic modeling techniques applied to the Digital Government Research Library v17.5 reveal about the conceptual, intellectual and thematic evolution this academic field? --\> Text mining and STM
+
+RQ2: What structural changes can be interpreted from the topic model? --\> (Covariates)
+
+RQ3: What does the extant literature (corpus) on Digital Government reveal on the linkage between digitalization and the organization of work? -- SeededLDA? (in-progress)
+
 The identification and visualization of bigrams and trigrams enrich the researcher's ability to have a quick overview of the co-ocurrence of words, this contribute to the quick detection of meaning word combinations contributing to the interpretation of the contents of the corpus.
+
+Dominance of social media
 
 Key term extractions from the corpus - Stemming
 
@@ -228,5 +242,11 @@ Collect names (Buffat et al)
 Insert bigrams and trigrams graphics
 
 ## Conclusions
+
+Public value theory concepts dominate the corpus
+
+Not as qualitative as initially assumed.
+
+Work related topics are a very periferic in the sample.
 
 ## References

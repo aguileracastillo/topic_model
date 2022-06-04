@@ -235,10 +235,10 @@ axis(1,at=c(2000,2005,2010,2015,2020),
 
 
 ## Topic Prevalence over Time ##
-par(mfrow=c(3,3))
-for (i in seq_along(sample(1:53, size = 9)))
+par(mfrow=c(1,1))
+for (i in seq_along(sample(1:53, size = 53)))
 {
-  plot(fx_21, "year.x", method = "continuous", topics = i, main = paste0(train53_labels$prob[i,1:3], collapse = ", "), printlegend = F)
+  plot(fx_53, "year.x", method = "continuous", topics = i, main = paste0(train53_labels$prob[i,1:3], collapse = ", "), printlegend = T)
 }
 
 
