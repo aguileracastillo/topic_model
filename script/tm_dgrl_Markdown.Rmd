@@ -210,6 +210,13 @@ knitr::include_graphics(here("graphics", "topic_proportions_training_set.png"))
 
 Topic modeling estimation is not necessarily difficult, the real work for researchers comes in the interpretation and visualization of the model output. The visualization settings of the stm package have clear strengths like the inclusion of covariates in calculating topic prevalence but also crippling limitations regarding the visualization of the models, however there have been important developments in associated software packages that enhance interpretability such as LDAvis [@sievert2014].
 
+Visualization of topic models is probably one of the most powerful tools developed in recent years to help researchers to interpret the results of a model and may explain the increasing adoption of these techniques out of the computer science field. A visualization of the top 30 terms in the analyzed sample are shown below, this in itself may not be incredibly informative as a static image but gives a quick overview of the most prevalent words in the corpus, and the visualization engine layout of the LDAvis package. On the left side pane are the topics that have been modeled in previous steps, the proximity in the visualization can be interpreted as "relatedness" among the topics. "Smart", "trust", "secur", "website", "vote" provide hints on the latent structure of the documents. The LDAvis shiny app allows an interactive exploration of topics, a few visualizations of the results will be presented in this manuscript for illustration purposes.
+
+```{r, , echo=FALSE, fig.align = "center", out.width="100%", warning=FALSE, fig.cap ="Top Features in the Sample"}
+knitr::include_graphics(here("graphics", "top30_ldavis.png"))
+
+```
+
 ## Discussion
 
 The identification and visualization of bigrams and trigrams enrich the researcher's ability to have a quick overview of the co-ocurrence of words, this contribute to the quick detection of meaning word combinations contributing to the interpretation of the contents of the corpus.
