@@ -219,7 +219,8 @@ knitr::include_graphics(here("graphics", "topic1_ldavis_tam.png"))
 
 Topic 45 is a grouping that was estimated to be highly frequent in the corpus, it contains words that are identifiable with recurrent themes in the literature like "collabor", "share", "coordin", "co-creat". However in the inspection of the covariate year it shows that is a topic that has decreasing probabilities over the years. Important caveats apply, as argued above, Digital Government Research is experimenting increasing scholarly attention and the decreasing trend may just reflect a proportional adjustment to the rapid increase in research output.
 
-```{r}
+```{r, echo=FALSE, fig.align = "center", out.width="100%", warning=FALSE, fig.cap ="Topic 45 Expected Proportion over Time"}
+knitr::include_graphics(here("graphics", "topic45_stm_vis.png"))
 
 ```
 
