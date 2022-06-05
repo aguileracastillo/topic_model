@@ -204,8 +204,14 @@ train53_labels <- labelTopics(dgrl_stm53, n = 10)
 train53_labels
 
 ## Top 3 Topics
-top3_train53 <- labelTopics(dgrl_stm53, c(47,27,51))
-top3_train53
+top5_train53 <- labelTopics(dgrl_stm53, c(47,27,51,45,23))
+top5_train53
+
+plot(dgrl_stm53,
+     main = "Most Prevalent Topics and Words by Score Measure",
+     type="labels",
+     labeltype = "score",
+     topics=c(47,27,51,45,23))
 
 ## Sage Labels?
 print(sageLabels(dgrl_stm53))
@@ -287,7 +293,7 @@ td_theta21
 
 ## WORDCLOUD OF MOST PREVALENT TOPIC review usefulness
 stm::cloud(dgrl_stm53,
-           topic = 45,
+           topic = 6,
            scale = c(3.25, .95))
 
 ## EYEBALLING TOPICS 
