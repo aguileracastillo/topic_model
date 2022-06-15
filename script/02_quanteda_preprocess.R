@@ -158,6 +158,19 @@ dgrl175_dictionary <- dictionary(list(verb = c("reduc*", "replac*", "elimin*", "
                                       research = c("practic*", "implicat*", "literat*", "review*", "research*", "limitat*", "cas*", "stud*", "conten*", "analy*", "futur*", "method")))
 print(dgrl175_dictionary)
 
+#### Dictionary approach 
+## Chapter 13 "Structuring the haystack" Bucher et al. (Waldkirch et al 2021)
+## Book: Research Methods for Digital Work 
+
+waldkirch_dict <- (list(staffing = c("hire", "fire", "ban", "recruit", "suspend"),
+                        training = c("develop", "educate", "help", "teach", "test", "learn"),
+                        mobility = c("advance", "promote", "progress", "career", "build"),
+                        job_security = c("replace", "safe", "turnover", "sick", "separate"),
+                        appraisal = c("feedback", "performance", "score", "rating"),
+                        rewards = c("badge", "earning", "payment", "punish", "reward"),
+                        job_design = c("jss", "monitoring", "video", "tracking", "profile"),
+                        participation = c("chat", "forum", "dialogue", "community")))
+
 ## Test tokens_lookup
 labor_saving <- tokens_lookup(dgrl175_tokens, dgrl175_dictionary, nomatch = "NULL")
 
