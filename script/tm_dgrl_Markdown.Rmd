@@ -251,6 +251,12 @@ Even though it was not presented in this manuscript, it is part of the visualiza
 
 The exploration via topic modeling and text mining techniques of a corpus in the Digital Government Research field did not provide enough evidence of groundbreaking empirical research linking digitalization with labor transformation in the public sector workforce. Is this a discouraging finding of an uninteresting topic of research or a major gap in the literature? We would like to argue for the second opinion.
 
+Danziger et al 2002.
+
+Golden age 1980s to 2000
+
+"It is striking that there are relatively few grounded, empirical studies of the impacts of IT on public administration in the journals analyzed."
+
 ## Conclusions
 
 There is a major gap in the extant literature as regards the exploration of the impacts of digitalization on the public sector workforce. The Digital Government Research Library has been explored in-depth in order to find any significant linkages in the literature connecting these two issues with no big success. However, this does not mean the topic has not been conceptually explored in diverse scholarly publications. As argued above, this may be the opportunity to chase relevant and emerging topics in digital government.
