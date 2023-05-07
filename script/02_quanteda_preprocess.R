@@ -192,7 +192,7 @@ nfeat(dfm_dgrl175)
 ### TOP FEATURES IN DFM_DGRL -- Best practice remove very rare and very common
 topfeatures(dfm_dgrl175, 250)
 ## Wordclouds
-set.seed(1253)
+set.seed(01253)
 textplot_wordcloud(dfm_dgrl175, max_words = 100)
 
 ### TFIDF Term Frequency-Inverse Document Frequency
@@ -225,7 +225,7 @@ set.seed(60091)
 data_to_lda <- dfm_dgrl175_trim_docfreq
 n <- nrow(data_to_lda)
 
-splitter <- sample(1:n, round(n * 0.75))
+splitter <- sample(1:n, round(n * 0.5))
 train_dgrl175 <- data_to_lda[splitter, ]
 test_dgrl175 <- data_to_lda[-splitter, ]
 
