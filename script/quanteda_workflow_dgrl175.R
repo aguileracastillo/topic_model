@@ -1,4 +1,5 @@
 ## QUANTEDA WORKFLOW FOR DGRL17.5
+## CORPUS PREPROCESSING // SCRIPT FOR TESTING AND EXPERIMENTATION
 library(rmarkdown)
 library(knitr)
 library(tidyverse)
