@@ -48,6 +48,7 @@ top_journals <- dgrl175_tm %>% count(pub_title.x) %>% arrange(desc(n))
 print(top_journals)
 write.csv(top_journals, "~/GitHub/topic_model/data\\top_journals.csv", row.names = TRUE)
 
+
 ## After detecting uninformative but pervasive string => Remove
 dgrl175_tm$abstract.x <- gsub("â€*?", " ", dgrl175_tm$abstract.x)
 

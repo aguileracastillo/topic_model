@@ -28,8 +28,8 @@ mf_bib <- mf_bib %>% rename(type = `Item.Type`, year = `Publication.Year`, autho
 mf_ris <- mf_ris %>% rename(type = `Item.Type`, year = `Publication.Year`, author = `Author`, doc_title = `Title`, pub_title = `Publication.Title`, abstract = `Abstract.Note`)
 
 ## KEEP VARIABLES OF INTEREST (Item Type", "Publication Year", "Author", "Title", "Publication Title", "Abstract Note")
-mf_bib_redux <- mf_bib %>% select(2:6, 9, 11)
-mf_ris_redux <- mf_ris %>% select(2:6, 9, 11)
+mf_bib_redux <- mf_bib %>% select(2:6, 8, 9, 11)
+mf_ris_redux <- mf_ris %>% select(2:6, 8, 9, 11)
 
 ## KEEP DOI IN BOTH RIS AND BIB IMPORTS -> drop_na(DOI)
 ## 19.5 % missing year
