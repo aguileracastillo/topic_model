@@ -100,7 +100,10 @@ dgrl175_unigram_dfm <- dfm(dgrl175_unigram)
 unigram_freq <-textstat_frequency(dgrl175_unigram_dfm)
 
 #plot wordcloud to show most frequent words
-textplot_wordcloud(dgrl175_unigram_dfm, max_words = 100,
+textplot_wordcloud(dgrl175_unigram_dfm,
+                   min_size = 0.5,
+                   max_size = 200,
+                   max_words = 100,
                    ordered_color = TRUE)
 
 ## Bigram ##
