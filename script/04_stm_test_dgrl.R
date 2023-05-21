@@ -1,6 +1,9 @@
-#### stminsights ####
+#### Structural Topic Model for DGRL 17.5 TEST SET K=30 ####
 library(stm)
 library(stminsights)
+library(officer)
+library(flextable)
+
 
 ## CONVERT FROM QUANTEDA TO STM
 test_stm <- convert(test_dgrl175, to = "stm")
@@ -14,51 +17,56 @@ out <- list(documents = test_stm$documents,
 
 str(test_stm)
 
-## k=53 with Test set
-dgrl_test_stm53 <- stm(test_stm$documents, 
+## k=30 with Test set
+dgrl_test_stm30 <- stm(test_stm$documents, 
                        test_stm$vocab, 
-                       K = 53,
+                       K = 30,
                        prevalence = ~ year.x,
                        max.em.its = 75,
                        data = test_stm$meta, 
-                       init.type = "Spectral")
+                       init.type = "Spectral") ## Spectral for Reproducibility ##
 
 ## SHARE OF TOPICS OVER ALL CORPUS ##
 plot(
-  dgrl_test_stm53,
+  dgrl_test_stm30,
   type = "summary",
   text.cex = 0.8,
   main = "Estimated Topic Proportions Test Set",
   xlab = "Share estimation")
 
 #### Topic Quality do not run ####
-topicQuality(dgrl_test_stm53, 
+topicQuality(dgrl_test_stm30, 
              documents = test_stm$documents, 
              xlab = "Semantic Coherence",
              ylab = "Exclusivity",
-             labels = dgrl_test_stm53$theta,
+             labels = dgrl_test_stm30$theta,
              M = 10)
 
 ## PRINT WORDS PER TOPIC
-data.frame(t(labelTopics(dgrl_test_stm53, n = 10)$prob))
+top30df <- data.frame(t(labelTopics(dgrl_test_stm30, n = 10)$prob))
+test30_labels_transpose <- as.data.frame(t(top30df))
+rownames(test30_labels_transpose) <- paste0("X", 1:ncol(test30_labels_transpose))
+print(test30_labels_transpose)
 
-## PRINT WORDS PER TOPIC
-data.frame(t(labelTopics(topic_train33, n = 10)$prob))
+
 
 ## Highest Prob / FREX / LIFT / Score
-test53_labels <- labelTopics(dgrl_test_stm53, n = 10)
-test53_labels
+test30_labels <- labelTopics(dgrl_test_stm30, n = 10)
+test30_labels
 
-fx_test_53 <- estimateEffect(1:53 ~ year.x, 
-                     dgrl_test_stm53, 
+
+
+## Estimate Effect ##
+fx_test_30 <- estimateEffect(1:30 ~ year.x, 
+                     dgrl_test_stm30, 
                      meta = out$meta, 
                      uncertainty = "Global")
 
 ## Topic Prevalence over Time ##
 par(mfrow=c(3,3))
-for (i in seq_along(sample(1:33, size = 9)))
+for (i in seq_along(sample(1:30, size = 30)))
 {
-  plot(fx, "year.x", method = "continuous", topics = i, main = paste0(train33_labels$prob[i,1:3], collapse = ", "), printlegend = F)
+  plot(fx_test_30, "year.x", method = "continuous", topics = i, main = paste0(test30_labels$prob[i,1:3], collapse = ", "), printlegend = T)
 }
 
 save(topic_train50, fx, file = "topic_train50.RData")

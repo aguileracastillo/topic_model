@@ -1,4 +1,4 @@
-#### Structural Topic Model ####
+#### Structural Topic Model for DGRL 17.5 TRAIN SET ####
 library(stm)
 library(dplyr)
 library(broom)
@@ -27,7 +27,7 @@ find_smallestK <- searchK(train_stm$documents,
                           K = c(5:25),
                           prevalence = ~ year.x, 
                           data = train_stm$meta, 
-                          init.type = "Spectral",
+                          init.type = "Spectral", #Spectral Initialization = Reproducibility
                           verbose=FALSE)
 
 plot(find_smallestK)
@@ -76,7 +76,22 @@ find_needle2 <- searchK(train_stm$documents,
 
 plot(find_needle2)
 
-### Potential options for K (S/M/L) => 29, 44, 65, 98
+### Potential options for K (S/M/L) => 15, 29, 44, 65, 98
+
+#### CALCULATE STM k = 15 ####
+dgrl_stm15 <- stm(train_stm$documents, 
+                  train_stm$vocab, 
+                  K = 15,
+                  prevalence = ~ year.x,
+                  max.em.its = 75,
+                  data = train_stm$meta, 
+                  init.type = "Spectral")
+
+## PRINT WORDS PER TOPIC
+data.frame(t(labelTopics(dgrl_stm15, n = 10)$prob))
+
+train15_labels <- labelTopics(dgrl_stm15, n = 10)
+train15_labels
 
 #### CALCULATE STM k = 29 ####
 dgrl_stm29 <- stm(train_stm$documents, 
@@ -132,7 +147,12 @@ plot(
   type = "summary",
   text.cex = 0.5,
   main = "STM topic shares",
-  xlab = "Share estimation") 
+  xlab = "Share estimation")
+
+## WORD CLOUD BY TOPIC ##
+stm::cloud(dgrl_stm29,
+           topic = 7,
+           scale = c(3.25, .95))
 
 #### CALCULATE STM k = 44 ####
 dgrl_stm44 <- stm(train_stm$documents, 
@@ -303,7 +323,7 @@ td_theta21
 
 
 ## WORDCLOUD OF MOST PREVALENT TOPIC review usefulness
-stm::cloud(dgrl_stm65,
+stm::cloud(dgrl_stm29,
            topic = 6,
            scale = c(3.25, .95))
 
@@ -311,7 +331,7 @@ stm::cloud(dgrl_stm65,
 plot(dgrl_stm17, type = "perspectives", topics = c(6, 12)) 
 
 ## DOCUMENT TOPIC PROPORTIONS
-plot(dgrl_stm29, type = "hist", topics = sample(1:29, size = 9))
+plot(dgrl_stm29, type = "hist", topics = sample(1:29, size = 29))
 
 #### LDAvis k=29 ####
 toLDAvis(dgrl_stm29,
