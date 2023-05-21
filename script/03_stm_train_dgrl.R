@@ -35,7 +35,7 @@ plot(find_smallestK)
 ## Medium K
 find_mediumK <- searchK(train_stm$documents, 
                         train_stm$vocab, 
-                        K = c(25:60),
+                        K = c(25:50),
                         prevalence = ~ year.x, 
                         data = train_stm$meta, 
                         init.type = "Spectral",
@@ -46,7 +46,7 @@ plot(find_mediumK)
 ## Larger K
 findingK <- searchK(train_stm$documents, 
                     train_stm$vocab, 
-                    K = c(60, 70, 80, 90, 100),
+                    K = c(50:75),
                     prevalence = ~year.x, 
                     data = train_stm$meta, 
                     init.type = "Spectral",
@@ -54,10 +54,10 @@ findingK <- searchK(train_stm$documents,
 
 plot(findingK)
 
-## Between 70 ~ 90
+## Between 75 ~ 100
 find_needle <- searchK(train_stm$documents, 
                           train_stm$vocab, 
-                          K = c(70:90),
+                          K = c(75:100),
                           prevalence = ~ year.x, 
                           data = train_stm$meta, 
                           init.type = "Spectral",
@@ -65,10 +65,20 @@ find_needle <- searchK(train_stm$documents,
 
 plot(find_needle)
 
+## Find best K
+find_needle2 <- searchK(train_stm$documents, 
+                       train_stm$vocab, 
+                       K = c(100:125),
+                       prevalence = ~ year.x, 
+                       data = train_stm$meta, 
+                       init.type = "Spectral",
+                       verbose=FALSE)
+
+plot(find_needle2)
 
 ### Potential options for K (S/M/L) => 22, 44, 53, 80
 
-#### CALCULATE STM k = 22 ####
+#### CALCULATE STM k = 29 ####
 dgrl_stm22 <- stm(train_stm$documents, 
                   train_stm$vocab, 
                   K = 22,
