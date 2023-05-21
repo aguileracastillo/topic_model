@@ -311,7 +311,7 @@ stm::cloud(dgrl_stm65,
 plot(dgrl_stm17, type = "perspectives", topics = c(6, 12)) 
 
 ## DOCUMENT TOPIC PROPORTIONS
-plot(dgrl_stm65, type = "hist", topics = sample(1:53, size = 9))
+plot(dgrl_stm29, type = "hist", topics = sample(1:29, size = 9))
 
 #### LDAvis k=29 ####
 toLDAvis(dgrl_stm29,
