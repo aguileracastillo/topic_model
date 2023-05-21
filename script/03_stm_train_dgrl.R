@@ -264,6 +264,8 @@ for (i in seq_along(sample(1:65, size = 65)))
   plot(fx_65, "year.x", method = "continuous", topics = c(4,8,26), main = paste0(train65_labels$prob[i,1:3], collapse = ", "), printlegend = T)
 }
 
+
+
 ## Topic Quality
 
 
