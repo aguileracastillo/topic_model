@@ -60,13 +60,13 @@ stm::cloud(dgrl_test_stm30,
            scale = c(3.25, .95))
 
 
-## Estimate Effect ##
+## Estimate Effect Topic Prevalence over time ##
 fx_test_30 <- estimateEffect(1:30 ~ year.x, 
                      dgrl_test_stm30, 
                      meta = out$meta, 
                      uncertainty = "Global")
 
-## Topic Prevalence over Time ##
+## Visualization of Topic Prevalence over Time ##
 par(mfrow=c(1,1))
 for (i in seq_along(sample(1:30, size = 30)))
 {
