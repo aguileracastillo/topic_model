@@ -328,7 +328,7 @@ stm::cloud(dgrl_stm29,
            scale = c(3.25, .95))
 
 ## EYEBALLING TOPICS 
-plot(dgrl_stm17, type = "perspectives", topics = c(6, 12)) 
+plot(dgrl_stm29, type = "perspectives", topics = c(6, 12)) 
 
 ## DOCUMENT TOPIC PROPORTIONS
 plot(dgrl_stm29, type = "hist", topics = sample(1:29, size = 29))

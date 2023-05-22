@@ -48,12 +48,16 @@ test30_labels_transpose <- as.data.frame(t(top30df))
 rownames(test30_labels_transpose) <- paste0("X", 1:ncol(test30_labels_transpose))
 print(test30_labels_transpose)
 
-
+write.csv(test30_labels_transpose, file = "~/GitHub/topic_model/output\\test_30topics.csv", row.names = TRUE)
 
 ## Highest Prob / FREX / LIFT / Score
-test30_labels <- labelTopics(dgrl_test_stm30, n = 10)
-test30_labels
+test30_labels <- labelTopics(dgrl_test_stm30, n = 10, frexweight = 0.5)
+print(test30_labels)
 
+## Wordcloud Topic-Word Probabilities
+stm::cloud(dgrl_test_stm30,
+           topic = 1,
+           scale = c(3.25, .95))
 
 
 ## Estimate Effect ##
@@ -63,15 +67,11 @@ fx_test_30 <- estimateEffect(1:30 ~ year.x,
                      uncertainty = "Global")
 
 ## Topic Prevalence over Time ##
-par(mfrow=c(3,3))
+par(mfrow=c(1,1))
 for (i in seq_along(sample(1:30, size = 30)))
 {
   plot(fx_test_30, "year.x", method = "continuous", topics = i, main = paste0(test30_labels$prob[i,1:3], collapse = ", "), printlegend = T)
 }
-
-save(topic_train50, fx, file = "topic_train50.RData")
-
-run_stminsights(use_browser = TRUE)
 
 ## test ldavis ##
 toLDAvis(topic_train33,
