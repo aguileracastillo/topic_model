@@ -54,10 +54,13 @@ write.csv(test30_labels_transpose, file = "~/GitHub/topic_model/output\\test_30t
 test30_labels <- labelTopics(dgrl_test_stm30, n = 10, frexweight = 0.5)
 print(test30_labels)
 
+## Topic 22 Job / Employment
+labelTopics(dgrl_test_stm30, c(22))
+
 ## Wordcloud Topic-Word Probabilities
 stm::cloud(dgrl_test_stm30,
-           topic = 1,
-           scale = c(3.25, .95))
+           topic = 22,
+           scale = c(3.25, .50))
 
 
 ## Estimate Effect Topic Prevalence over time ##
@@ -74,9 +77,9 @@ for (i in seq_along(sample(1:30, size = 30)))
 }
 
 ## test ldavis ##
-toLDAvis(topic_train33,
+toLDAvis(dgrl_test_stm30,
          test_stm$documents,
-         R = 30,
+         R = 20,
          plot.opts = list(xlab = "PC1", ylab = "PC2"),
          lambda.step = 0.1,
          out.dir = tempfile(),
