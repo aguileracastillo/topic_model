@@ -145,8 +145,8 @@ for (i in seq_along(sample(1:29, size = 29))) # Loop over all 29 topics
 plot(
   dgrl_stm29,
   type = "summary",
-  text.cex = 0.5,
-  main = "STM topic shares",
+  text.cex = 0.8,
+  main = "Estimated Topic Proportions DGRL v17.5 Training Set (k=29)",
   xlab = "Share estimation")
 
 ## WORD CLOUD BY TOPIC ##

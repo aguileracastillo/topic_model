@@ -31,7 +31,7 @@ plot(
   dgrl_test_stm30,
   type = "summary",
   text.cex = 0.8,
-  main = "Estimated Topic Proportions Test Set",
+  main = "Estimated Topic Proportions DGRL v17.5 Test Set (k=30)",
   xlab = "Share estimation")
 
 #### Topic Quality do not run ####
