@@ -1,8 +1,6 @@
 #### Structural Topic Model for DGRL 17.5 TEST SET K=30 ####
 library(stm)
 library(stminsights)
-library(officer)
-library(flextable)
 
 
 ## CONVERT FROM QUANTEDA TO STM
@@ -62,6 +60,29 @@ stm::cloud(dgrl_test_stm30,
            topic = 22,
            scale = c(3.25, .50))
 
+## Automation Technologies AI, Blockchain, Cloud, IoT ##
+stm::cloud(dgrl_test_stm30,
+           topic = 9, ##ai
+           scale = c(3.25, .50))
+
+stm::cloud(dgrl_test_stm30,
+           topic = 14, ##cloud
+           scale = c(3.25, .50))
+
+stm::cloud(dgrl_test_stm30,
+           topic = 20, ##blockchain
+           scale = c(3.25, .50))
+
+stm::cloud(dgrl_test_stm30,
+           topic = 27, ##iot
+           scale = c(3.25, .50))
+
+stm::cloud(dgrl_test_stm30,
+           topic = 23, ##smart cities
+           scale = c(3.25, .50))
+
+
+
 
 ## Estimate Effect Topic Prevalence over time ##
 fx_test_30 <- estimateEffect(1:30 ~ year.x, 
@@ -79,12 +100,12 @@ for (i in seq_along(sample(1:30, size = 30)))
 ## test ldavis ##
 toLDAvis(dgrl_test_stm30,
          test_stm$documents,
-         R = 20,
+         R = 15,
          plot.opts = list(xlab = "PC1", ylab = "PC2"),
          lambda.step = 0.1,
          out.dir = tempfile(),
          open.browser = interactive(),
          as.gist = FALSE,
-         reorder.topics = TRUE)
+         reorder.topics = FALSE)
 
 
